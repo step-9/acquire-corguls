@@ -3,5 +3,5 @@ module.exports = {
   quoteProps: "preserve",
   singleQuote: false,
   tabWidth: 2,
-  arrowParens: "avoid"
-}
+  arrowParens: "avoid",
+};

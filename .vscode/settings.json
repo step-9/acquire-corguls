@@ -9,7 +9,6 @@
   "editor.wordWrapColumn": 80,
 
   "workbench.sideBar.location": "right",
-  "editor.fontFamily": "JetBrains Mono, Monaco, 'Courier New', monospace",
   "workbench.colorTheme": "One Monokai",
   "workbench.iconTheme": "material-icon-theme"
 }

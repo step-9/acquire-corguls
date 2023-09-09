@@ -5,8 +5,12 @@ module.exports = {
     es2022: true,
   },
 
+  parserOptions: {
+    ecmaVersion: "latest",
+  },
+
   extends: "eslint:recommended",
-  
+
   rules: {
     indent: ["error", 2],
     quotes: ["error", "double"],
@@ -16,9 +20,5 @@ module.exports = {
     "no-unmodified-loop-condition": "error",
     "no-unreachable-loop": "error",
     "no-unused-private-class-members": "error",
-  },
-
-  parserOptions: {
-    ecmaVersion: "latest",
   },
 };
