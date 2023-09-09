@@ -1,0 +1,30 @@
+{
+  "name": "acquire-corguls",
+  "version": "1.0.0",
+  "description": "Acquire game developed by Corguls",
+  "main": "index.js",
+  "scripts": {
+    "setup": "./bin/setup.sh",
+    "lint": "eslint .",
+    "test": "node --test",
+    "coverage": "nyc npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/step-9/acquire-corguls.git"
+  },
+  "keywords": [
+    "acquire",
+    "game"
+  ],
+  "author": "corguls",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/step-9/acquire-corguls/issues"
+  },
+  "homepage": "https://github.com/step-9/acquire-corguls#readme",
+  "devDependencies": {
+    "eslint": "^8.49.0",
+    "nyc": "^15.1.0"
+  }
+}

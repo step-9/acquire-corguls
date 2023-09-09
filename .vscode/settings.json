@@ -1,0 +1,15 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "editor.lineHeight": 1.5,
+  "editor.rulers": [80],
+  "editor.wordWrapColumn": 80,
+
+  "workbench.sideBar.location": "right",
+  "editor.fontFamily": "JetBrains Mono, Monaco, 'Courier New', monospace",
+  "workbench.colorTheme": "One Monokai",
+  "workbench.iconTheme": "material-icon-theme"
+}
