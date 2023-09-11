@@ -25,6 +25,12 @@ describe("Account", () => {
       assert.deepStrictEqual({}, stocks);
     });
 
+    it("should have zero stocks of each corporation initially", () => {
+      const account = new Account(0, { phoenix: 0, hydra: 0 });
+      const { stocks } = account.stats();
+      assert.deepStrictEqual({ phoenix: 0, hydra: 0 }, stocks);
+    });
+
     it("should include an overall account statistic", () => {
       const account = new Account();
 

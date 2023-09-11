@@ -10,5 +10,6 @@
 
   "workbench.sideBar.location": "right",
   "workbench.colorTheme": "One Monokai",
-  "workbench.iconTheme": "material-icon-theme"
+  "workbench.iconTheme": "material-icon-theme",
+  "cSpell.words": ["sackson"]
 }

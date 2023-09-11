@@ -3,9 +3,9 @@ class Account {
   #stocks;
   #balance;
 
-  constructor(balance = 0) {
+  constructor(balance = 0, stocks = []) {
     this.#tiles = [];
-    this.#stocks = {};
+    this.#stocks = stocks;
     this.#balance = balance;
   }
 
