@@ -3,16 +3,20 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 18% auto 16%;
-  grid-template-rows: 8% auto 17%;
+  grid-template-rows: 10% auto 18%;
 
   grid-template-areas:
     "game-header game-header game-header"
-    "corporation game-board account"
+    "corporation game-board-container account"
     "corporation activity-bar account";
-  border: 1px solid silver;
 }
 
-#game-header,
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #corporation,
 #account,
 #activity-bar {
@@ -22,7 +26,13 @@
 
 #game-header {
   grid-area: game-header;
+  padding-left: 0.5em;
+  display: flex;
+  align-items: center;
   background-color: var(--mid-gray);
+  font-size: 3em;
+  color: var(--light-gray);
+  letter-spacing: 2px;
 }
 
 #corporation {
@@ -40,20 +50,25 @@
   background-color: var(--light-gray);
 }
 
+#game-board-container {
+  display: flex;
+  align-items: center;
+}
+
 #game-board {
-  margin: 1em auto;
+  height: 710px;
+  width: 950px;
+  margin: 0.5em auto;
   grid-area: game-board;
   display: grid;
   grid-template-rows: repeat(9, 1fr);
   grid-template-columns: repeat(12, 1fr);
-  align-items: center;
-  justify-content: center;
   gap: 0.5em;
 }
 
 .space {
-  width: 3.5em;
-  aspect-ratio: 1;
+  height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
