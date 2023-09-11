@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   background-color: var(--mid-gray);
-  font-size: 3em;
+  font-size: 2em;
   color: var(--light-gray);
   letter-spacing: 2px;
 }
