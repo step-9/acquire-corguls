@@ -12,9 +12,9 @@ const joinPlayer = (req, res) => {
   res.redirect("/lobby");
 };
 
-const sendPlayers = (req, res) => {
+const sendLobbyStatus = (req, res) => {
   const lobby = req.context.lobby;
-  res.json(lobby.status().players);
+  res.json(lobby.status());
 };
 
 const createLobbyRouter = context => {
@@ -25,9 +25,9 @@ const createLobbyRouter = context => {
     next();
   });
 
-  router.get("/lobby", serveLobbyPage);
+  router.get("/", serveLobbyPage);
   router.post("/players", joinPlayer);
-  router.get("/players", sendPlayers);
+  router.get("/status", sendLobbyStatus);
 
   return router;
 };

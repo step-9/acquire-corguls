@@ -1,7 +1,7 @@
 const getPlayerSection = () => document.querySelector("#players");
 
-const getPlayers = () => {
-  return fetch("/players").then(res => res.json());
+const getLobbyStatus = () => {
+  return fetch("/lobby/status").then(res => res.json());
 };
 
 const renderPlayer = (username, playerElement) => {
@@ -19,7 +19,9 @@ const renderPlayers = players => {
 };
 
 const updateLobby = () => {
-  getPlayers().then(renderPlayers);
+  getLobbyStatus().then(({ players }) => {
+    renderPlayers(players);
+  });
 };
 
 const keepLobbyUpdated = () => {

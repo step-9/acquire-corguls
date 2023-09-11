@@ -20,7 +20,7 @@ describe("GET /lobby", () => {
   });
 });
 
-describe("POST /players", () => {
+describe("POST /lobby/players", () => {
   it("should add the player in the lobby", (_, done) => {
     const size = 3;
     const lobby = new Lobby(size);
@@ -30,7 +30,7 @@ describe("POST /players", () => {
 
     const username = "player";
     request(app)
-      .post("/players")
+      .post("/lobby/players")
       .send({ username })
       .expect(302)
       .expect("location", "/lobby")
@@ -41,21 +41,24 @@ describe("POST /players", () => {
   });
 });
 
-describe("GET /players", () => {
-  it("should get the players in the lobby", (_, done) => {
+describe("GET /lobby/status", () => {
+  it("should get the latest status of the lobby", (_, done) => {
     const lobby = new Lobby(3);
     const lobbyRouter = createLobbyRouter({ lobby });
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter);
 
-    const username = "player";
-    lobby.addPlayer({ username });
+    const expectedStatus = {
+      players: [],
+      isFull: false,
+      hasGameStarted: false,
+    };
 
     request(app)
-      .get("/players")
+      .get("/lobby/status")
       .expect(200)
       .expect("content-type", new RegExp("application/json"))
-      .expect([{ username }])
+      .expect(expectedStatus)
       .end(done);
   });
 });

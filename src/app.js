@@ -14,7 +14,7 @@ const createApp = (lobbyRouter, accountRouter) => {
 
   app.use(logRequest);
   app.use(express.json());
-  app.use(lobbyRouter);
+  app.use("/lobby", lobbyRouter);
   app.use(accountRouter);
   app.get("/", serveHomePage);
   app.get("/game", serveGamePage);
