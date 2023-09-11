@@ -1,0 +1,16 @@
+#page {
+  display: grid;
+  justify-content: center;
+  align-items: start;
+}
+
+#join-form {
+  font-size: 1.4em;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 2em;
+  padding: 3em;
+  background-color: var(--light-gray);
+  border-radius: 5px;
+}

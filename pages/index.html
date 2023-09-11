@@ -2,8 +2,28 @@
   <head>
     <title>Acquire-home</title>
     <link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/page-layout.css" />
+    <link rel="stylesheet" href="/styles/index.css" />
   </head>
   <body>
-    <header id="game-name">Acquire</header>
+    <div id="root">
+      <header id="page-header">
+        <h1 id="heading">ACQUIRE</h1>
+      </header>
+      <main id="page">
+        <form id="join-form">
+          <label for="username-field">Enter you name to join</label>
+          <section>
+            <input
+              type="text"
+              placeholder="username"
+              name="username"
+              id="username-field"
+            />
+            <input type="submit" value="Join" />
+          </section>
+        </form>
+      </main>
+    </div>
   </body>
 </html>
