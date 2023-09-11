@@ -9,12 +9,13 @@ const serveGamePage = (_, res) => {
   res.sendFile("game.html", { root: "pages" });
 };
 
-const createApp = lobbyRouter => {
+const createApp = (lobbyRouter, accountRouter) => {
   const app = express();
 
   app.use(logRequest);
   app.use(express.json());
   app.use(lobbyRouter);
+  app.use(accountRouter);
   app.get("/", serveHomePage);
   app.get("/game", serveGamePage);
   app.use(express.static("public"));

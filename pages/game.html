@@ -4,13 +4,20 @@
     <title>Acquire</title>
     <link rel="stylesheet" href="/styles/style.css" />
     <link rel="stylesheet" href="/styles/game.css" />
+    <script src="/scripts/account.js"></script>
   </head>
 
   <body>
     <div id="root">
       <header id="game-header">ACQUIRE</header>
       <section id="corporation">Corporation</section>
-      <section id="account">Account</section>
+      <section id="account">
+        <header class="account-header">Account</header>
+        <section class="balance">
+          <header>Balance</header>
+          <div class="amount" id="balance-container"></div>
+        </section>
+      </section>
 
       <div id="game-board-container">
         <section id="game-board">

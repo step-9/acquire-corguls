@@ -3,12 +3,14 @@ const request = require("supertest");
 const { describe, it } = require("node:test");
 const { createApp } = require("../../src/app");
 const { createLobbyRouter } = require("../../src/routers/lobby-router");
+const { createGameRouter } = require("../../src/routers/game-router");
 
 describe("GET /lobby", () => {
   it("should serve the lobby page", (_, done) => {
     const lobby = new Set();
     const lobbyRouter = createLobbyRouter({ lobby });
-    const app = createApp(lobbyRouter);
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter);
     request(app)
       .get("/lobby")
       .expect(200)
@@ -21,7 +23,8 @@ describe("POST /players", () => {
   it("should add the player in the lobby", (_, done) => {
     const lobby = new Set();
     const lobbyRouter = createLobbyRouter({ lobby });
-    const app = createApp(lobbyRouter);
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter);
 
     const username = "player";
     request(app)
@@ -40,7 +43,8 @@ describe("GET /players", () => {
   it("should get the players in the lobby", (_, done) => {
     const lobby = new Set();
     const lobbyRouter = createLobbyRouter({ lobby });
-    const app = createApp(lobbyRouter);
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter);
 
     const username = "player";
     lobby.add(username);
