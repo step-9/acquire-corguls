@@ -4,10 +4,11 @@ const { describe, it } = require("node:test");
 const { createApp } = require("../../src/app");
 const { createLobbyRouter } = require("../../src/routers/lobby-router");
 const { createGameRouter } = require("../../src/routers/game-router");
+const Lobby = require("../../src/models/lobby");
 
 describe("GET /lobby", () => {
   it("should serve the lobby page", (_, done) => {
-    const lobby = new Set();
+    const lobby = new Lobby(3);
     const lobbyRouter = createLobbyRouter({ lobby });
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter);
@@ -21,7 +22,8 @@ describe("GET /lobby", () => {
 
 describe("POST /players", () => {
   it("should add the player in the lobby", (_, done) => {
-    const lobby = new Set();
+    const size = 3;
+    const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter({ lobby });
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter);
@@ -33,7 +35,7 @@ describe("POST /players", () => {
       .expect(302)
       .expect("location", "/lobby")
       .end(err => {
-        assert.deepStrictEqual([...lobby], [username]);
+        assert.deepStrictEqual(lobby.status().players, [{ username }]);
         done(err);
       });
   });
@@ -41,19 +43,19 @@ describe("POST /players", () => {
 
 describe("GET /players", () => {
   it("should get the players in the lobby", (_, done) => {
-    const lobby = new Set();
+    const lobby = new Lobby(3);
     const lobbyRouter = createLobbyRouter({ lobby });
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter);
 
     const username = "player";
-    lobby.add(username);
+    lobby.addPlayer({ username });
 
     request(app)
       .get("/players")
       .expect(200)
       .expect("content-type", new RegExp("application/json"))
-      .expect([username])
+      .expect([{ username }])
       .end(done);
   });
 });

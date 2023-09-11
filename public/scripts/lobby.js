@@ -12,7 +12,7 @@ const renderPlayer = (username, playerElement) => {
 
 const renderPlayers = players => {
   const playerSection = getPlayerSection();
-  players.forEach((username, index) => {
+  players.forEach(({ username }, index) => {
     const playerElement = playerSection.children[index];
     renderPlayer(username, playerElement);
   });

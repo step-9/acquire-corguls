@@ -1,5 +1,6 @@
 const { createApp } = require("./src/app");
 const { Account } = require("./src/models/account");
+const Lobby = require("./src/models/lobby");
 const { createGameRouter } = require("./src/routers/game-router");
 const { createLobbyRouter } = require("./src/routers/lobby-router");
 
@@ -11,7 +12,8 @@ const logServerInfo = () => {
 };
 
 const main = () => {
-  const lobby = new Set();
+  const maxPlayers = 3;
+  const lobby = new Lobby(maxPlayers);
   const account = new Account();
   const lobbyRouter = createLobbyRouter({ lobby });
   const gameRouter = createGameRouter({ account });

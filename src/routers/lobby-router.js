@@ -7,14 +7,14 @@ const serveLobbyPage = (_, res) => {
 const joinPlayer = (req, res) => {
   const { username } = req.body;
   const lobby = req.context.lobby;
-  lobby.add(username);
+  lobby.addPlayer({ username });
 
   res.redirect("/lobby");
 };
 
 const sendPlayers = (req, res) => {
   const lobby = req.context.lobby;
-  res.json([...lobby]);
+  res.json(lobby.status().players);
 };
 
 const createLobbyRouter = context => {
