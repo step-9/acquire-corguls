@@ -1,9 +1,6 @@
-const express = require("express");
-const PORT = process.env.PORT || 8080;
+const { createApp } = require("./src/app");
 
-const serveHomePage = (_, res) => {
-  res.sendFile("index.html", { root: "pages" });
-};
+const PORT = process.env.PORT || 8080;
 
 const logServerInfo = () => {
   console.log("Listening on", PORT);
@@ -11,11 +8,7 @@ const logServerInfo = () => {
 };
 
 const main = () => {
-  const app = express();
-
-  app.get("/", serveHomePage);
-  app.use(express.static("public"));
-
+  const app = createApp();
   app.listen(PORT, logServerInfo);
 };
 
