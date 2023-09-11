@@ -1,6 +1,7 @@
 const request = require("supertest");
 const { describe, it } = require("node:test");
 const { createApp } = require("../src/app");
+const assert = require("assert");
 
 describe("App", () => {
   describe("GET /", () => {
@@ -33,6 +34,23 @@ describe("App", () => {
         .expect(200)
         .expect("content-type", new RegExp("text/html"))
         .end(done);
+    });
+  });
+
+  describe("POST /players", () => {
+    it("should join the player in the lobby", (_, done) => {
+      const lobby = new Set();
+      const app = createApp(lobby);
+      const username = "player";
+      request(app)
+        .post("/players")
+        .send({ username })
+        .expect(302)
+        .expect("location", "/lobby")
+        .end(err => {
+          assert.deepStrictEqual([...lobby], [username]);
+          done(err);
+        });
     });
   });
 });

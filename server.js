@@ -8,7 +8,8 @@ const logServerInfo = () => {
 };
 
 const main = () => {
-  const app = createApp();
+  const lobby = new Set();
+  const app = createApp(lobby);
   app.listen(PORT, logServerInfo);
 };
 

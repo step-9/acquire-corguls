@@ -13,13 +13,24 @@ const serveLobbyPage = (_, res) => {
   res.sendFile("lobby.html", { root: "pages" });
 };
 
-const createApp = () => {
+const joinPlayer = (req, res) => {
+  const { username } = req.body;
+  const lobby = req.app.lobby;
+  lobby.add(username);
+
+  res.redirect("/lobby");
+};
+
+const createApp = lobby => {
   const app = express();
+  app.lobby = lobby;
 
   app.use(logRequest);
+  app.use(express.json());
   app.get("/", serveHomePage);
   app.get("/game", serveGamePage);
   app.get("/lobby", serveLobbyPage);
+  app.post("/players", joinPlayer);
   app.use(express.static("public"));
 
   return app;
