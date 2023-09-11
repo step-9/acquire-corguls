@@ -5,12 +5,12 @@
 }
 
 #join-form {
-  font-size: 1.4em;
+  font-size: 1.2em;
   display: grid;
   place-content: center;
   text-align: center;
-  gap: 2em;
-  padding: 3em;
+  gap: 0.8em;
+  padding: 1em;
   background-color: var(--light-gray);
   border-radius: 5px;
 }
