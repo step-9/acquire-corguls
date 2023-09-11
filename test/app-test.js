@@ -24,4 +24,15 @@ describe("App", () => {
         .end(done);
     });
   });
+
+  describe("GET /lobby", () => {
+    it("should serve the lobby page", (_, done) => {
+      const app = createApp();
+      request(app)
+        .get("/lobby")
+        .expect(200)
+        .expect("content-type", new RegExp("text/html"))
+        .end(done);
+    });
+  });
 });
