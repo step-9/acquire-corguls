@@ -9,34 +9,14 @@ const serveGamePage = (_, res) => {
   res.sendFile("game.html", { root: "pages" });
 };
 
-const serveLobbyPage = (_, res) => {
-  res.sendFile("lobby.html", { root: "pages" });
-};
-
-const joinPlayer = (req, res) => {
-  const { username } = req.body;
-  const lobby = req.app.lobby;
-  lobby.add(username);
-
-  res.redirect("/lobby");
-};
-
-const sendPlayers = (req, res) => {
-  const lobby = req.app.lobby;
-  res.json([...lobby]);
-};
-
-const createApp = lobby => {
+const createApp = lobbyRouter => {
   const app = express();
-  app.lobby = lobby;
 
   app.use(logRequest);
   app.use(express.json());
+  app.use(lobbyRouter);
   app.get("/", serveHomePage);
   app.get("/game", serveGamePage);
-  app.get("/lobby", serveLobbyPage);
-  app.post("/players", joinPlayer);
-  app.get("/players", sendPlayers);
   app.use(express.static("public"));
 
   return app;

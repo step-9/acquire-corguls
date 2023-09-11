@@ -1,4 +1,5 @@
 const { createApp } = require("./src/app");
+const { createLobbyRouter } = require("./src/routers/lobby-router");
 
 const PORT = process.env.PORT || 8080;
 
@@ -9,7 +10,9 @@ const logServerInfo = () => {
 
 const main = () => {
   const lobby = new Set();
-  const app = createApp(lobby);
+  const lobbyRouter = createLobbyRouter({ lobby });
+  const app = createApp(lobbyRouter);
+
   app.listen(PORT, logServerInfo);
 };
 
