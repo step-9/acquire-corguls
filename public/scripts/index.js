@@ -4,6 +4,7 @@ const requestJoinGame = userData => {
   return fetch("/players", {
     method: "POST",
     body: JSON.stringify(userData),
+    headers: { "content-type": "application/json" },
   });
 };
 

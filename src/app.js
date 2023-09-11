@@ -21,6 +21,11 @@ const joinPlayer = (req, res) => {
   res.redirect("/lobby");
 };
 
+const sendPlayers = (req, res) => {
+  const lobby = req.app.lobby;
+  res.json([...lobby]);
+};
+
 const createApp = lobby => {
   const app = express();
   app.lobby = lobby;
@@ -31,6 +36,7 @@ const createApp = lobby => {
   app.get("/game", serveGamePage);
   app.get("/lobby", serveLobbyPage);
   app.post("/players", joinPlayer);
+  app.get("/players", sendPlayers);
   app.use(express.static("public"));
 
   return app;

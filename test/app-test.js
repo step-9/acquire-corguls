@@ -53,4 +53,21 @@ describe("App", () => {
         });
     });
   });
+
+  describe("GET /players", () => {
+    it("should join the player in the lobby", (_, done) => {
+      const lobby = new Set();
+      const username = "player";
+      lobby.add(username);
+
+      const app = createApp(lobby);
+
+      request(app)
+        .get("/players")
+        .expect(200)
+        .expect("content-type", new RegExp("application/json"))
+        .expect([username])
+        .end(done);
+    });
+  });
 });
