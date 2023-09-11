@@ -5,12 +5,9 @@ const getPlayers = () => {
 };
 
 const renderPlayer = (username, playerElement) => {
-  const playerNameContainer = playerElement.querySelector(".name");
-  const playerNameElement = document.createElement("p");
-
+  const playerNameElement = playerElement.querySelector(".name");
   playerElement.classList.add("joined");
   playerNameElement.innerText = username;
-  playerNameContainer.append(playerNameElement);
 };
 
 const renderPlayers = players => {
@@ -21,8 +18,18 @@ const renderPlayers = players => {
   });
 };
 
-const main = () => {
+const updateLobby = () => {
   getPlayers().then(renderPlayers);
+};
+
+const keepLobbyUpdated = () => {
+  const interval = 1000;
+  updateLobby();
+  setInterval(updateLobby, interval);
+};
+
+const main = () => {
+  keepLobbyUpdated();
 };
 
 window.onload = main;
