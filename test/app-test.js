@@ -13,4 +13,15 @@ describe("App", () => {
         .end(done);
     });
   });
+
+  describe("GET /game", () => {
+    it("should serve the game page", (_, done) => {
+      const app = createApp();
+      request(app)
+        .get("/game")
+        .expect(200)
+        .expect("content-type", new RegExp("text/html"))
+        .end(done);
+    });
+  });
 });
