@@ -53,8 +53,8 @@ const animate = () => {
   const animationSection = getAnimationSection();
   let dots = 0;
   setInterval(() => {
-    animationSection.innerText = ".".repeat(dots);
     dots = (dots % 3) + 1;
+    animationSection.innerText = ".".repeat(dots);
   }, 500);
 };
 
