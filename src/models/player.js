@@ -11,6 +11,10 @@ class Player {
     this.#balance = balance;
   }
 
+  get username() {
+    return this.#username;
+  }
+
   profile() {
     return {
       username: this.#username,

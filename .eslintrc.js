@@ -20,5 +20,7 @@ module.exports = {
     "no-unmodified-loop-condition": "error",
     "no-unreachable-loop": "error",
     "no-unused-private-class-members": "error",
+    "complexity": ["error", 2],
+    "max-depth": ["error", 2],
   },
 };

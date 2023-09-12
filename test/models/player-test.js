@@ -1,5 +1,5 @@
-const { it, describe } = require("node:test");
 const assert = require("assert");
+const { it, describe } = require("node:test");
 const { Player } = require("../../src/models/player");
 
 describe("Player", () => {
