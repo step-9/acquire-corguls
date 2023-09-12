@@ -23,16 +23,26 @@ const initializeAccountStocks = () => {
   };
 };
 
-const main = () => {
-  const maxPlayers = 3;
-  const lobby = new Lobby(maxPlayers);
+const setUpAccount = () => {
   const stocks = initializeAccountStocks();
+  const tiles = ["2A"];
   const initialBalance = 0;
-  const account = new Account(initialBalance, stocks);
+  return new Account(initialBalance, stocks, tiles);
+};
+
+const setUpLobby = () => {
+  const maxPlayers = 3;
+  return new Lobby(maxPlayers);
+};
+
+const main = () => {
+  const lobby = setUpLobby();
+  const account = setUpAccount();
+
   const lobbyRouter = createLobbyRouter({ lobby });
   const gameRouter = createGameRouter({ account });
-  const app = createApp(lobbyRouter, gameRouter);
 
+  const app = createApp(lobbyRouter, gameRouter);
   app.listen(PORT, logServerInfo);
 };
 

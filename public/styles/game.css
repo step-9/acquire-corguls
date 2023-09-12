@@ -91,7 +91,8 @@
 }
 
 .balance > header,
-.stocks > header {
+.stocks > header,
+.tiles > header {
   height: 2em;
   font-weight: 600;
   letter-spacing: 3px;
@@ -131,4 +132,28 @@
   position: relative;
   top: 2.5em;
   left: 4.6em;
+}
+
+.tiles {
+  background-color: var(--light-gray);
+  margin-top: 2.5em;
+  padding: 1em;
+  border-radius: 5px;
+}
+
+#tile-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.tile {
+  width: 70px;
+  height: 70px;
+  color: var(--light-gray);
+  background-color: var(--dark-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
 }
