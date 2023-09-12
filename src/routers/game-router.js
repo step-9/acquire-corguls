@@ -13,7 +13,7 @@ const serveGamePage = (_, res) => {
 const createGameRouter = () => {
   const router = new express.Router();
 
-  router.get("/game", authorizeLobbyMember, serveGamePage);
+  router.get("/", authorizeLobbyMember, serveGamePage);
   router.get("/player-profile", authorizeLobbyMember, servePlayerProfile);
 
   return router;

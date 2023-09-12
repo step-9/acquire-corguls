@@ -8,11 +8,12 @@ class Game {
   }
 
   #createTilesStack() {
-    this.#tiles = ["3A", "2A", "6A", "4B", "9A", "12I"];
+    const range = limit => new Array(limit).fill().map((_, i) => i);
+    this.#tiles = range(12).flatMap(x => range(9).map(y => ({ x, y })));
   }
 
   #provideInitialTiles(player) {
-    this.#tiles.forEach(tile => player.addTile(tile));
+    this.#tiles.splice(0, 6).forEach(tile => player.addTile(tile));
   }
 
   #provideInitialAsset() {

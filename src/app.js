@@ -16,7 +16,7 @@ const createApp = (lobbyRouter, gameRouter, context) => {
   app.use(cookieParser());
   app.get("/", serveHomePage);
   app.use("/lobby", lobbyRouter);
-  app.use(gameRouter);
+  app.use("/game", gameRouter);
   app.use(express.static("public"));
 
   return app;

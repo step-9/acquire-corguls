@@ -33,7 +33,7 @@ describe("GameRouter", () => {
     });
   });
 
-  describe("GET /player-profile", () => {
+  describe("GET /game/player-profile", () => {
     it("should get the players account details", (_, done) => {
       const lobby = new Lobby(3);
       const username = "player";
@@ -44,7 +44,7 @@ describe("GameRouter", () => {
       lobby.addPlayer({ username });
 
       request(app)
-        .get("/player-profile")
+        .get("/game/player-profile")
         .set("cookie", "username=player")
         .expect(200)
         .expect("content-type", new RegExp("application/json"))

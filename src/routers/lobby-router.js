@@ -25,7 +25,7 @@ const joinPlayer = (req, res) => {
   lobby.addPlayer({ username });
 
   if (lobby.isFull()) {
-    const game = {};
+    const game = {}; // update
     lobby.startGame(game);
   }
 

@@ -14,14 +14,64 @@ describe("Game", () => {
 
       assert.deepStrictEqual(player1.profile(), {
         username: "Biswa",
-        tiles: ["3A", "2A", "6A", "4B", "9A", "12I"],
+        tiles: [
+          {
+            x: 0,
+            y: 0,
+          },
+          {
+            x: 0,
+            y: 1,
+          },
+          {
+            x: 0,
+            y: 2,
+          },
+          {
+            x: 0,
+            y: 3,
+          },
+          {
+            x: 0,
+            y: 4,
+          },
+          {
+            x: 0,
+            y: 5,
+          },
+        ],
         stocks: {},
         balance: 6000,
       });
 
       assert.deepStrictEqual(player2.profile(), {
         username: "Bittu",
-        tiles: ["3A", "2A", "6A", "4B", "9A", "12I"],
+        tiles: [
+          {
+            x: 0,
+            y: 6,
+          },
+          {
+            x: 0,
+            y: 7,
+          },
+          {
+            x: 0,
+            y: 8,
+          },
+          {
+            x: 1,
+            y: 0,
+          },
+          {
+            x: 1,
+            y: 1,
+          },
+          {
+            x: 1,
+            y: 2,
+          },
+        ],
         stocks: {},
         balance: 6000,
       });
@@ -36,7 +86,32 @@ describe("Game", () => {
         game.start();
         assert.deepStrictEqual(game.playerDetails("Biswa"), {
           username: "Biswa",
-          tiles: ["3A", "2A", "6A", "4B", "9A", "12I"],
+          tiles: [
+            {
+              x: 0,
+              y: 0,
+            },
+            {
+              x: 0,
+              y: 1,
+            },
+            {
+              x: 0,
+              y: 2,
+            },
+            {
+              x: 0,
+              y: 3,
+            },
+            {
+              x: 0,
+              y: 4,
+            },
+            {
+              x: 0,
+              y: 5,
+            },
+          ],
           stocks: {},
           balance: 6000,
         });
