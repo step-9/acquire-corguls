@@ -1,8 +1,8 @@
 const express = require("express");
 
-const serveAccountStats = (req, res) => {
-  const { account } = req.context;
-  res.send(account.stats());
+const servePlayerProfile = (req, res) => {
+  const { player } = req.context;
+  res.send(player.profile());
 };
 
 const createGameRouter = context => {
@@ -13,7 +13,7 @@ const createGameRouter = context => {
     next();
   });
 
-  router.get("/account-stats", serveAccountStats);
+  router.get("/player-profile", servePlayerProfile);
 
   return router;
 };

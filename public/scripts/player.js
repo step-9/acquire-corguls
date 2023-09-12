@@ -37,7 +37,7 @@ const displayAccountStats = ({ balance, stocks, tiles }) => {
 };
 
 const loadAccount = () => {
-  fetch("/account-stats")
+  fetch("/player-profile")
     .then(res => res.json())
     .then(displayAccountStats);
 };

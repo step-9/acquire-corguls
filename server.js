@@ -1,5 +1,5 @@
 const { createApp } = require("./src/app");
-const { Account } = require("./src/models/account");
+const { Player } = require("./src/models/player");
 const Lobby = require("./src/models/lobby");
 const { createGameRouter } = require("./src/routers/game-router");
 const { createLobbyRouter } = require("./src/routers/lobby-router");
@@ -16,18 +16,19 @@ const initializeAccountStocks = () => {
     "phoenix": 10,
     "quantum": 0,
     "hydra": 0,
-    "fusion": 0,
+    "fusion": 8,
     "america": 0,
     "sackson": 0,
     "zeta": 0,
   };
 };
 
-const setUpAccount = () => {
+const setUpPlayerAccount = () => {
   const stocks = initializeAccountStocks();
-  const tiles = ["2A"];
+  const tiles = ["2A", "3B", "4C"];
   const initialBalance = 0;
-  return new Account(initialBalance, stocks, tiles);
+  const name = "Bittu";
+  return new Player(name, initialBalance, stocks, tiles);
 };
 
 const setUpLobby = () => {
@@ -37,10 +38,10 @@ const setUpLobby = () => {
 
 const main = () => {
   const lobby = setUpLobby();
-  const account = setUpAccount();
+  const player = setUpPlayerAccount();
 
   const lobbyRouter = createLobbyRouter({ lobby });
-  const gameRouter = createGameRouter({ account });
+  const gameRouter = createGameRouter({ player });
 
   const app = createApp(lobbyRouter, gameRouter);
   app.listen(PORT, logServerInfo);

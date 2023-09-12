@@ -1,27 +1,30 @@
-class Account {
+class Player {
+  #username;
   #tiles;
   #stocks;
   #balance;
 
-  constructor(balance = 0, stocks = [], tiles = []) {
+  constructor(username, balance = 0, stocks = [], tiles = []) {
+    this.#username = username;
     this.#tiles = tiles;
     this.#stocks = stocks;
     this.#balance = balance;
   }
 
-  stats() {
+  profile() {
     return {
+      username: this.#username,
       tiles: [...this.#tiles],
       stocks: { ...this.#stocks },
       balance: this.#balance,
     };
   }
 
-  credit(amount) {
+  addIncome(amount) {
     this.#balance += amount;
   }
 
-  debit(amount) {
+  addExpense(amount) {
     this.#balance -= amount;
   }
 
@@ -34,4 +37,4 @@ class Account {
   }
 }
 
-module.exports = { Account };
+module.exports = { Player };
