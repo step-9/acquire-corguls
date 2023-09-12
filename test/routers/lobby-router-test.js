@@ -7,6 +7,14 @@ const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
 
 describe("GET /lobby", () => {
+  it("should not allow if player is not authorized", (_, done) => {
+    const lobby = new Lobby(3);
+    const lobbyRouter = createLobbyRouter({ lobby });
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter);
+    request(app).get("/lobby").expect(302).expect("location", "/").end(done);
+  });
+
   it("should serve the lobby page", (_, done) => {
     const lobby = new Lobby(3);
     const lobbyRouter = createLobbyRouter({ lobby });
@@ -14,6 +22,7 @@ describe("GET /lobby", () => {
     const app = createApp(lobbyRouter, gameRouter);
     request(app)
       .get("/lobby")
+      .set("cookie", "username=player")
       .expect(200)
       .expect("content-type", new RegExp("text/html"))
       .end(done);
@@ -34,6 +43,7 @@ describe("POST /lobby/players", () => {
       .send({ username })
       .expect(302)
       .expect("location", "/lobby")
+      .expect("set-cookie", new RegExp(`username=${username}`))
       .end(err => {
         assert.deepStrictEqual(lobby.status().players, [{ username }]);
         done(err);
@@ -102,18 +112,35 @@ describe("GET /lobby/status", () => {
     const lobbyRouter = createLobbyRouter({ lobby });
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter);
+    const player = { username: "player" };
+
+    lobby.addPlayer(player);
 
     const expectedStatus = {
-      players: [],
+      players: [player],
       isFull: false,
       hasGameStarted: false,
     };
 
     request(app)
       .get("/lobby/status")
+      .set("cookie", "username=player")
       .expect(200)
       .expect("content-type", new RegExp("application/json"))
       .expect(expectedStatus)
+      .end(done);
+  });
+
+  it("should not allow if the player is not a member of the lobby", (_, done) => {
+    const lobby = new Lobby(3);
+    const lobbyRouter = createLobbyRouter({ lobby });
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter);
+
+    request(app)
+      .get("/lobby/status")
+      .set("cookie", "username=player")
+      .expect(400)
       .end(done);
   });
 });

@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const { logRequest } = require("./middleware/logger");
 
 const serveHomePage = (_, res) => {
@@ -14,6 +15,7 @@ const createApp = (lobbyRouter, accountRouter) => {
 
   app.use(logRequest);
   app.use(express.json());
+  app.use(cookieParser());
   app.use("/lobby", lobbyRouter);
   app.use(accountRouter);
   app.get("/", serveHomePage);
