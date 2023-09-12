@@ -9,6 +9,11 @@ const joinPlayer = (req, res) => {
   const lobby = req.context.lobby;
   lobby.addPlayer({ username });
 
+  if (lobby.isFull()) {
+    const game = {};
+    lobby.startGame(game);
+  }
+
   res.redirect("/lobby");
 };
 

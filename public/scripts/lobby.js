@@ -1,4 +1,5 @@
 const getPlayerSection = () => document.querySelector("#players");
+const getMessageElement = () => document.querySelector("#message");
 
 const getLobbyStatus = () => {
   return fetch("/lobby/status").then(res => res.json());
@@ -18,9 +19,26 @@ const renderPlayers = players => {
   });
 };
 
+const redirectToGame = () => {
+  const messageElement = getMessageElement();
+  let delay = 3;
+
+  const interval = setInterval(() => {
+    if (delay === 0) {
+      window.location.assign("/game");
+      clearInterval(interval);
+      return;
+    }
+
+    messageElement.innerText = `Game starts in ${delay}...`;
+    delay--;
+  }, 1000);
+};
+
 const updateLobby = () => {
-  getLobbyStatus().then(({ players }) => {
-    renderPlayers(players);
+  getLobbyStatus().then(status => {
+    renderPlayers(status.players);
+    if (status.hasGameStarted) redirectToGame();
   });
 };
 

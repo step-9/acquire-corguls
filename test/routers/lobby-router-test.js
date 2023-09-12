@@ -39,6 +39,28 @@ describe("POST /lobby/players", () => {
         done(err);
       });
   });
+
+  it("should start the game if room is full", (_, done) => {
+    const size = 3;
+    const lobby = new Lobby(size);
+    const lobbyRouter = createLobbyRouter({ lobby });
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter);
+
+    lobby.addPlayer({ username: "player1" });
+    lobby.addPlayer({ username: "player2" });
+
+    const username = "player";
+    request(app)
+      .post("/lobby/players")
+      .send({ username })
+      .expect(302)
+      .expect("location", "/lobby")
+      .end(err => {
+        assert.ok(lobby.status().hasGameStarted);
+        done(err);
+      });
+  });
 });
 
 describe("GET /lobby/status", () => {
