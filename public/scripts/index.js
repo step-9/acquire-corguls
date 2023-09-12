@@ -1,4 +1,5 @@
 const getJoinForm = () => document.querySelector("#join-form");
+const getMessageElement = () => document.querySelector("#message");
 
 const requestJoinGame = userData => {
   return fetch("/lobby/players", {
@@ -8,13 +9,17 @@ const requestJoinGame = userData => {
   });
 };
 
-const joinGame = ({ redirected, url }) => {
-  if (redirected) {
-    window.location.assign(url);
+const joinGame = res => {
+  if (res.redirected) {
+    window.location.assign(res.url);
     return;
   }
 
-  throw new Error("Failed to join game");
+  res.json().then(({ error }) => {
+    const message = getMessageElement();
+    message.classList.add("error");
+    message.innerText = error;
+  });
 };
 
 const setupJoinForm = () => {
@@ -22,7 +27,12 @@ const setupJoinForm = () => {
   joinFrom.onsubmit = event => {
     event.preventDefault();
     const userData = Object.fromEntries(new FormData(joinFrom));
-    requestJoinGame(userData).then(joinGame).catch(console.error);
+    joinFrom.reset();
+    requestJoinGame(userData)
+      .then(res => {
+        joinGame(res);
+      })
+      .catch(console.error);
   };
 };
 

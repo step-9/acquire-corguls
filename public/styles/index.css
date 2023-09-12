@@ -14,3 +14,7 @@
   background-color: var(--light-gray);
   border-radius: 5px;
 }
+
+#message.error {
+  color: rgb(142, 66, 66);
+}

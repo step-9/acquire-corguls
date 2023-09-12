@@ -4,9 +4,22 @@ const serveLobbyPage = (_, res) => {
   res.sendFile("lobby.html", { root: "pages" });
 };
 
-const joinPlayer = (req, res) => {
-  const { username } = req.body;
+const doNotJoinIfGameHasStarted = (req, res, next) => {
   const lobby = req.context.lobby;
+
+  if (lobby.status().hasGameStarted) {
+    const error = "Game has already started!";
+    res.status(401).json({ error });
+    return;
+  }
+
+  next();
+};
+
+const joinPlayer = (req, res) => {
+  const lobby = req.context.lobby;
+  const { username } = req.body;
+
   lobby.addPlayer({ username });
 
   if (lobby.isFull()) {
@@ -31,7 +44,7 @@ const createLobbyRouter = context => {
   });
 
   router.get("/", serveLobbyPage);
-  router.post("/players", joinPlayer);
+  router.post("/players", doNotJoinIfGameHasStarted, joinPlayer);
   router.get("/status", sendLobbyStatus);
 
   return router;
