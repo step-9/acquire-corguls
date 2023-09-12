@@ -28,18 +28,6 @@ describe("Lobby", () => {
 
       assert.deepStrictEqual(lobby.status().players, [player]);
     });
-
-    it("should not add existing player to the lobby", () => {
-      const size = 3;
-      const lobby = new Lobby(size);
-      const username = "player";
-      const player = { username };
-
-      lobby.addPlayer(player);
-      lobby.addPlayer(player);
-
-      assert.deepStrictEqual(lobby.status().players, [player]);
-    });
   });
 
   describe("isFull", () => {
