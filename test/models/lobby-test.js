@@ -1,6 +1,8 @@
 const assert = require("assert");
 const { describe, it } = require("node:test");
 const Lobby = require("../../src/models/lobby");
+const { createPlayers } = require("../../src/models/player");
+const { Game } = require("../../src/models/game");
 
 describe("Lobby", () => {
   describe("status", () => {
@@ -72,12 +74,15 @@ describe("Lobby", () => {
         const lobby = new Lobby(size);
         const username1 = "player1";
         const username2 = "player2";
+
         const player1 = { username: username1 };
         const player2 = { username: username2 };
-        const game = {};
 
         lobby.addPlayer(player1);
         lobby.addPlayer(player2);
+
+        const { players } = lobby.status();
+        const game = new Game(createPlayers(players));
         lobby.startGame(game);
 
         assert.ok(lobby.status().hasGameStarted);

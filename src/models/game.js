@@ -4,6 +4,7 @@ class Game {
 
   constructor(players) {
     this.#players = players;
+
     this.#tiles = [];
   }
 

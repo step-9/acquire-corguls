@@ -41,4 +41,22 @@ class Player {
   }
 }
 
-module.exports = { Player };
+const initializeAccountStocks = () => {
+  return {
+    "phoenix": 0,
+    "quantum": 0,
+    "hydra": 0,
+    "fusion": 0,
+    "america": 0,
+    "sackson": 0,
+    "zeta": 0,
+  };
+};
+
+const createPlayers = players => {
+  const stocks = initializeAccountStocks();
+  const balance = 0;
+  return players.map(player => new Player(player.username, balance, stocks));
+};
+
+module.exports = { createPlayers, Player };

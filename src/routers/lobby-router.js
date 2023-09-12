@@ -1,6 +1,8 @@
 const express = require("express");
 const { authorize } = require("../middleware/auth");
 const { authorizeLobbyMember } = require("../middleware/lobby");
+const { createPlayers } = require("../models/player");
+const { Game } = require("../models/game");
 
 const serveLobbyPage = (_, res) => {
   res.sendFile("lobby.html", { root: "pages" });
@@ -25,7 +27,9 @@ const joinPlayer = (req, res) => {
   lobby.addPlayer({ username });
 
   if (lobby.isFull()) {
-    const game = {}; // update
+    const { players } = lobby.status();
+    const game = new Game(createPlayers(players));
+    req.app.context.game = game;
     lobby.startGame(game);
   }
 

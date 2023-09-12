@@ -2,8 +2,9 @@ const express = require("express");
 const { authorizeLobbyMember } = require("../middleware/lobby");
 
 const servePlayerProfile = (req, res) => {
-  const { player } = req.app.context;
-  res.send(player.profile());
+  const { game } = req.app.context;
+  const { username } = req.cookies;
+  res.send(game.playerDetails(username));
 };
 
 const serveGamePage = (_, res) => {

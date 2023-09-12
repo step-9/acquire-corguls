@@ -21,12 +21,14 @@ const displayAccountStocks = stocks => {
   });
 };
 
-const displayAccountTiles = tilesDetail => {
+const displayAccountTiles = tilesPosition => {
   const tileContainer = document.querySelector("#tile-container");
   const tiles = Array.from(tileContainer.children);
 
-  tilesDetail.forEach((tileDetail, tileID) => {
-    tiles[tileID].innerText = tileDetail;
+  tilesPosition.forEach((tilePosition, tileID) => {
+    const { x, y } = tilePosition;
+    const columnSpecification = String.fromCharCode(x + 65);
+    tiles[tileID].innerText = y + columnSpecification;
   });
 };
 

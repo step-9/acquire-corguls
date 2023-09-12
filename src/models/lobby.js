@@ -19,6 +19,7 @@ class Lobby {
 
   startGame(game) {
     this.#game = game;
+    this.#game.start();
   }
 
   #hasGameStarted() {

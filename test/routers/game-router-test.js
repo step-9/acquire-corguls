@@ -2,7 +2,6 @@ const request = require("supertest");
 const { describe, it } = require("node:test");
 const { createApp } = require("../../src/app");
 const { createLobbyRouter } = require("../../src/routers/lobby-router");
-const { Player } = require("../../src/models/player");
 const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
 
@@ -35,21 +34,62 @@ describe("GameRouter", () => {
 
   describe("GET /game/player-profile", () => {
     it("should get the players account details", (_, done) => {
-      const lobby = new Lobby(3);
+      const lobby = new Lobby(1);
       const username = "player";
-      const player = new Player("Bittu");
       const lobbyRouter = createLobbyRouter();
-      const accountRouter = createGameRouter();
-      const app = createApp(lobbyRouter, accountRouter, { lobby, player });
-      lobby.addPlayer({ username });
+      const gameRouter = createGameRouter();
+      const app = createApp(lobbyRouter, gameRouter, { lobby });
+      const userDetails = {
+        username: "player",
+        tiles: [
+          {
+            x: 0,
+            y: 0,
+          },
+          {
+            x: 0,
+            y: 1,
+          },
+          {
+            x: 0,
+            y: 2,
+          },
+          {
+            x: 0,
+            y: 3,
+          },
+          {
+            x: 0,
+            y: 4,
+          },
+          {
+            x: 0,
+            y: 5,
+          },
+        ],
+        stocks: {
+          phoenix: 0,
+          quantum: 0,
+          hydra: 0,
+          fusion: 0,
+          america: 0,
+          sackson: 0,
+          zeta: 0,
+        },
+        balance: 6000,
+      };
 
       request(app)
-        .get("/game/player-profile")
-        .set("cookie", "username=player")
-        .expect(200)
-        .expect("content-type", new RegExp("application/json"))
-        .expect({ username: "Bittu", tiles: [], stocks: {}, balance: 0 })
-        .end(done);
+        .post("/lobby/players")
+        .send({ username })
+        .end(() => {
+          request(app)
+            .get("/game/player-profile")
+            .set("cookie", "username=player")
+            .expect("content-type", new RegExp("application/json"))
+            .expect(userDetails)
+            .end(done);
+        });
     });
   });
 });
