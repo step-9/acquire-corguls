@@ -6,20 +6,17 @@ const serveHomePage = (_, res) => {
   res.sendFile("index.html", { root: "pages" });
 };
 
-const serveGamePage = (_, res) => {
-  res.sendFile("game.html", { root: "pages" });
-};
-
-const createApp = (lobbyRouter, accountRouter) => {
+const createApp = (lobbyRouter, gameRouter, context) => {
   const app = express();
+
+  app.context = context;
 
   app.use(logRequest);
   app.use(express.json());
   app.use(cookieParser());
-  app.use("/lobby", lobbyRouter);
-  app.use(accountRouter);
   app.get("/", serveHomePage);
-  app.get("/game", serveGamePage);
+  app.use("/lobby", lobbyRouter);
+  app.use(gameRouter);
   app.use(express.static("public"));
 
   return app;

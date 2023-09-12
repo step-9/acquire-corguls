@@ -8,25 +8,11 @@ describe("App", () => {
   describe("GET /", () => {
     it("should serve the home page", (_, done) => {
       const lobby = new Set();
-      const lobbyRouter = createLobbyRouter({ lobby });
-      const gameRouter = createGameRouter({});
-      const app = createApp(lobbyRouter, gameRouter);
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const app = createApp(lobbyRouter, gameRouter, { lobby });
       request(app)
         .get("/")
-        .expect(200)
-        .expect("content-type", new RegExp("text/html"))
-        .end(done);
-    });
-  });
-
-  describe("GET /game", () => {
-    it("should serve the game page", (_, done) => {
-      const lobby = new Set();
-      const lobbyRouter = createLobbyRouter({ lobby });
-      const gameRouter = createGameRouter({});
-      const app = createApp(lobbyRouter, gameRouter);
-      request(app)
-        .get("/game")
         .expect(200)
         .expect("content-type", new RegExp("text/html"))
         .end(done);

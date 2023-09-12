@@ -13,7 +13,7 @@ const logServerInfo = () => {
 
 const initializeAccountStocks = () => {
   return {
-    "phoenix": 10,
+    "phoenix": 0,
     "quantum": 0,
     "hydra": 0,
     "fusion": 8,
@@ -40,10 +40,10 @@ const main = () => {
   const lobby = setUpLobby();
   const player = setUpPlayerAccount();
 
-  const lobbyRouter = createLobbyRouter({ lobby });
-  const gameRouter = createGameRouter({ player });
+  const lobbyRouter = createLobbyRouter();
+  const gameRouter = createGameRouter();
 
-  const app = createApp(lobbyRouter, gameRouter);
+  const app = createApp(lobbyRouter, gameRouter, { lobby, player });
   app.listen(PORT, logServerInfo);
 };
 

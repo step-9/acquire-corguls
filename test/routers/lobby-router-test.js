@@ -9,17 +9,17 @@ const Lobby = require("../../src/models/lobby");
 describe("GET /lobby", () => {
   it("should not allow if player is not authorized", (_, done) => {
     const lobby = new Lobby(3);
-    const lobbyRouter = createLobbyRouter({ lobby });
+    const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter);
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
     request(app).get("/lobby").expect(302).expect("location", "/").end(done);
   });
 
   it("should serve the lobby page", (_, done) => {
     const lobby = new Lobby(3);
-    const lobbyRouter = createLobbyRouter({ lobby });
+    const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter);
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
     request(app)
       .get("/lobby")
       .set("cookie", "username=player")
@@ -33,9 +33,9 @@ describe("POST /lobby/players", () => {
   it("should add the player in the lobby", (_, done) => {
     const size = 3;
     const lobby = new Lobby(size);
-    const lobbyRouter = createLobbyRouter({ lobby });
+    const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter);
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
 
     const username = "player";
     request(app)
@@ -54,9 +54,9 @@ describe("POST /lobby/players", () => {
     const size = 3;
     const username = "player3";
     const lobby = new Lobby(size);
-    const lobbyRouter = createLobbyRouter({ lobby });
+    const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter);
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
 
     lobby.addPlayer({ username: "player1" });
     lobby.addPlayer({ username: "player2" });
@@ -75,9 +75,9 @@ describe("POST /lobby/players", () => {
   it("should not add player if the game has started", (_, done) => {
     const size = 3;
     const lobby = new Lobby(size);
-    const lobbyRouter = createLobbyRouter({ lobby });
+    const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter);
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
     const players = [
       { username: "player1" },
       { username: "player2" },
@@ -109,9 +109,9 @@ describe("POST /lobby/players", () => {
 describe("GET /lobby/status", () => {
   it("should get the latest status of the lobby", (_, done) => {
     const lobby = new Lobby(3);
-    const lobbyRouter = createLobbyRouter({ lobby });
-    const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter);
+    const lobbyRouter = createLobbyRouter();
+    const gameRouter = createGameRouter();
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
     const player = { username: "player" };
 
     lobby.addPlayer(player);
@@ -133,9 +133,9 @@ describe("GET /lobby/status", () => {
 
   it("should not allow if the player is not a member of the lobby", (_, done) => {
     const lobby = new Lobby(3);
-    const lobbyRouter = createLobbyRouter({ lobby });
-    const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter);
+    const lobbyRouter = createLobbyRouter();
+    const gameRouter = createGameRouter();
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
 
     request(app)
       .get("/lobby/status")

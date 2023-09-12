@@ -1,19 +1,20 @@
 const express = require("express");
+const { authorizeLobbyMember } = require("../middleware/lobby");
 
 const servePlayerProfile = (req, res) => {
-  const { player } = req.context;
+  const { player } = req.app.context;
   res.send(player.profile());
 };
 
-const createGameRouter = context => {
+const serveGamePage = (_, res) => {
+  res.sendFile("game.html", { root: "pages" });
+};
+
+const createGameRouter = () => {
   const router = new express.Router();
 
-  router.use((req, _res, next) => {
-    req.context = context;
-    next();
-  });
-
-  router.get("/player-profile", servePlayerProfile);
+  router.get("/game", authorizeLobbyMember, serveGamePage);
+  router.get("/player-profile", authorizeLobbyMember, servePlayerProfile);
 
   return router;
 };

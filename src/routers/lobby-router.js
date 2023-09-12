@@ -7,7 +7,7 @@ const serveLobbyPage = (_, res) => {
 };
 
 const doNotJoinIfGameHasStarted = (req, res, next) => {
-  const lobby = req.context.lobby;
+  const lobby = req.app.context.lobby;
 
   if (lobby.status().hasGameStarted) {
     const error = "Game has already started!";
@@ -19,7 +19,7 @@ const doNotJoinIfGameHasStarted = (req, res, next) => {
 };
 
 const joinPlayer = (req, res) => {
-  const lobby = req.context.lobby;
+  const lobby = req.app.context.lobby;
   const { username } = req.body;
 
   lobby.addPlayer({ username });
@@ -33,20 +33,15 @@ const joinPlayer = (req, res) => {
 };
 
 const sendLobbyStatus = (req, res) => {
-  const { lobby } = req.context;
+  const { lobby } = req.app.context;
   res.json(lobby.status());
 };
 
-const createLobbyRouter = context => {
+const createLobbyRouter = () => {
   const router = new express.Router();
 
-  router.use((req, _res, next) => {
-    req.context = context;
-    next();
-  });
-
-  router.post("/players", doNotJoinIfGameHasStarted, joinPlayer);
   router.get("/", authorize, serveLobbyPage);
+  router.post("/players", doNotJoinIfGameHasStarted, joinPlayer);
   router.get("/status", authorizeLobbyMember, sendLobbyStatus);
 
   return router;
