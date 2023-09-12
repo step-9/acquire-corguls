@@ -35,14 +35,14 @@
   letter-spacing: 2px;
 }
 
-#corporation {
+#corporation-section {
   grid-area: corporation;
-  background-color: var(--gray);
+  background-color: #787878;
 }
 
 #account {
   grid-area: account;
-  background-color: var(--gray);
+  background-color: #787878;
 }
 
 #activity-bar {
@@ -76,6 +76,7 @@
   background-color: var(--light-gray);
 }
 
+#corporation-section > header,
 .account-header {
   height: 2em;
   font-size: 1.2em;
@@ -156,4 +157,54 @@
   align-items: center;
   justify-content: center;
   border-radius: 5px;
+}
+
+.corporation {
+  display: grid;
+  height: 6em;
+  width: 16em;
+  background-color: var(--light-gray);
+  border-radius: 5px;
+  grid-template-rows: 1.3em auto;
+}
+
+.corporation .name {
+  background-color: var(--gray);
+  border-radius: 5px 5px 0 0;
+  padding-left: 0.5em;
+}
+
+.corporation .info {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  place-items: center;
+}
+
+.corporation .icon {
+  display: grid;
+  background-color: var(--gray);
+  height: 3.5em;
+  aspect-ratio: 1;
+  border-radius: var(--border-radius);
+}
+
+.corporation .details {
+  display: grid;
+  justify-self: start;
+}
+
+#corporation-section > header {
+  padding: 0.8em;
+  padding-bottom: 2em;
+}
+
+#corporations {
+  display: grid;
+  gap: 0.5em;
+}
+
+#corporation-section {
+  display: grid;
+  justify-items: center;
+  align-content: start;
 }
