@@ -140,7 +140,8 @@ describe("GET /lobby/status", () => {
     request(app)
       .get("/lobby/status")
       .set("cookie", "username=player")
-      .expect(400)
+      .expect(302)
+      .expect("location", "/")
       .end(done);
   });
 });

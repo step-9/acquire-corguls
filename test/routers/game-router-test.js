@@ -29,7 +29,7 @@ describe("GameRouter", () => {
       const lobbyRouter = createLobbyRouter();
       const gameRouter = createGameRouter();
       const app = createApp(lobbyRouter, gameRouter, { lobby });
-      request(app).get("/game").expect(400).end(done);
+      request(app).get("/game").expect(302).expect("location", "/").end(done);
     });
   });
 

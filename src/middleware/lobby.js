@@ -4,7 +4,7 @@ const authorizeLobbyMember = (req, res, next) => {
   const isUser = player => player.username === username;
 
   if (!players.find(isUser)) {
-    res.status(400).end();
+    res.redirect("/");
     return;
   }
 
