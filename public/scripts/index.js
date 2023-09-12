@@ -28,11 +28,7 @@ const setupJoinForm = () => {
     event.preventDefault();
     const userData = Object.fromEntries(new FormData(joinFrom));
     joinFrom.reset();
-    requestJoinGame(userData)
-      .then(res => {
-        joinGame(res);
-      })
-      .catch(console.error);
+    requestJoinGame(userData).then(joinGame).catch(console.error);
   };
 };
 

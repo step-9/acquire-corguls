@@ -24,14 +24,14 @@ const redirectToGame = () => {
   let delay = 3;
 
   const interval = setInterval(() => {
+    messageElement.innerText = `Game starts in ${delay}...`;
+    delay--;
+
     if (delay === 0) {
       window.location.assign("/game");
       clearInterval(interval);
       return;
     }
-
-    messageElement.innerText = `Game starts in ${delay}...`;
-    delay--;
   }, 1000);
 };
 
