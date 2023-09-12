@@ -13,7 +13,7 @@ const logServerInfo = () => {
 
 const initializeAccountStocks = () => {
   return {
-    "phoenix": 0,
+    "phoenix": 10,
     "quantum": 0,
     "hydra": 0,
     "fusion": 0,
