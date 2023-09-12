@@ -2,8 +2,8 @@
   width: 100vw;
   height: 100vh;
   display: grid;
-  grid-template-columns: 18% auto 16%;
-  grid-template-rows: 10% auto 18%;
+  grid-template-columns: 16em 1fr 16em;
+  grid-template-rows: 4em 1fr 8em;
 
   grid-template-areas:
     "game-header game-header game-header"
@@ -21,7 +21,7 @@
 #account,
 #activity-bar {
   text-align: center;
-  padding: 1em;
+  padding: 0.5em 1em;
 }
 
 #game-header {
@@ -43,6 +43,9 @@
 #account {
   grid-area: account;
   background-color: #787878;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 #activity-bar {
@@ -78,7 +81,7 @@
 
 #corporation-section > header,
 .account-header {
-  height: 2em;
+  /* height: 2em; */
   font-size: 1.2em;
   font-weight: 700;
   letter-spacing: 2px;
@@ -86,7 +89,7 @@
 }
 
 .balance {
-  padding: 1em;
+  padding: 0.5em;
   border-radius: 5px;
   background-color: var(--light-gray);
 }
@@ -94,25 +97,20 @@
 .balance > header,
 .stocks > header,
 .tiles > header {
-  height: 2em;
   font-weight: 600;
   letter-spacing: 3px;
   color: var(--dark-gray);
+  margin-bottom: 0.5em;
 }
 
 .amount {
   font-size: 2em;
 }
 
-.stocks > header {
-  height: 4em;
-  padding-top: 2em;
-}
-
 #stocks-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 1em;
+  gap: 0.8em;
   justify-content: space-evenly;
 }
 
@@ -137,8 +135,7 @@
 
 .tiles {
   background-color: var(--light-gray);
-  margin-top: 2.5em;
-  padding: 1em;
+  padding: 0.5em 1em;
   border-radius: 5px;
 }
 
@@ -161,8 +158,8 @@
 
 .corporation {
   display: grid;
-  height: 6em;
-  width: 16em;
+  height: 5.5em;
+  width: 13.8em;
   background-color: var(--light-gray);
   border-radius: 5px;
   grid-template-rows: 1.3em auto;
@@ -176,7 +173,7 @@
 
 .corporation .info {
   display: grid;
-  grid-template-columns: 30% 70%;
+  grid-template-columns: 4.5em auto;
   place-items: center;
 }
 
@@ -194,17 +191,19 @@
 }
 
 #corporation-section > header {
-  padding: 0.8em;
-  padding-bottom: 2em;
+  margin: 0.5em;
+  height: 1em;
 }
 
 #corporations {
-  display: grid;
-  gap: 0.5em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 #corporation-section {
-  display: grid;
-  justify-items: center;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
