@@ -1,11 +1,12 @@
 class Game {
   #players;
   #tiles;
+  #shuffle;
 
-  constructor(players) {
-    this.#players = players;
-
+  constructor(players, shuffle) {
     this.#tiles = [];
+    this.#players = players;
+    this.#shuffle = shuffle;
   }
 
   #createTilesStack() {
@@ -25,8 +26,13 @@ class Game {
     });
   }
 
+  #suffleTiles() {
+    this.#tiles = this.#shuffle(this.#tiles);
+  }
+
   start() {
     this.#createTilesStack();
+    this.#suffleTiles();
     this.#provideInitialAsset();
   }
 

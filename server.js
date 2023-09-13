@@ -1,5 +1,6 @@
-const { createApp } = require("./src/app");
+const { shuffle } = require("lodash");
 const Lobby = require("./src/models/lobby");
+const { createApp } = require("./src/app");
 const { createGameRouter } = require("./src/routers/game-router");
 const { createLobbyRouter } = require("./src/routers/lobby-router");
 
@@ -17,11 +18,10 @@ const setUpLobby = () => {
 
 const main = () => {
   const lobby = setUpLobby();
-
   const lobbyRouter = createLobbyRouter();
   const gameRouter = createGameRouter();
 
-  const app = createApp(lobbyRouter, gameRouter, { lobby });
+  const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
   app.listen(PORT, logServerInfo);
 };
 

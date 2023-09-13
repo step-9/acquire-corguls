@@ -8,8 +8,9 @@ describe("Game", () => {
     it("should distribute initial assets to players", () => {
       const player1 = new Player("Biswa");
       const player2 = new Player("Bittu");
+      const shuffle = x => x;
 
-      const game = new Game([player1, player2]);
+      const game = new Game([player1, player2], shuffle);
       game.start();
 
       assert.deepStrictEqual(player1.profile(), {
@@ -81,8 +82,9 @@ describe("Game", () => {
       it("should response with player profile", () => {
         const player1 = new Player("Biswa");
         const player2 = new Player("Bittu");
+        const shuffle = x => x;
 
-        const game = new Game([player1, player2]);
+        const game = new Game([player1, player2], shuffle);
         game.start();
         assert.deepStrictEqual(game.playerDetails("Biswa"), {
           username: "Biswa",

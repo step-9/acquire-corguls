@@ -82,7 +82,8 @@ describe("Lobby", () => {
         lobby.addPlayer(player2);
 
         const { players } = lobby.status();
-        const game = new Game(createPlayers(players));
+        const shuffle = x => x;
+        const game = new Game(createPlayers(players), shuffle);
         lobby.startGame(game);
 
         assert.ok(lobby.status().hasGameStarted);

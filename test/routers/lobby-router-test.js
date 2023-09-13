@@ -56,7 +56,8 @@ describe("POST /lobby/players", () => {
     const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter, { lobby });
+    const shuffle = x => x;
+    const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
     lobby.addPlayer({ username: "player1" });
     lobby.addPlayer({ username: "player2" });

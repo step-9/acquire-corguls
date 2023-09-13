@@ -38,7 +38,9 @@ describe("GameRouter", () => {
       const username = "player";
       const lobbyRouter = createLobbyRouter();
       const gameRouter = createGameRouter();
-      const app = createApp(lobbyRouter, gameRouter, { lobby });
+      const shuffle = x => x;
+
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
       const userDetails = {
         username: "player",
         tiles: [

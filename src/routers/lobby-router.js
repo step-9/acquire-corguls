@@ -21,14 +21,13 @@ const doNotJoinIfGameHasStarted = (req, res, next) => {
 };
 
 const joinPlayer = (req, res) => {
-  const lobby = req.app.context.lobby;
+  const { lobby, shuffle } = req.app.context;
   const { username } = req.body;
-
   lobby.addPlayer({ username });
 
   if (lobby.isFull()) {
     const { players } = lobby.status();
-    const game = new Game(createPlayers(players));
+    const game = new Game(createPlayers(players), shuffle);
     req.app.context.game = game;
     lobby.startGame(game);
   }
