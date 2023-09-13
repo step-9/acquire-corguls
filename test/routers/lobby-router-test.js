@@ -35,7 +35,8 @@ describe("POST /lobby/players", () => {
     const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter, { lobby });
+    const shuffle = x => x;
+    const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
     const username = "player";
     request(app)
@@ -78,7 +79,8 @@ describe("POST /lobby/players", () => {
     const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter, { lobby });
+    const shuffle = x => x;
+    const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
     const players = [
       { username: "player1" },
       { username: "player2" },
@@ -112,7 +114,9 @@ describe("GET /lobby/status", () => {
     const lobby = new Lobby(3);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter();
-    const app = createApp(lobbyRouter, gameRouter, { lobby });
+    const shuffle = x => x;
+
+    const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
     const player = { username: "player" };
 
     lobby.addPlayer(player);
@@ -136,7 +140,9 @@ describe("GET /lobby/status", () => {
     const lobby = new Lobby(3);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter();
-    const app = createApp(lobbyRouter, gameRouter, { lobby });
+    const shuffle = x => x;
+
+    const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
     request(app)
       .get("/lobby/status")
