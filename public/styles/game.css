@@ -251,3 +251,7 @@
 #info-close-btn:hover {
   cursor: pointer;
 }
+
+.icon > img {
+  width: 100%;
+}
