@@ -33,6 +33,13 @@
   font-size: 2em;
   color: var(--light-gray);
   letter-spacing: 2px;
+  justify-content: space-between;
+}
+
+#username {
+  width: 8em;
+  text-align: center;
+  font-size: 0.5em;
 }
 
 #corporation-section {

@@ -51,7 +51,13 @@ const setupInfoCard = () => {
   };
 };
 
-const displayAccountStats = ({ balance, stocks, tiles }) => {
+const displayPlayerName = username => {
+  const usernameContainer = document.querySelector("#username");
+  usernameContainer.innerText = username.toUpperCase();
+};
+
+const displayPlayerProfile = ({ username, balance, stocks, tiles }) => {
+  displayPlayerName(username);
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
   displayAccountTiles(tiles);
@@ -60,7 +66,7 @@ const displayAccountStats = ({ balance, stocks, tiles }) => {
 const loadAccount = () => {
   fetch("/game/player-profile")
     .then(res => res.json())
-    .then(displayAccountStats);
+    .then(displayPlayerProfile);
 
   setupInfoCard();
 };
