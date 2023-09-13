@@ -1,3 +1,7 @@
+const getInfoIcon = () => document.querySelector("#info-icon");
+const getInfoCard = () => document.querySelector("#info-card");
+const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
+
 const displayAccountBalance = balance => {
   const balanceContainer = document.querySelector("#balance-container");
   balanceContainer.innerText = "$" + balance;
@@ -33,6 +37,20 @@ const displayAccountTiles = tilesPosition => {
   });
 };
 
+const setupInfoCard = () => {
+  const infoIcon = getInfoIcon();
+  const infoCard = getInfoCard();
+  const infoCloseBtn = getInfoCloseBtn();
+
+  infoIcon.onclick = () => {
+    infoCard.classList.remove("hide");
+  };
+
+  infoCloseBtn.onclick = () => {
+    infoCard.classList.add("hide");
+  };
+};
+
 const displayAccountStats = ({ balance, stocks, tiles }) => {
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
@@ -43,6 +61,8 @@ const loadAccount = () => {
   fetch("/game/player-profile")
     .then(res => res.json())
     .then(displayAccountStats);
+
+  setupInfoCard();
 };
 
 window.onload = loadAccount;

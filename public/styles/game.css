@@ -191,8 +191,10 @@
 }
 
 #corporation-section > header {
+  display: flex;
   margin: 0.5em;
   height: 1em;
+  justify-content: space-around;
 }
 
 #corporations {
@@ -206,4 +208,46 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+#info-icon {
+  position: absolute;
+  left: 11.5em;
+}
+
+#info-icon:hover {
+  cursor: pointer;
+}
+
+#info-card {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #00000080;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#info-card image {
+  position: absolute;
+}
+
+#info-card.hide {
+  display: none;
+}
+
+#info-close-btn {
+  background-color: transparent;
+  font-size: 2em;
+  position: absolute;
+  top: 15%;
+  right: 25%;
+  color: white;
+}
+
+#info-close-btn:hover {
+  cursor: pointer;
 }
