@@ -27,8 +27,9 @@ const displayAccountTiles = tilesPosition => {
 
   tilesPosition.forEach((tilePosition, tileID) => {
     const { x, y } = tilePosition;
-    const columnSpecification = String.fromCharCode(x + 65);
-    tiles[tileID].innerText = y + columnSpecification;
+    const columnSpecification = y + 1;
+    const rowSpecification = String.fromCharCode(x + 65);
+    tiles[tileID].innerText = columnSpecification + rowSpecification;
   });
 };
 

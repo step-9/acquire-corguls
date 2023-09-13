@@ -10,7 +10,7 @@ class Game {
 
   #createTilesStack() {
     const range = limit => new Array(limit).fill().map((_, i) => i);
-    this.#tiles = range(12).flatMap(x => range(9).map(y => ({ x, y })));
+    this.#tiles = range(9).flatMap(x => range(12).map(y => ({ x, y })));
   }
 
   #provideInitialTiles(player) {
