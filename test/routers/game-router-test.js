@@ -82,6 +82,7 @@ describe("GameRouter", () => {
         isTakingTurn: false,
       };
       const gameStatus = {
+        tiles: { incorporatedTiles: [] },
         players: [{ username, isTakingTurn: false }],
         portfolio,
       };
@@ -111,6 +112,9 @@ describe("GameRouter", () => {
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
       const userDetails = {
+        tiles: {
+          incorporatedTiles: [{ x: 0, y: 0 }],
+        },
         players: [{ username, isTakingTurn: false }],
         portfolio: {
           username: "player",

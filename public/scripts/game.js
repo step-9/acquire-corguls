@@ -26,6 +26,12 @@ const displayAccountStocks = stocks => {
   });
 };
 
+const fillSpace = position => {
+  const tileId = position.x * 12 + position.y;
+  const tiles = document.querySelectorAll(".space");
+  tiles[tileId].classList.add("placed-tile");
+};
+
 const setUpTiles = position => {
   fetch("/game/tile", {
     method: "POST",
@@ -33,21 +39,40 @@ const setUpTiles = position => {
       "content-type": "application/json",
     },
     body: JSON.stringify(position),
+  }).then(res => {
+    if (res.status === 200) {
+      fillSpace(position);
+    }
   });
 };
 
-const displayAccountTiles = tilesPosition => {
+const removeTileFromCollection = tile => {
+  tile.innerText = "";
+};
+
+const displayTile = (tile, tilePosition) => {
+  const { x, y } = tilePosition;
+  const columnSpecification = y + 1;
+  const rowSpecification = String.fromCharCode(x + 65);
+  tile.innerText = columnSpecification + rowSpecification;
+};
+
+const attatchListener = (tile, tilePosition) => {
+  tile.onclick = () => {
+    setUpTiles(tilePosition);
+    removeTileFromCollection(tile);
+  };
+};
+
+const displayAndSetupAccountTiles = tilesPosition => {
   const tileContainer = document.querySelector("#tile-container");
   const tiles = Array.from(tileContainer.children);
 
   tilesPosition.forEach((tilePosition, tileID) => {
-    const { x, y } = tilePosition;
-    const columnSpecification = y + 1;
-    const rowSpecification = String.fromCharCode(x + 65);
-    tiles[tileID].innerText = columnSpecification + rowSpecification;
-    tiles[tileID].onclick = () => {
-      setUpTiles(tilePosition);
-    };
+    const tile = tiles[tileID];
+
+    displayTile(tile, tilePosition);
+    attatchListener(tile, tilePosition);
   });
 };
 
@@ -70,36 +95,29 @@ const displayPlayerName = username => {
   usernameContainer.innerText = username.toUpperCase();
 };
 
-const renderPlayers = (players) => {
-  const playerElements = players.map(({ isTakingTurn, username }) => {
-    return generateComponent([
-      "div", [
-        ["div", "", { class: "profile-pic" }],
-        ["div", username, { class: "name" }]
-      ],
-      { class: `player flex${isTakingTurn ? " active" : ""}` }
-    ]);
-  });
-
-  getPlayersDiv().append(...playerElements);
-};
-
 const displayPlayerProfile = ({ username, balance, stocks, tiles }) => {
   displayPlayerName(username);
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
-  displayAccountTiles(tiles);
+  displayAndSetupAccountTiles(tiles);
+};
+
+const displayIncorporatedTiles = ({ incorporatedTiles }) => {
+  incorporatedTiles.forEach(fillSpace);
 };
 
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio }) => {
-      renderPlayers(players);
-      displayPlayerProfile(portfolio);
-    });
+    .then(({ portfolio }) => displayPlayerProfile(portfolio));
 
   setupInfoCard();
 };
 
-window.onload = loadAccount;
+const keepPlayerProfileUpdated = () => {
+  const interval = 1000;
+  loadAccount();
+  setInterval(loadAccount, interval);
+};
+
+window.onload = keepPlayerProfileUpdated;

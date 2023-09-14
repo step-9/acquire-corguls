@@ -1,10 +1,12 @@
 class Game {
-  #players;
   #tiles;
   #shuffle;
+  #players;
+  #incorporatedTiles;
 
   constructor(players, shuffle) {
     this.#tiles = [];
+    this.#incorporatedTiles = [];
     this.#players = players;
     this.#shuffle = shuffle;
   }
@@ -30,8 +32,13 @@ class Game {
     this.#tiles = this.#shuffle(this.#tiles);
   }
 
+  #addToIncorporatedTiles(tilePosition) {
+    this.#incorporatedTiles.push(tilePosition);
+  }
+
   placeTile(username, tilePosition) {
     const player = this.#players.find(player => player.username === username);
+    this.#addToIncorporatedTiles(tilePosition);
     player.removeTile(tilePosition);
   }
 
@@ -41,18 +48,24 @@ class Game {
     this.#provideInitialAsset();
   }
 
-  playerDetails(username) { // TODO: make it private
+  playerDetails(username) {
+    // TODO: make it private
     const player = this.#players.find(player => player.username === username);
     return player.stats();
   }
 
   #getPlayers() {
-    return this.#players.map(({ username, isTakingTurn }) =>
-      ({ username, isTakingTurn }));
+    return this.#players.map(({ username, isTakingTurn }) => ({
+      username,
+      isTakingTurn,
+    }));
   }
 
   status(username) {
     return {
+      tiles: {
+        incorporatedTiles: this.#incorporatedTiles,
+      },
       players: this.#getPlayers(),
       portfolio: this.playerDetails(username),
     };

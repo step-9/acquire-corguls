@@ -17,30 +17,12 @@ describe("Game", () => {
       assert.deepStrictEqual(player1.stats(), {
         username: "Biswa",
         tiles: [
-          {
-            x: 0,
-            y: 0,
-          },
-          {
-            x: 0,
-            y: 1,
-          },
-          {
-            x: 0,
-            y: 2,
-          },
-          {
-            x: 0,
-            y: 3,
-          },
-          {
-            x: 0,
-            y: 4,
-          },
-          {
-            x: 0,
-            y: 5,
-          },
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 0, y: 5 },
         ],
         stocks: {},
         balance: 6000,
@@ -50,30 +32,12 @@ describe("Game", () => {
       assert.deepStrictEqual(player2.stats(), {
         username: "Bittu",
         tiles: [
-          {
-            x: 0,
-            y: 6,
-          },
-          {
-            x: 0,
-            y: 7,
-          },
-          {
-            x: 0,
-            y: 8,
-          },
-          {
-            x: 0,
-            y: 9,
-          },
-          {
-            x: 0,
-            y: 10,
-          },
-          {
-            x: 0,
-            y: 11,
-          },
+          { x: 0, y: 6 },
+          { x: 0, y: 7 },
+          { x: 0, y: 8 },
+          { x: 0, y: 9 },
+          { x: 0, y: 10 },
+          { x: 0, y: 11 },
         ],
         stocks: {},
         balance: 6000,
@@ -93,30 +57,12 @@ describe("Game", () => {
       assert.deepStrictEqual(game.playerDetails("Biswa"), {
         username: "Biswa",
         tiles: [
-          {
-            x: 0,
-            y: 0,
-          },
-          {
-            x: 0,
-            y: 1,
-          },
-          {
-            x: 0,
-            y: 2,
-          },
-          {
-            x: 0,
-            y: 3,
-          },
-          {
-            x: 0,
-            y: 4,
-          },
-          {
-            x: 0,
-            y: 5,
-          },
+          { x: 0, y: 0 },
+          { x: 0, y: 1 },
+          { x: 0, y: 2 },
+          { x: 0, y: 3 },
+          { x: 0, y: 4 },
+          { x: 0, y: 5 },
         ],
         stocks: {},
         balance: 6000,

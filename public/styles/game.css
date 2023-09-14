@@ -93,7 +93,6 @@
 
 #corporation-section > header,
 .account-header {
-  /* height: 2em; */
   font-size: 1.2em;
   font-weight: 700;
   letter-spacing: 2px;
@@ -275,4 +274,9 @@
 
 .corporation .details .price::before {
   content: "Price: ";
+}
+
+.placed-tile {
+  background-color: var(--dark-gray);
+  color: var(--light-gray);
 }
