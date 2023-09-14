@@ -1,0 +1,32 @@
+#players {
+  padding: 0 0.5em;
+  gap: 1em;
+  flex-grow: 1;
+  /* justify-content: flex-start; */
+}
+
+.player .profile-pic {
+  z-index: 5;
+  height: 55px;
+  width: 55px;
+  border-radius: 50%;
+  border: 5px solid var(--light-gray);
+  background-color: var(--gray);
+}
+
+.player .name {
+  position: relative;
+  letter-spacing: 0.03em;
+  left: -4px;
+  font-size: 0.4em;
+  padding: 0.2em 0.7em;
+  padding-left: 0.7em;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: var(--dark-gray);
+  background-color: var(--light-gray);
+}
+
+.player.active > * {
+  outline: 3px solid var(--active-player);
+}

@@ -20,7 +20,17 @@ module.exports = {
     "no-unmodified-loop-condition": "error",
     "no-unreachable-loop": "error",
     "no-unused-private-class-members": "error",
-    "complexity": ["error", 2],
+    "complexity": ["error", 3],
     "max-depth": ["error", 2],
   },
+
+  "overrides": [
+    {
+      "files": ["public/scripts/*"],
+      "rules": {
+        "no-undef": "off",
+        "no-unused-vars": "off",
+      }
+    }
+  ]
 };

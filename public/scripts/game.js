@@ -1,6 +1,7 @@
 const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
+const getPlayersDiv = () => document.querySelector("#players");
 
 const displayAccountBalance = balance => {
   const balanceContainer = document.querySelector("#balance-container");
@@ -69,6 +70,20 @@ const displayPlayerName = username => {
   usernameContainer.innerText = username.toUpperCase();
 };
 
+const renderPlayers = (players) => {
+  const playerElements = players.map(({ isTakingTurn, username }) => {
+    return generateComponent([
+      "div", [
+        ["div", "", { class: "profile-pic" }],
+        ["div", username, { class: "name" }]
+      ],
+      { class: `player flex${isTakingTurn ? " active" : ""}` }
+    ]);
+  });
+
+  getPlayersDiv().append(...playerElements);
+};
+
 const displayPlayerProfile = ({ username, balance, stocks, tiles }) => {
   displayPlayerName(username);
   displayAccountBalance(balance);
@@ -79,7 +94,10 @@ const displayPlayerProfile = ({ username, balance, stocks, tiles }) => {
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ portfolio }) => displayPlayerProfile(portfolio));
+    .then(({ players, portfolio }) => {
+      renderPlayers(players);
+      displayPlayerProfile(portfolio);
+    });
 
   setupInfoCard();
 };

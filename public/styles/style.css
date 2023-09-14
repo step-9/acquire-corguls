@@ -1,3 +1,5 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@400&display=swap"); */
+
 :root {
   --light-gray: #d0d0d0;
   --dark-gray: #1e1e1e;
@@ -5,6 +7,7 @@
   --gray: #aaa7a7;
   --phoenix-color: #724dc5;
   --border-radius: 5px;
+  --active-player: #04c900;
 }
 
 * {
@@ -14,7 +17,7 @@
 }
 
 body {
-  font-family: system-ui, sans-serif;
+  font-family: "Exo 2", system-ui, sans-serif;
   font-size: 20px;
 }
 

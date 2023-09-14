@@ -26,7 +26,6 @@
 
 #game-header {
   grid-area: game-header;
-  padding-left: 0.5em;
   display: flex;
   align-items: center;
   background-color: var(--mid-gray);
@@ -36,8 +35,14 @@
   justify-content: space-between;
 }
 
+#game-title {
+  text-align: center;
+  width: 320px;
+  margin: auto;
+}
+
 #username {
-  width: 8em;
+  width: 320px;
   text-align: center;
   font-size: 0.5em;
 }
@@ -229,6 +234,7 @@
 #info-card {
   height: 100%;
   width: 100%;
+  z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;
