@@ -23,7 +23,7 @@ const createGameRouter = () => {
   const router = new express.Router();
 
   router.get("/", authorizeLobbyMember, serveGamePage);
-  router.get("/stats", authorizeLobbyMember, serveGameStats);
+  router.get("/status", authorizeLobbyMember, serveGameStats);
   router.post("/tile", authorizeLobbyMember, placeTile);
 
   return router;

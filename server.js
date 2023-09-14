@@ -12,7 +12,7 @@ const logServerInfo = () => {
 };
 
 const setUpLobby = () => {
-  const maxPlayers = 1;
+  const maxPlayers = 3;
   return new Lobby(maxPlayers);
 };
 

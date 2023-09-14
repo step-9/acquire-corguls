@@ -13,8 +13,6 @@ const elements = [
 const generateComponent = ([tagName, children, attributes = {}]) => {
   const element = document.createElement(tagName);
 
-  console.log(tagName, children);
-
   Object.entries(attributes)
     .forEach(attribute => element.setAttribute(...attribute));
 

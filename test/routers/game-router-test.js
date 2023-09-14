@@ -91,7 +91,7 @@ describe("GameRouter", () => {
         .send({ username })
         .end(() => {
           request(app)
-            .get("/game/stats")
+            .get("/game/status")
             .set("cookie", "username=player")
             .expect(200)
             .expect("content-type", new RegExp("application/json"))
@@ -162,7 +162,7 @@ describe("GameRouter", () => {
             .expect(200)
             .end(() => {
               request(app)
-                .get("/game/stats")
+                .get("/game/status")
                 .set("cookie", "username=player")
                 .expect(200)
                 .expect("content-type", new RegExp("application/json"))
