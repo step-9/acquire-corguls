@@ -94,8 +94,9 @@
 #corporation-section > header,
 .account-header {
   font-size: 1.2em;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 2px;
+  letter-spacing: 3px;
   color: var(--light-gray);
 }
 
@@ -277,6 +278,17 @@
 }
 
 .placed-tile {
+  transition-duration: 0.5s;
   background-color: var(--dark-gray);
   color: var(--light-gray);
+}
+
+.used-tile {
+  transition-duration: 0.5s;
+  background-color: var(--gray);
+}
+
+.tile:hover {
+  cursor: pointer;
+  user-select: none;
 }

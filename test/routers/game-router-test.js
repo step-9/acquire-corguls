@@ -43,30 +43,12 @@ describe("GameRouter", () => {
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
       const portfolio = {
         tiles: [
-          {
-            x: 0,
-            y: 0,
-          },
-          {
-            x: 0,
-            y: 1,
-          },
-          {
-            x: 0,
-            y: 2,
-          },
-          {
-            x: 0,
-            y: 3,
-          },
-          {
-            x: 0,
-            y: 4,
-          },
-          {
-            x: 0,
-            y: 5,
-          },
+          { tilePosition: { x: 0, y: 0 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 1 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 2 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 3 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 4 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {
           phoenix: 0,
@@ -116,26 +98,12 @@ describe("GameRouter", () => {
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio: {
           tiles: [
-            {
-              x: 0,
-              y: 1,
-            },
-            {
-              x: 0,
-              y: 2,
-            },
-            {
-              x: 0,
-              y: 3,
-            },
-            {
-              x: 0,
-              y: 4,
-            },
-            {
-              x: 0,
-              y: 5,
-            },
+            { tilePosition: { x: 0, y: 0 }, isPlaced: true },
+            { tilePosition: { x: 0, y: 1 }, isPlaced: false },
+            { tilePosition: { x: 0, y: 2 }, isPlaced: false },
+            { tilePosition: { x: 0, y: 3 }, isPlaced: false },
+            { tilePosition: { x: 0, y: 4 }, isPlaced: false },
+            { tilePosition: { x: 0, y: 5 }, isPlaced: false },
           ],
           stocks: {
             phoenix: 0,

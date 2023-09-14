@@ -16,12 +16,12 @@ describe("Game", () => {
 
       assert.deepStrictEqual(player1.portfolio(), {
         tiles: [
-          { x: 0, y: 0 },
-          { x: 0, y: 1 },
-          { x: 0, y: 2 },
-          { x: 0, y: 3 },
-          { x: 0, y: 4 },
-          { x: 0, y: 5 },
+          { tilePosition: { x: 0, y: 0 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 1 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 2 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 3 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 4 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {},
         balance: 6000,
@@ -29,12 +29,12 @@ describe("Game", () => {
 
       assert.deepStrictEqual(player2.portfolio(), {
         tiles: [
-          { x: 0, y: 6 },
-          { x: 0, y: 7 },
-          { x: 0, y: 8 },
-          { x: 0, y: 9 },
-          { x: 0, y: 10 },
-          { x: 0, y: 11 },
+          { tilePosition: { x: 0, y: 6 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 7 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 8 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 9 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 10 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 11 }, isPlaced: false },
         ],
         stocks: {},
         balance: 6000,
@@ -52,12 +52,12 @@ describe("Game", () => {
       game.start();
       assert.deepStrictEqual(game.playerDetails("Biswa"), {
         tiles: [
-          { x: 0, y: 0 },
-          { x: 0, y: 1 },
-          { x: 0, y: 2 },
-          { x: 0, y: 3 },
-          { x: 0, y: 4 },
-          { x: 0, y: 5 },
+          { tilePosition: { x: 0, y: 0 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 1 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 2 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 3 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 4 }, isPlaced: false },
+          { tilePosition: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {},
         balance: 6000,

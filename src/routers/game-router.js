@@ -14,8 +14,8 @@ const serveGamePage = (_, res) => {
 const placeTile = (req, res) => {
   const { game } = req.app.context;
   const { username } = req.cookies;
-  const tilePosition = req.body;
-  game.placeTile(username, tilePosition);
+  const tile = req.body;
+  game.placeTile(username, tile);
   res.status(200).end();
 };
 

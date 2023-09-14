@@ -26,53 +26,55 @@ const displayAccountStocks = stocks => {
   });
 };
 
-const fillSpace = position => {
-  const tileId = position.x * 12 + position.y;
+const fillSpace = tilePosition => {
+  const tileId = tilePosition.x * 12 + tilePosition.y;
   const tiles = document.querySelectorAll(".space");
   tiles[tileId].classList.add("placed-tile");
 };
 
-const setUpTiles = position => {
+const setUpTiles = ({ tilePosition }) => {
   fetch("/game/tile", {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(position),
+    body: JSON.stringify(tilePosition),
   }).then(res => {
     if (res.status === 200) {
-      fillSpace(position);
+      fillSpace(tilePosition);
     }
   });
 };
 
-const removeTileFromCollection = tile => {
-  tile.innerText = "";
-};
-
-const displayTile = (tile, tilePosition) => {
+const displayTile = (tileElement, tilePosition) => {
   const { x, y } = tilePosition;
   const columnSpecification = y + 1;
   const rowSpecification = String.fromCharCode(x + 65);
-  tile.innerText = columnSpecification + rowSpecification;
+  tileElement.innerText = columnSpecification + rowSpecification;
 };
 
-const attatchListener = (tile, tilePosition) => {
-  tile.onclick = () => {
-    setUpTiles(tilePosition);
-    removeTileFromCollection(tile);
+const attatchListener = (tileElement, tile) => {
+  tileElement.onclick = () => {
+    tileElement.classList.add("used-tile");
+    setUpTiles(tile);
   };
 };
 
-const displayAndSetupAccountTiles = tilesPosition => {
+const addVisualAttribute = (tileElement, isPlaced) => {
+  if (isPlaced) tileElement.classList.add("used-tile");
+};
+
+const displayAndSetupAccountTiles = tiles => {
   const tileContainer = document.querySelector("#tile-container");
-  const tiles = Array.from(tileContainer.children);
+  const tileElements = Array.from(tileContainer.children);
 
-  tilesPosition.forEach((tilePosition, tileID) => {
-    const tile = tiles[tileID];
+  tileElements.forEach(tileElement => (tileElement.innerText = ""));
+  tiles.forEach(({ tilePosition, isPlaced }, tileID) => {
+    const tileElement = tileElements[tileID];
 
-    displayTile(tile, tilePosition);
-    attatchListener(tile, tilePosition);
+    displayTile(tileElement, tilePosition);
+    addVisualAttribute(tileElement, isPlaced);
+    attatchListener(tileElement, { tilePosition, isPlaced });
   });
 };
 
@@ -105,16 +107,17 @@ const displayIncorporatedTiles = ({ incorporatedTiles }) => {
   incorporatedTiles.forEach(fillSpace);
 };
 
-const renderPlayers = (players) => {
+const renderPlayers = players => {
   const playersDiv = getPlayersDiv();
   const playerElements = players.map(({ isTakingTurn, username, you }) => {
     const activeClass = isTakingTurn ? " active" : "";
     const selfClass = you ? " self" : "";
 
     return generateComponent([
-      "div", [
+      "div",
+      [
         ["div", "", { class: "profile-pic" }],
-        ["div", username, { class: "name" }]
+        ["div", username, { class: "name" }],
       ],
       {
         class: `player flex ${activeClass} ${selfClass}`

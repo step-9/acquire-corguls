@@ -13,7 +13,9 @@ class Game {
 
   #createTilesStack() {
     const range = limit => new Array(limit).fill().map((_, i) => i);
-    this.#tiles = range(9).flatMap(x => range(12).map(y => ({ x, y })));
+    this.#tiles = range(9).flatMap(x =>
+      range(12).map(y => ({ tilePosition: { x, y }, isPlaced: false }))
+    );
   }
 
   #provideInitialTiles(player) {
@@ -32,14 +34,14 @@ class Game {
     this.#tiles = this.#shuffle(this.#tiles);
   }
 
-  #addToIncorporatedTiles(tilePosition) {
-    this.#incorporatedTiles.push(tilePosition);
+  #addToIncorporatedTiles(tile) {
+    this.#incorporatedTiles.push(tile);
   }
 
-  placeTile(username, tilePosition) {
+  placeTile(username, tile) {
     const player = this.#players.find(player => player.username === username);
-    this.#addToIncorporatedTiles(tilePosition);
-    player.removeTile(tilePosition);
+    this.#addToIncorporatedTiles(tile);
+    player.placeTile(tile);
   }
 
   start() {

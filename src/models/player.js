@@ -41,10 +41,14 @@ class Player {
     this.#tiles.push(tile);
   }
 
-  removeTile(selectedTile) {
-    this.#tiles = this.#tiles.filter(
-      tile => tile.x !== selectedTile.x || tile.y !== selectedTile.y
+  placeTile(tilePosition) {
+    const targetTile = this.#tiles.find(
+      tile =>
+        tile.tilePosition.x === tilePosition.x &&
+        tile.tilePosition.y === tilePosition.y
     );
+
+    targetTile.isPlaced = true;
   }
 
   startTurn() {

@@ -73,15 +73,26 @@ describe("Player", () => {
     });
   });
 
-  describe("removeTile", () => {
+  describe("placeTile", () => {
     it("should remove a specified tile from the tile collection", () => {
       const player = new Player("Bittu");
-      player.addTile("2A");
-      player.addTile("9I");
-      player.removeTile("2A");
+      player.addTile({ tilePosition: { x: 0, y: 0 }, isPlaced: false });
+      player.addTile({ tilePosition: { x: 1, y: 1 }, isPlaced: false });
+      player.placeTile({ x: 0, y: 0 });
       const { tiles } = player.portfolio();
 
-      assert.deepStrictEqual(tiles, []);
+      const playerTiles = [
+        {
+          isPlaced: true,
+          tilePosition: { x: 0, y: 0 },
+        },
+        {
+          isPlaced: false,
+          tilePosition: { x: 1, y: 1 },
+        },
+      ];
+
+      assert.deepStrictEqual(tiles, playerTiles);
     });
   });
 
