@@ -62,7 +62,7 @@ describe("GameRouter", () => {
         balance: 6000,
       };
       const gameStatus = {
-        status: "place-tile",
+        state: "place-tile",
         tiles: { incorporatedTiles: [] },
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio,
@@ -93,7 +93,7 @@ describe("GameRouter", () => {
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
       const userDetails = {
-        status: "tile-placed",
+        state: "tile-placed",
         tiles: {
           incorporatedTiles: [{ position: { x: 0, y: 0 }, isPlaced: true }],
         },

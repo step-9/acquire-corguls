@@ -141,15 +141,14 @@ const renderPlayers = players => {
   playersDiv.append(...playerElements);
 };
 
-const displayMessage = status => {
+const displayMessage = state => {
   const displayPannel = getDisplayPannel();
-  if (status === "place-tile") {
-    displayPannel.innerText = "Place a tile...";
-  }
+  const message = {
+    "place-tile": "Place a tile...",
+    "tile-placed": "You placed a tile.",
+  };
 
-  if (status === "tile-placed") {
-    displayPannel.innerText = "You placed a tile.";
-  }
+  displayPannel.innerText = message[state];
 };
 
 const isSamePlayer = (self, currentPlayer) =>
@@ -161,35 +160,34 @@ const determineDisplayName = (self, currentPlayer) => {
   }
 };
 
-const customizeActivityMessage = (self, currentPlayer, status) => {
+const customizeActivityMessage = (self, currentPlayer, state) => {
   const displayName = determineDisplayName(self, currentPlayer);
 
-  console.log(status);
+  console.log(state);
   if (isSamePlayer(self, currentPlayer)) {
-    displayMessage(status);
-    return;
+    return displayMessage(state);
   }
 
-  const message = `${displayName}${GAME_STATUS[status]}`;
+  const message = `${displayName}${GAME_STATUS[state]}`;
   const displayPannel = getDisplayPannel();
   displayPannel.innerText = message;
 };
 
-const renderActivityMessage = (status, players) => {
+const renderActivityMessage = (state, players) => {
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
 
-  players.forEach(() => customizeActivityMessage(self, currentPlayer, status));
+  players.forEach(() => customizeActivityMessage(self, currentPlayer, state));
 };
 
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, tiles, status }) => {
+    .then(({ players, portfolio, tiles, state }) => {
       renderPlayers(players);
       displayPlayerProfile(portfolio);
       displayIncorporatedTiles(tiles);
-      renderActivityMessage(status, players);
+      renderActivityMessage(state, players);
     });
 
   setupInfoCard();

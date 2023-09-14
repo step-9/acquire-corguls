@@ -1,6 +1,6 @@
 class Game {
   #tiles;
-  #status;
+  #state;
   #shuffle;
   #players;
   #incorporatedTiles;
@@ -44,7 +44,7 @@ class Game {
     const tile = { position, isPlaced: true };
     this.#addToIncorporatedTiles(tile);
     player.placeTile(position);
-    this.#status = "tile-placed";
+    this.#state = "tile-placed";
   }
 
   start() {
@@ -52,7 +52,7 @@ class Game {
     this.#createTilesStack();
     this.#suffleTiles();
     this.#provideInitialAsset();
-    this.#status = "place-tile";
+    this.#state = "place-tile";
   }
 
   playerDetails(username) {
@@ -71,7 +71,7 @@ class Game {
 
   status(username) {
     return {
-      status: this.#status,
+      state: this.#state,
       tiles: {
         incorporatedTiles: this.#incorporatedTiles,
       },
