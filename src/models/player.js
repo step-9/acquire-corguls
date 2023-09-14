@@ -17,6 +17,10 @@ class Player {
     return this.#username;
   }
 
+  get isTakingTurn() {
+    return this.#isTakingTurn;
+  }
+
   stats() {
     return {
       username: this.#username,

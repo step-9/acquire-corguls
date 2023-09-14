@@ -36,9 +36,21 @@ class Game {
     this.#provideInitialAsset();
   }
 
-  playerDetails(username) {
+  playerDetails(username) { // TODO: make it private
     const player = this.#players.find(player => player.username === username);
     return player.stats();
+  }
+
+  #getPlayers() {
+    return this.#players.map(({ username, isTakingTurn }) =>
+      ({ username, isTakingTurn }));
+  }
+
+  status(username) {
+    return {
+      players: this.#getPlayers(),
+      portfolio: this.playerDetails(username),
+    };
   }
 }
 
