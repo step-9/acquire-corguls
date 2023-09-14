@@ -106,10 +106,27 @@ const displayIncorporatedTiles = ({ incorporatedTiles }) => {
   incorporatedTiles.forEach(fillSpace);
 };
 
+const renderPlayers = (players) => {
+  const playersDiv = getPlayersDiv();
+  const playerElements = players.map(({ isTakingTurn, username }) => {
+    return generateComponent([
+      "div", [
+        ["div", "", { class: "profile-pic" }],
+        ["div", username, { class: "name" }]
+      ],
+      { class: `player flex${isTakingTurn ? " active" : ""}` }
+    ]);
+  });
+
+  [...playersDiv.children].forEach(child => child.remove());
+  playersDiv.append(...playerElements);
+};
+
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ portfolio, tiles }) => {
+    .then(({ players, portfolio, tiles }) => {
+      renderPlayers(players);
       displayPlayerProfile(portfolio);
       displayIncorporatedTiles(tiles);
     });
