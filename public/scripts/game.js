@@ -109,7 +109,10 @@ const displayIncorporatedTiles = ({ incorporatedTiles }) => {
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ portfolio }) => displayPlayerProfile(portfolio));
+    .then(({ portfolio, tiles }) => {
+      displayPlayerProfile(portfolio);
+      displayIncorporatedTiles(tiles);
+    });
 
   setupInfoCard();
 };
