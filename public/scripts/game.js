@@ -1,3 +1,8 @@
+const GAME_STATUS = {
+  "place-tile": "'s turn.",
+  "tile-placed": " placed a tile.",
+};
+
 const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
@@ -136,13 +141,55 @@ const renderPlayers = players => {
   playersDiv.append(...playerElements);
 };
 
+const displayMessage = status => {
+  const displayPannel = getDisplayPannel();
+  if (status === "place-tile") {
+    displayPannel.innerText = "Place a tile...";
+  }
+
+  if (status === "tile-placed") {
+    displayPannel.innerText = "You placed a tile.";
+  }
+};
+
+const isSamePlayer = (self, currentPlayer) =>
+  self.username === currentPlayer.username;
+
+const determineDisplayName = (self, currentPlayer) => {
+  if (!isSamePlayer(self, currentPlayer)) {
+    return currentPlayer.username;
+  }
+};
+
+const customizeActivityMessage = (self, currentPlayer, status) => {
+  const displayName = determineDisplayName(self, currentPlayer);
+
+  console.log(status);
+  if (isSamePlayer(self, currentPlayer)) {
+    displayMessage(status);
+    return;
+  }
+
+  const message = `${displayName}${GAME_STATUS[status]}`;
+  const displayPannel = getDisplayPannel();
+  displayPannel.innerText = message;
+};
+
+const renderActivityMessage = (status, players) => {
+  const self = players.find(({ you }) => you);
+  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
+
+  players.forEach(() => customizeActivityMessage(self, currentPlayer, status));
+};
+
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, tiles }) => {
+    .then(({ players, portfolio, tiles, status }) => {
       renderPlayers(players);
       displayPlayerProfile(portfolio);
       displayIncorporatedTiles(tiles);
+      renderActivityMessage(status, players);
     });
 
   setupInfoCard();
