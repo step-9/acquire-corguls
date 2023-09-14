@@ -1,10 +1,10 @@
 const express = require("express");
 const { authorizeLobbyMember } = require("../middleware/lobby");
 
-const servePlayerstats = (req, res) => {
+const serveGameStats = (req, res) => {
   const { game } = req.app.context;
   const { username } = req.cookies;
-  res.send(game.playerDetails(username));
+  res.send(game.status(username));
 };
 
 const serveGamePage = (_, res) => {
@@ -15,7 +15,7 @@ const createGameRouter = () => {
   const router = new express.Router();
 
   router.get("/", authorizeLobbyMember, serveGamePage);
-  router.get("/player-profile", authorizeLobbyMember, servePlayerstats);
+  router.get("/status", authorizeLobbyMember, serveGameStats);
 
   return router;
 };

@@ -32,7 +32,7 @@ describe("GameRouter", () => {
     });
   });
 
-  describe("GET /game/player-profile", () => {
+  describe("GET /game/status", () => {
     it("should get the players account details", (_, done) => {
       const lobby = new Lobby(1);
       const username = "player";
@@ -41,7 +41,7 @@ describe("GameRouter", () => {
       const shuffle = x => x;
 
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
-      const userDetails = {
+      const portfolio = {
         username: "player",
         tiles: [
           {
@@ -81,16 +81,20 @@ describe("GameRouter", () => {
         balance: 6000,
         isTakingTurn: false
       };
+      const gameStatus = {
+        players: [{ username, isTakingTurn: false }],
+        portfolio
+      };
 
       request(app)
         .post("/lobby/players")
         .send({ username })
         .end(() => {
           request(app)
-            .get("/game/player-profile")
+            .get("/game/status")
             .set("cookie", "username=player")
             .expect("content-type", new RegExp("application/json"))
-            .expect(userDetails)
+            .expect(gameStatus)
             .end(done);
         });
     });

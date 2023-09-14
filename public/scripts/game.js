@@ -64,9 +64,9 @@ const displayPlayerProfile = ({ username, balance, stocks, tiles }) => {
 };
 
 const loadAccount = () => {
-  fetch("/game/player-profile")
+  fetch("/game/status")
     .then(res => res.json())
-    .then(displayPlayerProfile);
+    .then(({ portfolio }) => displayPlayerProfile(portfolio));
 
   setupInfoCard();
 };
