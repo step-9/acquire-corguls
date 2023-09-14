@@ -63,7 +63,11 @@ describe("GameRouter", () => {
       };
       const gameStatus = {
         state: "place-tile",
-        tiles: { incorporatedTiles: [] },
+        tiles: {
+          incorporatedTiles: [
+            { position: { x: 0, y: 6 }, isPlaced: true }
+          ]
+        },
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio,
       };
@@ -95,7 +99,9 @@ describe("GameRouter", () => {
       const userDetails = {
         state: "tile-placed",
         tiles: {
-          incorporatedTiles: [{ position: { x: 0, y: 0 }, isPlaced: true }],
+          incorporatedTiles: [
+            { position: { x: 0, y: 6 }, isPlaced: true },
+            { position: { x: 0, y: 0 }, isPlaced: true }],
         },
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio: {

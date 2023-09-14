@@ -39,7 +39,6 @@ const fillSpace = position => {
 };
 
 const displayResponse = ({ message }) => {
-  console.log(message);
   const displayPannel = getDisplayPannel();
   displayPannel.innerText = message;
 };
@@ -163,7 +162,6 @@ const determineDisplayName = (self, currentPlayer) => {
 const customizeActivityMessage = (self, currentPlayer, state) => {
   const displayName = determineDisplayName(self, currentPlayer);
 
-  console.log(state);
   if (isSamePlayer(self, currentPlayer)) {
     return displayMessage(state);
   }

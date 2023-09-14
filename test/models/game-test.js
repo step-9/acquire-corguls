@@ -1,5 +1,6 @@
-const { it, describe } = require("node:test");
 const assert = require("assert");
+const { it, describe } = require("node:test");
+const { reverse } = require("lodash");
 const { Player } = require("../../src/models/player");
 const { Game } = require("../../src/models/game");
 
@@ -39,6 +40,21 @@ describe("Game", () => {
         stocks: {},
         balance: 6000,
       });
+    });
+
+    it("should decide playing order of the players", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+
+      const game = new Game([player1, player2], reverse);
+      game.start();
+
+      const { players } = game.status(player1.username);
+
+      assert.deepStrictEqual(players, [
+        { username: player2.username, isTakingTurn: true, you: false },
+        { username: player1.username, isTakingTurn: false, you: true },
+      ]);
     });
   });
 

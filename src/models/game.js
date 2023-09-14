@@ -1,3 +1,5 @@
+const { range } = require("lodash");
+
 class Game {
   #tiles;
   #state;
@@ -13,14 +15,17 @@ class Game {
   }
 
   #createTilesStack() {
-    const range = limit => new Array(limit).fill().map((_, i) => i);
     this.#tiles = range(9).flatMap(x =>
       range(12).map(y => ({ position: { x, y }, isPlaced: false }))
     );
   }
 
-  #provideInitialTiles(player) {
-    this.#tiles.splice(0, 6).forEach(tile => player.addTile(tile));
+  #pickTile() {
+    return this.#tiles.shift();
+  }
+
+  #provideInitialTiles(player, quantity = 6) {
+    this.#tiles.splice(0, quantity).forEach(tile => player.addTile(tile));
   }
 
   #provideInitialAsset() {
@@ -36,6 +41,7 @@ class Game {
   }
 
   #addToIncorporatedTiles(tile) {
+    tile.isPlaced = true;
     this.#incorporatedTiles.push(tile);
   }
 
@@ -47,12 +53,26 @@ class Game {
     this.#state = "tile-placed";
   }
 
+  #decidePlayingOrder() {
+    const firstTiles = this.#players.map(player =>
+      [player, this.#pickTile()]);
+
+    firstTiles.sort(([, a], [, b]) => {
+      return a.position.x - b.position.x || a.position.y - b.position.y;
+    });
+
+    this.#players = firstTiles.map(([a]) => a);
+    firstTiles.forEach(([, tilePosition]) =>
+      this.#addToIncorporatedTiles(tilePosition));
+  }
+
   start() {
-    this.#players[0].startTurn(); // Temporary
     this.#createTilesStack();
     this.#suffleTiles();
     this.#provideInitialAsset();
     this.#state = "place-tile";
+    this.#decidePlayingOrder();
+    this.#players[0].startTurn();
   }
 
   playerDetails(username) {

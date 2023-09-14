@@ -31,6 +31,10 @@
   outline: 3px solid var(--active-player);
 }
 
+.player.self .name {
+  font-weight: 500;
+}
+
 .player.self .name::after {
   content: " (you)";
 }
