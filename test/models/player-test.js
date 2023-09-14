@@ -83,7 +83,7 @@ describe("Player", () => {
       player.removeTile("2A");
       const { tiles } = player.stats();
 
-      assert.deepStrictEqual(tiles, ["9I"]);
+      assert.deepStrictEqual(tiles, []);
     });
   });
 

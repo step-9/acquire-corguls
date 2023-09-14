@@ -27,7 +27,7 @@ class Player {
       tiles: [...this.#tiles],
       stocks: { ...this.#stocks },
       balance: this.#balance,
-      isTakingTurn: this.#isTakingTurn
+      isTakingTurn: this.#isTakingTurn,
     };
   }
 
@@ -44,7 +44,9 @@ class Player {
   }
 
   removeTile(selectedTile) {
-    this.#tiles = this.#tiles.filter(tile => tile !== selectedTile);
+    this.#tiles = this.#tiles.filter(
+      tile => tile.x !== selectedTile.x || tile.y !== selectedTile.y
+    );
   }
 
   startTurn() {

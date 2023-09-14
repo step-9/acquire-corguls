@@ -30,6 +30,11 @@ class Game {
     this.#tiles = this.#shuffle(this.#tiles);
   }
 
+  placeTile(username, tilePosition) {
+    const player = this.#players.find(player => player.username === username);
+    player.removeTile(tilePosition);
+  }
+
   start() {
     this.#createTilesStack();
     this.#suffleTiles();

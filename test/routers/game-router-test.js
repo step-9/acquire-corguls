@@ -79,11 +79,11 @@ describe("GameRouter", () => {
           zeta: 0,
         },
         balance: 6000,
-        isTakingTurn: false
+        isTakingTurn: false,
       };
       const gameStatus = {
         players: [{ username, isTakingTurn: false }],
-        portfolio
+        portfolio,
       };
 
       request(app)
@@ -91,11 +91,84 @@ describe("GameRouter", () => {
         .send({ username })
         .end(() => {
           request(app)
-            .get("/game/status")
+            .get("/game/stats")
             .set("cookie", "username=player")
+            .expect(200)
             .expect("content-type", new RegExp("application/json"))
             .expect(gameStatus)
             .end(done);
+        });
+    });
+  });
+
+  describe("POST /game/tile", () => {
+    it("should place a tile on the board, in the specified position", (_, done) => {
+      const lobby = new Lobby(1);
+      const username = "player";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      const userDetails = {
+        players: [{ username, isTakingTurn: false }],
+        portfolio: {
+          username: "player",
+          tiles: [
+            {
+              x: 0,
+              y: 1,
+            },
+            {
+              x: 0,
+              y: 2,
+            },
+            {
+              x: 0,
+              y: 3,
+            },
+            {
+              x: 0,
+              y: 4,
+            },
+            {
+              x: 0,
+              y: 5,
+            },
+          ],
+          stocks: {
+            phoenix: 0,
+            quantum: 0,
+            hydra: 0,
+            fusion: 0,
+            america: 0,
+            sackson: 0,
+            zeta: 0,
+          },
+          balance: 6000,
+          isTakingTurn: false,
+        },
+      };
+
+      request(app)
+        .post("/lobby/players")
+        .send({ username })
+        .expect(200)
+        .end(() => {
+          request(app)
+            .post("/game/tile")
+            .set("cookie", "username=player")
+            .send({ x: 0, y: 0 })
+            .expect(200)
+            .end(() => {
+              request(app)
+                .get("/game/stats")
+                .set("cookie", "username=player")
+                .expect(200)
+                .expect("content-type", new RegExp("application/json"))
+                .expect(userDetails)
+                .end(done);
+            });
         });
     });
   });

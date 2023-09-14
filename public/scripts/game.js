@@ -25,6 +25,16 @@ const displayAccountStocks = stocks => {
   });
 };
 
+const setUpTiles = position => {
+  fetch("/game/tile", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(position),
+  });
+};
+
 const displayAccountTiles = tilesPosition => {
   const tileContainer = document.querySelector("#tile-container");
   const tiles = Array.from(tileContainer.children);
@@ -34,6 +44,9 @@ const displayAccountTiles = tilesPosition => {
     const columnSpecification = y + 1;
     const rowSpecification = String.fromCharCode(x + 65);
     tiles[tileID].innerText = columnSpecification + rowSpecification;
+    tiles[tileID].onclick = () => {
+      setUpTiles(tilePosition);
+    };
   });
 };
 

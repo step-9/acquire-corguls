@@ -44,7 +44,7 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
-        isTakingTurn: false
+        isTakingTurn: false,
       });
 
       assert.deepStrictEqual(player2.stats(), {
@@ -77,10 +77,9 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
-        isTakingTurn: false
+        isTakingTurn: false,
       });
     });
-
   });
 
   describe("playerDetails", () => {
@@ -121,7 +120,7 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
-        isTakingTurn: false
+        isTakingTurn: false,
       });
     });
   });
