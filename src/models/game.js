@@ -38,7 +38,7 @@ class Game {
 
   playerDetails(username) {
     const player = this.#players.find(player => player.username === username);
-    return player.profile();
+    return player.stats();
   }
 }
 

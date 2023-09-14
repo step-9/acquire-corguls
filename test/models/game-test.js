@@ -4,6 +4,7 @@ const { Player } = require("../../src/models/player");
 const { Game } = require("../../src/models/game");
 
 describe("Game", () => {
+  // TODO: extract constants
   describe("start", () => {
     it("should distribute initial assets to players", () => {
       const player1 = new Player("Biswa");
@@ -13,7 +14,7 @@ describe("Game", () => {
       const game = new Game([player1, player2], shuffle);
       game.start();
 
-      assert.deepStrictEqual(player1.profile(), {
+      assert.deepStrictEqual(player1.stats(), {
         username: "Biswa",
         tiles: [
           {
@@ -43,9 +44,10 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
+        isTakingTurn: false
       });
 
-      assert.deepStrictEqual(player2.profile(), {
+      assert.deepStrictEqual(player2.stats(), {
         username: "Bittu",
         tiles: [
           {
@@ -75,11 +77,12 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
+        isTakingTurn: false
       });
     });
 
     describe("playerDetails", () => {
-      it("should response with player profile", () => {
+      it("should response with player stats", () => {
         const player1 = new Player("Biswa");
         const player2 = new Player("Bittu");
         const shuffle = x => x;
@@ -116,6 +119,7 @@ describe("Game", () => {
           ],
           stocks: {},
           balance: 6000,
+          isTakingTurn: false
         });
       });
     });

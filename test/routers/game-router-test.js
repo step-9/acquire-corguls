@@ -79,6 +79,7 @@ describe("GameRouter", () => {
           zeta: 0,
         },
         balance: 6000,
+        isTakingTurn: false
       };
 
       request(app)

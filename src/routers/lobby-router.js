@@ -9,7 +9,7 @@ const serveLobbyPage = (_, res) => {
 };
 
 const doNotJoinIfGameHasStarted = (req, res, next) => {
-  const lobby = req.app.context.lobby;
+  const { lobby } = req.app.context;
 
   if (lobby.status().hasGameStarted) {
     const error = "Game has already started!";
@@ -29,7 +29,7 @@ const joinPlayer = (req, res) => {
     const { players } = lobby.status();
     const game = new Game(createPlayers(players), shuffle);
     req.app.context.game = game;
-    lobby.startGame(game);
+    lobby.startGame(game); // move this api
   }
 
   res.cookie("username", username).redirect("/lobby");

@@ -3,24 +3,27 @@ class Player {
   #tiles;
   #stocks;
   #balance;
+  #isTakingTurn;
 
   constructor(username, balance = 0, stocks = [], tiles = []) {
     this.#username = username;
     this.#tiles = tiles;
     this.#stocks = stocks;
     this.#balance = balance;
+    this.#isTakingTurn = false;
   }
 
   get username() {
     return this.#username;
   }
 
-  profile() {
+  stats() {
     return {
       username: this.#username,
       tiles: [...this.#tiles],
       stocks: { ...this.#stocks },
       balance: this.#balance,
+      isTakingTurn: this.#isTakingTurn
     };
   }
 
@@ -38,6 +41,14 @@ class Player {
 
   removeTile(selectedTile) {
     this.#tiles = this.#tiles.filter(tile => tile !== selectedTile);
+  }
+
+  startTurn() {
+    this.#isTakingTurn = true;
+  }
+
+  endTurn() {
+    this.#isTakingTurn = false;
   }
 }
 
