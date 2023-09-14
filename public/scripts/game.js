@@ -95,8 +95,7 @@ const displayPlayerName = username => {
   usernameContainer.innerText = username.toUpperCase();
 };
 
-const displayPlayerProfile = ({ username, balance, stocks, tiles }) => {
-  displayPlayerName(username);
+const displayPlayerProfile = ({ balance, stocks, tiles }) => {
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
   displayAndSetupAccountTiles(tiles);
@@ -108,13 +107,18 @@ const displayIncorporatedTiles = ({ incorporatedTiles }) => {
 
 const renderPlayers = (players) => {
   const playersDiv = getPlayersDiv();
-  const playerElements = players.map(({ isTakingTurn, username }) => {
+  const playerElements = players.map(({ isTakingTurn, username, you }) => {
+    const activeClass = isTakingTurn ? " active" : "";
+    const selfClass = you ? " self" : "";
+
     return generateComponent([
       "div", [
         ["div", "", { class: "profile-pic" }],
         ["div", username, { class: "name" }]
       ],
-      { class: `player flex${isTakingTurn ? " active" : ""}` }
+      {
+        class: `player flex ${activeClass} ${selfClass}`
+      }
     ]);
   });
 

@@ -14,8 +14,7 @@ describe("Game", () => {
       const game = new Game([player1, player2], shuffle);
       game.start();
 
-      assert.deepStrictEqual(player1.stats(), {
-        username: "Biswa",
+      assert.deepStrictEqual(player1.portfolio(), {
         tiles: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -26,11 +25,9 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
-        isTakingTurn: false,
       });
 
-      assert.deepStrictEqual(player2.stats(), {
-        username: "Bittu",
+      assert.deepStrictEqual(player2.portfolio(), {
         tiles: [
           { x: 0, y: 6 },
           { x: 0, y: 7 },
@@ -41,13 +38,12 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
-        isTakingTurn: false,
       });
     });
   });
 
   describe("playerDetails", () => {
-    it("should response with player stats", () => {
+    it("should response with player portfolio", () => {
       const player1 = new Player("Biswa");
       const player2 = new Player("Bittu");
       const shuffle = x => x;
@@ -55,7 +51,6 @@ describe("Game", () => {
       const game = new Game([player1, player2], shuffle);
       game.start();
       assert.deepStrictEqual(game.playerDetails("Biswa"), {
-        username: "Biswa",
         tiles: [
           { x: 0, y: 0 },
           { x: 0, y: 1 },
@@ -66,7 +61,6 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
-        isTakingTurn: false,
       });
     });
   });
@@ -83,12 +77,12 @@ describe("Game", () => {
       const { players, portfolio } = game.status(player1.username);
 
       assert.deepStrictEqual(players, [
-        { username: player1.username, isTakingTurn: false },
-        { username: player2.username, isTakingTurn: false },
+        { username: player1.username, isTakingTurn: true, you: true },
+        { username: player2.username, isTakingTurn: false, you: false },
       ]);
 
-      assert.deepStrictEqual(portfolio, player1.stats());
-      assert.notDeepStrictEqual(portfolio, player2.stats());
+      assert.deepStrictEqual(portfolio, player1.portfolio());
+      assert.notDeepStrictEqual(portfolio, player2.portfolio());
     });
   });
 });

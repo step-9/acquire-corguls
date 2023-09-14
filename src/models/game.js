@@ -43,6 +43,7 @@ class Game {
   }
 
   start() {
+    this.#players[0].startTurn(); // Temporary
     this.#createTilesStack();
     this.#suffleTiles();
     this.#provideInitialAsset();
@@ -51,13 +52,14 @@ class Game {
   playerDetails(username) {
     // TODO: make it private
     const player = this.#players.find(player => player.username === username);
-    return player.stats();
+    return player.portfolio();
   }
 
-  #getPlayers() {
-    return this.#players.map(({ username, isTakingTurn }) => ({
-      username,
-      isTakingTurn,
+  #getPlayers(username) {
+    return this.#players.map((player) => ({
+      username: player.username,
+      isTakingTurn: player.isTakingTurn,
+      you: player.username === username
     }));
   }
 
@@ -66,7 +68,7 @@ class Game {
       tiles: {
         incorporatedTiles: this.#incorporatedTiles,
       },
-      players: this.#getPlayers(),
+      players: this.#getPlayers(username),
       portfolio: this.playerDetails(username),
     };
   }

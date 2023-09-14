@@ -30,3 +30,7 @@
 .player.active > * {
   outline: 3px solid var(--active-player);
 }
+
+.player.self .name::after {
+  content: " (you)";
+}

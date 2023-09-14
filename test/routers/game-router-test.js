@@ -42,7 +42,6 @@ describe("GameRouter", () => {
 
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
       const portfolio = {
-        username: "player",
         tiles: [
           {
             x: 0,
@@ -79,11 +78,10 @@ describe("GameRouter", () => {
           zeta: 0,
         },
         balance: 6000,
-        isTakingTurn: false,
       };
       const gameStatus = {
         tiles: { incorporatedTiles: [] },
-        players: [{ username, isTakingTurn: false }],
+        players: [{ username, isTakingTurn: true, you: true }],
         portfolio,
       };
 
@@ -115,9 +113,8 @@ describe("GameRouter", () => {
         tiles: {
           incorporatedTiles: [{ x: 0, y: 0 }],
         },
-        players: [{ username, isTakingTurn: false }],
+        players: [{ username, isTakingTurn: true, you: true }],
         portfolio: {
-          username: "player",
           tiles: [
             {
               x: 0,
@@ -150,7 +147,6 @@ describe("GameRouter", () => {
             zeta: 0,
           },
           balance: 6000,
-          isTakingTurn: false,
         },
       };
 

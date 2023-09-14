@@ -21,13 +21,11 @@ class Player {
     return this.#isTakingTurn;
   }
 
-  stats() {
+  portfolio() {
     return {
-      username: this.#username,
       tiles: [...this.#tiles],
       stocks: { ...this.#stocks },
       balance: this.#balance,
-      isTakingTurn: this.#isTakingTurn,
     };
   }
 
