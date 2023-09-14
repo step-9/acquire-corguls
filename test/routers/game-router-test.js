@@ -62,6 +62,9 @@ describe("GameRouter", () => {
         balance: 6000,
       };
       const gameStatus = {
+        setupTiles: [
+          ["player", { position: { x: 0, y: 6 }, isPlaced: true }]
+        ],
         state: "place-tile",
         tiles: {
           incorporatedTiles: [
@@ -98,6 +101,9 @@ describe("GameRouter", () => {
 
       const userDetails = {
         state: "tile-placed",
+        setupTiles: [
+          ["player", { position: { x: 0, y: 6 }, isPlaced: true }]
+        ],
         tiles: {
           incorporatedTiles: [
             { position: { x: 0, y: 6 }, isPlaced: true },

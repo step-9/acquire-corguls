@@ -1,4 +1,9 @@
 const { range } = require("lodash");
+const GAME_STATES = {
+  setup: "setup",
+  placeTile: "place-tile",
+  tilePlaced: "tile-placed"
+};
 
 class Game {
   #tiles;
@@ -6,12 +11,14 @@ class Game {
   #shuffle;
   #players;
   #incorporatedTiles;
+  #setupTiles;
 
   constructor(players, shuffle) {
     this.#tiles = [];
     this.#incorporatedTiles = [];
     this.#players = players;
     this.#shuffle = shuffle;
+    this.#state = GAME_STATES.setup;
   }
 
   #createTilesStack() {
@@ -50,14 +57,14 @@ class Game {
     const tile = { position, isPlaced: true };
     this.#addToIncorporatedTiles(tile);
     player.placeTile(position);
-    this.#state = "tile-placed";
+    this.#state = GAME_STATES.tilePlaced;
   }
 
   #decidePlayingOrder() {
-    const firstTiles = this.#players.map(player =>
+    this.#setupTiles = this.#players.map(player =>
       [player, this.#pickTile()]);
 
-    firstTiles.sort(([, a], [, b]) => {
+    const firstTiles = this.#setupTiles.toSorted(([, a], [, b]) => {
       return a.position.x - b.position.x || a.position.y - b.position.y;
     });
 
@@ -66,13 +73,17 @@ class Game {
       this.#addToIncorporatedTiles(tilePosition));
   }
 
-  start() {
+  setup() {
     this.#createTilesStack();
     this.#suffleTiles();
     this.#provideInitialAsset();
-    this.#state = "place-tile";
     this.#decidePlayingOrder();
+  }
+
+  start() {
+    this.setup();
     this.#players[0].startTurn();
+    this.#state = GAME_STATES.placeTile;
   }
 
   playerDetails(username) {
@@ -92,6 +103,8 @@ class Game {
   status(username) {
     return {
       state: this.#state,
+      setupTiles: this.#setupTiles.map(([player, tile]) =>
+        [player.username, tile]),
       tiles: {
         incorporatedTiles: this.#incorporatedTiles,
       },

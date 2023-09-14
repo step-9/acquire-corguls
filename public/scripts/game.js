@@ -1,4 +1,5 @@
 const GAME_STATUS = {
+  "setup": "setup",
   "place-tile": "'s turn.",
   "tile-placed": " placed a tile.",
 };
@@ -12,6 +13,18 @@ const getDisplayPannel = () => document.querySelector("#display-pannel");
 const displayAccountBalance = balance => {
   const balanceContainer = document.querySelector("#balance-container");
   balanceContainer.innerText = "$" + balance;
+};
+
+const displayInitialMessages = (setupTiles) => {
+  const messages = setupTiles.map(([name, { position }]) => {
+    const columnSpecification = position.y + 1;
+    const rowSpecification = String.fromCharCode(position.x + 65);
+    const tile = columnSpecification + rowSpecification;
+
+    return `${tile} was placed for ${name}.`;
+  }).join("\n");
+
+  getDisplayPannel().innerText = messages;
 };
 
 const displayAccountStocks = stocks => {
@@ -172,16 +185,30 @@ const customizeActivityMessage = (self, currentPlayer, state) => {
 };
 
 const renderActivityMessage = (state, players) => {
+  if (state === GAME_STATUS.setup) return;
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
 
   players.forEach(() => customizeActivityMessage(self, currentPlayer, state));
 };
 
+const setupGame = () => {
+  fetch("/game/status")
+    .then(res => res.json())
+    .then(({ players, portfolio, tiles, state, setupTiles }) => {
+      renderPlayers(players);
+      displayPlayerProfile(portfolio);
+      displayIncorporatedTiles(tiles);
+      state === GAME_STATUS.setup && displayInitialMessages(setupTiles);
+    });
+
+  setupInfoCard();
+};
+
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, tiles, state }) => {
+    .then(({ players, portfolio, tiles, state, setupTiles }) => {
       renderPlayers(players);
       displayPlayerProfile(portfolio);
       displayIncorporatedTiles(tiles);
@@ -193,8 +220,10 @@ const loadAccount = () => {
 
 const keepPlayerProfileUpdated = () => {
   const interval = 1000;
-  loadAccount();
-  setInterval(loadAccount, interval);
+  setupGame();
+  setTimeout(() => {
+    setInterval(loadAccount, interval);
+  }, interval * 10);
 };
 
 window.onload = keepPlayerProfileUpdated;
