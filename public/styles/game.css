@@ -18,8 +18,7 @@
 }
 
 #corporation,
-#account,
-#activity-bar {
+#account {
   text-align: center;
   padding: 0.5em 1em;
 }
@@ -62,7 +61,10 @@
 
 #activity-bar {
   grid-area: activity-bar;
-  background-color: var(--light-gray);
+  padding-bottom: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #game-board-container {
@@ -291,4 +293,14 @@
 .tile:hover {
   cursor: pointer;
   user-select: none;
+}
+
+#display-pannel {
+  width: 98%;
+  height: 98%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  background-color: var(--light-gray);
 }

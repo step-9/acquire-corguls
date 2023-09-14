@@ -76,19 +76,19 @@ describe("Player", () => {
   describe("placeTile", () => {
     it("should remove a specified tile from the tile collection", () => {
       const player = new Player("Bittu");
-      player.addTile({ tilePosition: { x: 0, y: 0 }, isPlaced: false });
-      player.addTile({ tilePosition: { x: 1, y: 1 }, isPlaced: false });
+      player.addTile({ position: { x: 0, y: 0 }, isPlaced: false });
+      player.addTile({ position: { x: 1, y: 1 }, isPlaced: false });
       player.placeTile({ x: 0, y: 0 });
       const { tiles } = player.portfolio();
 
       const playerTiles = [
         {
           isPlaced: true,
-          tilePosition: { x: 0, y: 0 },
+          position: { x: 0, y: 0 },
         },
         {
           isPlaced: false,
-          tilePosition: { x: 1, y: 1 },
+          position: { x: 1, y: 1 },
         },
       ];
 

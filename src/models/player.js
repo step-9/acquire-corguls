@@ -41,11 +41,9 @@ class Player {
     this.#tiles.push(tile);
   }
 
-  placeTile(tilePosition) {
+  placeTile(position) {
     const targetTile = this.#tiles.find(
-      tile =>
-        tile.tilePosition.x === tilePosition.x &&
-        tile.tilePosition.y === tilePosition.y
+      tile => tile.position.x === position.x && tile.position.y === position.y
     );
 
     targetTile.isPlaced = true;

@@ -43,12 +43,12 @@ describe("GameRouter", () => {
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
       const portfolio = {
         tiles: [
-          { tilePosition: { x: 0, y: 0 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 1 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 2 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 3 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 4 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 5 }, isPlaced: false },
+          { position: { x: 0, y: 0 }, isPlaced: false },
+          { position: { x: 0, y: 1 }, isPlaced: false },
+          { position: { x: 0, y: 2 }, isPlaced: false },
+          { position: { x: 0, y: 3 }, isPlaced: false },
+          { position: { x: 0, y: 4 }, isPlaced: false },
+          { position: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {
           phoenix: 0,
@@ -93,17 +93,17 @@ describe("GameRouter", () => {
 
       const userDetails = {
         tiles: {
-          incorporatedTiles: [{ x: 0, y: 0 }],
+          incorporatedTiles: [{ position: { x: 0, y: 0 }, isPlaced: true }],
         },
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio: {
           tiles: [
-            { tilePosition: { x: 0, y: 0 }, isPlaced: true },
-            { tilePosition: { x: 0, y: 1 }, isPlaced: false },
-            { tilePosition: { x: 0, y: 2 }, isPlaced: false },
-            { tilePosition: { x: 0, y: 3 }, isPlaced: false },
-            { tilePosition: { x: 0, y: 4 }, isPlaced: false },
-            { tilePosition: { x: 0, y: 5 }, isPlaced: false },
+            { position: { x: 0, y: 0 }, isPlaced: true },
+            { position: { x: 0, y: 1 }, isPlaced: false },
+            { position: { x: 0, y: 2 }, isPlaced: false },
+            { position: { x: 0, y: 3 }, isPlaced: false },
+            { position: { x: 0, y: 4 }, isPlaced: false },
+            { position: { x: 0, y: 5 }, isPlaced: false },
           ],
           stocks: {
             phoenix: 0,

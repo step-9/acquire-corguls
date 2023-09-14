@@ -16,12 +16,12 @@ describe("Game", () => {
 
       assert.deepStrictEqual(player1.portfolio(), {
         tiles: [
-          { tilePosition: { x: 0, y: 0 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 1 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 2 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 3 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 4 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 5 }, isPlaced: false },
+          { position: { x: 0, y: 0 }, isPlaced: false },
+          { position: { x: 0, y: 1 }, isPlaced: false },
+          { position: { x: 0, y: 2 }, isPlaced: false },
+          { position: { x: 0, y: 3 }, isPlaced: false },
+          { position: { x: 0, y: 4 }, isPlaced: false },
+          { position: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {},
         balance: 6000,
@@ -29,12 +29,12 @@ describe("Game", () => {
 
       assert.deepStrictEqual(player2.portfolio(), {
         tiles: [
-          { tilePosition: { x: 0, y: 6 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 7 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 8 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 9 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 10 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 11 }, isPlaced: false },
+          { position: { x: 0, y: 6 }, isPlaced: false },
+          { position: { x: 0, y: 7 }, isPlaced: false },
+          { position: { x: 0, y: 8 }, isPlaced: false },
+          { position: { x: 0, y: 9 }, isPlaced: false },
+          { position: { x: 0, y: 10 }, isPlaced: false },
+          { position: { x: 0, y: 11 }, isPlaced: false },
         ],
         stocks: {},
         balance: 6000,
@@ -52,12 +52,12 @@ describe("Game", () => {
       game.start();
       assert.deepStrictEqual(game.playerDetails("Biswa"), {
         tiles: [
-          { tilePosition: { x: 0, y: 0 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 1 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 2 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 3 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 4 }, isPlaced: false },
-          { tilePosition: { x: 0, y: 5 }, isPlaced: false },
+          { position: { x: 0, y: 0 }, isPlaced: false },
+          { position: { x: 0, y: 1 }, isPlaced: false },
+          { position: { x: 0, y: 2 }, isPlaced: false },
+          { position: { x: 0, y: 3 }, isPlaced: false },
+          { position: { x: 0, y: 4 }, isPlaced: false },
+          { position: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {},
         balance: 6000,

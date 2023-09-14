@@ -2,6 +2,7 @@ const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
 const getPlayersDiv = () => document.querySelector("#players");
+const getDisplayPannel = () => document.querySelector("#display-pannel");
 
 const displayAccountBalance = balance => {
   const balanceContainer = document.querySelector("#balance-container");
@@ -26,28 +27,34 @@ const displayAccountStocks = stocks => {
   });
 };
 
-const fillSpace = tilePosition => {
-  const tileId = tilePosition.x * 12 + tilePosition.y;
+const fillSpace = position => {
+  const tileId = position.x * 12 + position.y;
   const tiles = document.querySelectorAll(".space");
   tiles[tileId].classList.add("placed-tile");
 };
 
-const setUpTiles = ({ tilePosition }) => {
+const displayResponse = ({ message }) => {
+  console.log(message);
+  const displayPannel = getDisplayPannel();
+  displayPannel.innerText = message;
+};
+
+const setUpTiles = ({ position }) => {
   fetch("/game/tile", {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(tilePosition),
+    body: JSON.stringify(position),
   }).then(res => {
     if (res.status === 200) {
-      fillSpace(tilePosition);
+      fillSpace(position);
     }
   });
 };
 
-const displayTile = (tileElement, tilePosition) => {
-  const { x, y } = tilePosition;
+const displayTile = (tileElement, position) => {
+  const { x, y } = position;
   const columnSpecification = y + 1;
   const rowSpecification = String.fromCharCode(x + 65);
   tileElement.innerText = columnSpecification + rowSpecification;
@@ -69,12 +76,12 @@ const displayAndSetupAccountTiles = tiles => {
   const tileElements = Array.from(tileContainer.children);
 
   tileElements.forEach(tileElement => (tileElement.innerText = ""));
-  tiles.forEach(({ tilePosition, isPlaced }, tileID) => {
+  tiles.forEach(({ position, isPlaced }, tileID) => {
     const tileElement = tileElements[tileID];
 
-    displayTile(tileElement, tilePosition);
+    displayTile(tileElement, position);
     addVisualAttribute(tileElement, isPlaced);
-    attatchListener(tileElement, { tilePosition, isPlaced });
+    attatchListener(tileElement, { position, isPlaced });
   });
 };
 
@@ -104,7 +111,7 @@ const displayPlayerProfile = ({ balance, stocks, tiles }) => {
 };
 
 const displayIncorporatedTiles = ({ incorporatedTiles }) => {
-  incorporatedTiles.forEach(fillSpace);
+  incorporatedTiles.forEach(({ position }) => fillSpace(position));
 };
 
 const renderPlayers = players => {
@@ -120,8 +127,8 @@ const renderPlayers = players => {
         ["div", username, { class: "name" }],
       ],
       {
-        class: `player flex ${activeClass} ${selfClass}`
-      }
+        class: `player flex ${activeClass} ${selfClass}`,
+      },
     ]);
   });
 
