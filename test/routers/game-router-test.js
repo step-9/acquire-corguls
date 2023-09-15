@@ -415,7 +415,7 @@ describe("GameRouter", () => {
             stocks: 24,
             tiles: [{ position: { x: 1, y: 0 }, isPlaced: true }, tileToPlace],
             isActive: true,
-            price: 0,
+            price: 400,
             majority: 2000,
             minority: 1000,
           },

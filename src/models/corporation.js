@@ -1,18 +1,40 @@
+const { CORPORATION_TYPES } = require("../constants");
+
 class Corporation {
-  // #rates;
+  #rates;
   #tiles;
   #stocks;
   #isActive;
 
-  constructor(tiles = []) {
+  constructor(rates, tiles = []) {
     this.#stocks = 25;
-    // this.#rates = rates;
+    this.#rates = rates;
     this.#tiles = tiles;
     this.#isActive = false;
   }
 
+  // eslint-disable-next-line complexity
+  #determineRange() {
+    const size = this.#tiles.length;
+
+    switch (true) {
+      case size >= 41:
+        return "41+";
+      case size >= 31:
+        return "31-40";
+      case size >= 21:
+        return "21-30";
+      case size >= 11:
+        return "11-20";
+      case size >= 6:
+        return "6-10";
+    }
+
+    return size;
+  }
+
   #currentPrice() {
-    return 0;
+    return this.#rates[this.#determineRange()] || 0;
   }
 
   decrementStocks(quantity) {
@@ -50,13 +72,13 @@ class Corporation {
 
 const createCorporations = () => {
   return {
-    phoenix: new Corporation(),
-    quantum: new Corporation(),
-    fusion: new Corporation(),
-    hydra: new Corporation(),
-    america: new Corporation(),
-    zeta: new Corporation(),
-    sackson: new Corporation(),
+    phoenix: new Corporation(CORPORATION_TYPES.large),
+    quantum: new Corporation(CORPORATION_TYPES.large),
+    fusion: new Corporation(CORPORATION_TYPES.medium),
+    hydra: new Corporation(CORPORATION_TYPES.medium),
+    america: new Corporation(CORPORATION_TYPES.medium),
+    zeta: new Corporation(CORPORATION_TYPES.small),
+    sackson: new Corporation(CORPORATION_TYPES.small),
   };
 };
 
