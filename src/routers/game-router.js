@@ -25,6 +25,14 @@ const endPlayerTurn = (req, res) => {
   res.end();
 };
 
+const establishCorporation = (req, res) => {
+  const { game } = req.app.context;
+  const { name } = req.body;
+  console.log(req.body);
+  game.establishCorporation({ name });
+  res.end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
@@ -32,6 +40,7 @@ const createGameRouter = () => {
   router.get("/status", authorizeLobbyMember, serveGameStats);
   router.post("/tile", authorizeLobbyMember, placeTile);
   router.post("/end-turn", authorizeLobbyMember, endPlayerTurn);
+  router.post("/establish", authorizeLobbyMember, establishCorporation);
 
   return router;
 };

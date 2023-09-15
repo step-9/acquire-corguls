@@ -15,6 +15,7 @@ class Game {
   #incorporatedTiles;
   #setupTiles;
   #turns;
+  #adjacentTilesOfLastTile;
 
   constructor(players, shuffle, corporations) {
     this.#tiles = [];
@@ -75,14 +76,14 @@ class Game {
 
   #consolidateTile(position) {
     const tile = { position, isPlaced: true };
-    const adjacentTiles = this.#getAdjacentTiles(position);
+    this.#adjacentTilesOfLastTile = this.#getAdjacentTiles(position);
 
-    const foundCorporation = adjacentTiles.every(tile =>
+    const foundCorporation = this.#adjacentTilesOfLastTile.every(tile =>
       this.#incorporatedTiles.includes(tile)
     );
 
     switch (true) {
-      case adjacentTiles.length === 0: {
+      case this.#adjacentTilesOfLastTile.length === 0: {
         this.#addToIncorporatedTiles(tile);
         this.#state = GAME_STATES.tilePlaced;
         break;
@@ -90,8 +91,25 @@ class Game {
 
       case foundCorporation: {
         this.#state = GAME_STATES.establishCorporation;
+        break;
       }
     }
+
+    this.#adjacentTilesOfLastTile.push(tile);
+  }
+
+  establishCorporation({ name }) {
+    console.log(name);
+    const corporation = this.#corporations[name];
+
+    corporation.establish();
+    corporation.addTiles(this.#adjacentTilesOfLastTile);
+
+    this.#incorporatedTiles = this.#incorporatedTiles.filter(
+      tile => !this.#adjacentTilesOfLastTile.includes(tile)
+    );
+
+    this.#state = GAME_STATES.tilePlaced;
   }
 
   placeTile(username, position) {

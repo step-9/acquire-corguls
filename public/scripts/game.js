@@ -57,7 +57,9 @@ const establishCorporation = data => {
   fetch("/game/establish", {
     method: "POST",
     body: JSON.stringify(data),
-    "content-type": "application/json",
+    headers: {
+      "content-type": "application/json",
+    },
   });
 };
 
@@ -303,10 +305,15 @@ const setupCorporationSelection = (players, corporations, state) => {
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
   const isInCorrectState = state === "establish-corporation";
 
-  if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
+  if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) {
+    [...document.querySelectorAll(".corporation")].forEach(corp =>
+      corp.classList.add("active")
+    );
+    return;
+  }
 
   Object.entries(corporations)
-    .filter(corp => !corp.isActive)
+    .filter(([, corp]) => !corp.isActive)
     .map(([name]) => {
       const corp = getCorporation(name);
 

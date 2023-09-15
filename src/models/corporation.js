@@ -15,6 +15,14 @@ class Corporation {
     return 0;
   }
 
+  establish() {
+    this.#isActive = true;
+  }
+
+  addTiles(tiles) {
+    this.#tiles.push(...tiles);
+  }
+
   stats() {
     return {
       stocks: this.#stocks,
@@ -24,6 +32,10 @@ class Corporation {
       majority: 2000,
       minority: 1000,
     };
+  }
+
+  get isActive() {
+    return this.#isActive;
   }
 }
 
