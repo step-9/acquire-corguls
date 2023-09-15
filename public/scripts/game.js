@@ -21,6 +21,8 @@ const endTurn = () => {
 };
 
 const displayInitialMessages = (setupTiles) => {
+  if (!setupTiles) return;
+
   const messages = setupTiles.map(([name, { position }]) => {
     const columnSpecification = position.y + 1;
     const rowSpecification = String.fromCharCode(position.x + 65);
@@ -236,7 +238,7 @@ const setupGame = () => {
       renderPlayers(players);
       displayPlayerProfile(portfolio);
       displayIncorporatedTiles(tiles);
-      state === GAME_STATUS.setup && displayInitialMessages(setupTiles);
+      displayInitialMessages(setupTiles);
     });
 
   setupInfoCard();
