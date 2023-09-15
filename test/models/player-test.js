@@ -1,6 +1,6 @@
 const assert = require("assert");
 const { it, describe } = require("node:test");
-const { Player } = require("../../src/models/player");
+const { Player, createPlayers } = require("../../src/models/player");
 
 describe("Player", () => {
   describe("portfolio", () => {
@@ -142,6 +142,24 @@ describe("Player", () => {
       player.endTurn();
 
       assert.ok(!player.isTakingTurn);
+    });
+  });
+
+  describe("addStocks", () => {
+    it("should add stocks to the desired corporation", () => {
+      const [player] = createPlayers([{ username: "Bittu" }]);
+      player.addStocks("phoenix", 3);
+      const { stocks } = player.portfolio();
+
+      assert.deepStrictEqual(stocks, {
+        "phoenix": 3,
+        "quantum": 0,
+        "hydra": 0,
+        "fusion": 0,
+        "america": 0,
+        "sackson": 0,
+        "zeta": 0,
+      });
     });
   });
 });

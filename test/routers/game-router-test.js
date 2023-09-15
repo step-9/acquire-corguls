@@ -384,7 +384,7 @@ describe("GameRouter", () => {
           { position: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {
-          phoenix: 0,
+          phoenix: 1,
           quantum: 0,
           hydra: 0,
           fusion: 0,
@@ -412,7 +412,7 @@ describe("GameRouter", () => {
         corporations: {
           ...corporations,
           phoenix: {
-            stocks: 25,
+            stocks: 24,
             tiles: [{ position: { x: 1, y: 0 }, isPlaced: true }, tileToPlace],
             isActive: true,
             price: 0,

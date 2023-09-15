@@ -15,6 +15,11 @@ class Corporation {
     return 0;
   }
 
+  decrementStocks(quantity) {
+    if (!this.#isActive) return;
+    this.#stocks -= quantity;
+  }
+
   establish() {
     this.#isActive = true;
   }
@@ -36,6 +41,10 @@ class Corporation {
 
   get isActive() {
     return this.#isActive;
+  }
+
+  get stocks() {
+    return this.#stocks;
   }
 }
 

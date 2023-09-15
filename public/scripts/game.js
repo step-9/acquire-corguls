@@ -103,6 +103,7 @@ const displayAccountStocks = stocks => {
 
   Object.entries(stocks).forEach(([corporation, quantity]) => {
     const stocks = document.getElementById(accountStocks[corporation]);
+    stocks.classList.add(corporation);
     const [quantityElement] = [...stocks.children];
     quantityElement.innerText = quantity;
   });
@@ -232,7 +233,7 @@ const renderPlayers = players => {
   playersDiv.append(...playerElements);
 };
 
-const generaterefillTileBtn = () => {
+const generateRefillTileBtn = () => {
   const refillTileMessageElement = generateComponent(["p", "Refill you tile"]);
   const endButton = generateComponent([
     "button",
@@ -251,7 +252,7 @@ const displayMessage = state => {
 
     "tile-placed": () => {
       displayPanel.innerHTML = "";
-      displayPanel.append(...generaterefillTileBtn());
+      displayPanel.append(...generateRefillTileBtn());
     },
 
     "establish-corporation": () => {

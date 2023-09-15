@@ -125,7 +125,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.8em;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .stock {
@@ -319,45 +319,78 @@
   box-shadow: 0.1em 0.1em 0.3em black;
 }
 
-.space.phoenix {
+.phoenix {
   background-color: var(--phoenix-color);
   color: white;
 }
 
-.space.quantum {
+.quantum {
   background-color: var(--quantum-color);
   color: white;
 }
 
-.space.hydra {
+.hydra {
   background-color: var(--hydra-color);
   color: white;
 }
 
-.space.zeta {
+.zeta {
   background-color: var(--zeta-color);
   color: white;
 }
 
-.space.sackson {
+.sackson {
   background-color: var(--sackson-color);
   color: white;
 }
 
-.space.fusion {
+.fusion {
   background-color: var(--fusion-color);
   color: white;
 }
 
-.space.america {
+.america {
   background-color: var(--america-color);
   color: white;
 }
 
+.stock::after {
+  position: relative;
+  bottom: 0.4em;
+}
+
+#phoenix-stock::after {
+  content: "Phoenix";
+}
+
+#quantum-stock::after {
+  content: "Quantum";
+}
+
+#hydra-stock::after {
+  content: "Hydra";
+}
+
+#fusion-stock::after {
+  content: "Fusion";
+}
+
+#america-stock::after {
+  content: "America";
+}
+
+#zeta-stock::after {
+  content: "Zeta";
+}
+
+#sackson-stock::after {
+  content: "Sackson";
+}
+
 .corporation:not(.active) {
   cursor: pointer;
-  outline: 1px solid black;
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.7);
+  outline: 1px dotted rgb(255, 106, 0);
+  box-shadow: 0px 0px 4px 2px rgba(255, 106, 0, 0.7);
 }
 
 .corporation.active {

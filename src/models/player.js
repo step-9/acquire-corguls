@@ -66,6 +66,10 @@ class Player {
     targetTile.isPlaced = true;
   }
 
+  addStocks(corp, quantity) {
+    this.#stocks[corp] += quantity;
+  }
+
   startTurn() {
     this.#isTakingTurn = true;
   }

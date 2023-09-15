@@ -84,7 +84,6 @@ class Game {
 
     switch (true) {
       case this.#adjacentTilesOfLastTile.length === 0: {
-        this.#addToIncorporatedTiles(tile);
         this.#state = GAME_STATES.tilePlaced;
         break;
       }
@@ -95,15 +94,19 @@ class Game {
       }
     }
 
+    this.#addToIncorporatedTiles(tile);
     this.#adjacentTilesOfLastTile.push(tile);
   }
 
   establishCorporation({ name }) {
-    console.log(name);
+    const player = this.#currentPlayer();
     const corporation = this.#corporations[name];
 
     corporation.establish();
     corporation.addTiles(this.#adjacentTilesOfLastTile);
+
+    player.addStocks(name, 1);
+    corporation.decrementStocks(1);
 
     this.#incorporatedTiles = this.#incorporatedTiles.filter(
       tile => !this.#adjacentTilesOfLastTile.includes(tile)
