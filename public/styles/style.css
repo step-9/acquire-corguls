@@ -27,5 +27,5 @@ input {
 }
 
 .highlight {
-  border: 2px solid orange;
+  outline: 3px solid #ff6b00;
 }
