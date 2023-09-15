@@ -6,6 +6,65 @@ const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
 
 describe("GameRouter", () => {
+  const corporations = {
+    phoenix: {
+      stocks: 25,
+      tiles: [],
+      isActive: false,
+      price: 0,
+      majority: 2000,
+      minority: 1000,
+    },
+    quantum: {
+      stocks: 25,
+      tiles: [],
+      isActive: false,
+      price: 0,
+      majority: 2000,
+      minority: 1000,
+    },
+    fusion: {
+      stocks: 25,
+      tiles: [],
+      isActive: false,
+      price: 0,
+      majority: 2000,
+      minority: 1000,
+    },
+    hydra: {
+      stocks: 25,
+      tiles: [],
+      isActive: false,
+      price: 0,
+      majority: 2000,
+      minority: 1000,
+    },
+    america: {
+      stocks: 25,
+      tiles: [],
+      isActive: false,
+      price: 0,
+      majority: 2000,
+      minority: 1000,
+    },
+    zeta: {
+      stocks: 25,
+      tiles: [],
+      isActive: false,
+      price: 0,
+      majority: 2000,
+      minority: 1000,
+    },
+    sackson: {
+      stocks: 25,
+      tiles: [],
+      isActive: false,
+      price: 0,
+      majority: 2000,
+      minority: 1000,
+    },
+  };
+
   describe("GET /game", () => {
     it("should serve the game page", (_, done) => {
       const lobby = new Lobby(3);
@@ -61,6 +120,7 @@ describe("GameRouter", () => {
         },
         balance: 6000,
       };
+
       const gameStatus = {
         setupTiles: [["player", { position: { x: 0, y: 6 }, isPlaced: true }]],
         state: "place-tile",
@@ -69,6 +129,7 @@ describe("GameRouter", () => {
         },
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio,
+        corporations,
       };
 
       request(app)
@@ -125,6 +186,7 @@ describe("GameRouter", () => {
           },
           balance: 6000,
         },
+        corporations,
       };
 
       request(app)
@@ -197,6 +259,7 @@ describe("GameRouter", () => {
           { username: username2, isTakingTurn: true, you: false },
         ],
         portfolio,
+        corporations,
       };
 
       request(app)

@@ -8,15 +8,17 @@ const GAME_STATES = {
 class Game {
   #tiles;
   #state;
+  #corporations;
   #shuffle;
   #players;
   #incorporatedTiles;
   #setupTiles;
   #turns;
 
-  constructor(players, shuffle) {
+  constructor(players, shuffle, corporations) {
     this.#tiles = [];
     this.#incorporatedTiles = [];
+    this.#corporations = corporations;
     this.#players = players;
     this.#shuffle = shuffle;
     this.#state = GAME_STATES.setup;
@@ -120,6 +122,15 @@ class Game {
     // refill
   }
 
+  #getCorporationStats() {
+    return Object.fromEntries(
+      Object.entries(this.#corporations).map(([name, corporation]) => [
+        name,
+        corporation.stats(),
+      ])
+    );
+  }
+
   status(username) {
     return {
       state: this.#state,
@@ -132,6 +143,7 @@ class Game {
       },
       players: this.#getPlayers(username),
       portfolio: this.playerDetails(username),
+      corporations: this.#getCorporationStats(),
     };
   }
 }

@@ -3,6 +3,8 @@ const { authorize } = require("../middleware/auth");
 const { authorizeLobbyMember } = require("../middleware/lobby");
 const { createPlayers } = require("../models/player");
 const { Game } = require("../models/game");
+const { createCorporations } = require("../models/corporation");
+// const Corporation = require("../models/corporation");
 
 const serveLobbyPage = (_, res) => {
   res.sendFile("lobby.html", { root: "pages" });
@@ -27,7 +29,13 @@ const joinPlayer = (req, res) => {
 
   if (lobby.isFull()) {
     const { players } = lobby.status();
-    const game = new Game(createPlayers(players), shuffle);
+
+    const game = new Game(
+      createPlayers(players),
+      shuffle,
+      createCorporations()
+    );
+
     req.app.context.game = game;
     lobby.startGame(game); // move this api
   }

@@ -4,11 +4,22 @@ const GAME_STATUS = {
   "tile-placed": " placed a tile.",
 };
 
+const CORPORATIONS_IDS = {
+  "phoenix": "phoenix",
+  "quantum": "quantum",
+  "hydra": "hydra",
+  "fusion": "fusion",
+  "america": "america",
+  "sackson": "sackson",
+  "zeta": "zeta",
+};
+
+const getCorporation = id => document.getElementById(id);
 const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
 const getPlayersDiv = () => document.querySelector("#players");
-const getDisplayPannel = () => document.querySelector("#display-pannel");
+const getDisplayPanel = () => document.querySelector("#display-panel");
 const getTileContainer = () => document.querySelector("#tile-container");
 const getTileElements = () => {
   const tileContainer = getTileContainer();
@@ -42,7 +53,17 @@ const displayInitialMessages = setupTiles => {
     })
     .join("\n");
 
-  getDisplayPannel().innerText = messages;
+  getDisplayPanel().innerText = messages;
+};
+
+const renderCorporations = corporations => {
+  Object.entries(corporations).forEach(([name, stats]) => {
+    const corporation = getCorporation(name);
+
+    corporation.querySelector(".price").innerText = `$${stats.price}`;
+    corporation.querySelector(".size").innerText = stats.tiles.length;
+    corporation.querySelector(".stocks").innerText = stats.stocks;
+  });
 };
 
 const displayAccountStocks = stocks => {
@@ -70,7 +91,7 @@ const fillSpace = position => {
 };
 
 const displayResponse = ({ message }) => {
-  const displayPannel = getDisplayPannel();
+  const displayPannel = getDisplayPanel();
   displayPannel.innerText = message;
 };
 
@@ -187,7 +208,7 @@ const generateEndTurnBtn = () => {
 };
 
 const displayMessage = state => {
-  const displayPannel = getDisplayPannel();
+  const displayPannel = getDisplayPanel();
   const renderMessage = {
     "place-tile": () => {
       displayPannel.innerText = "Place a tile...";
@@ -216,7 +237,7 @@ const customizeActivityMessage = (self, currentPlayer, state) => {
   }
 
   const message = `${displayName}${GAME_STATUS[state]}`;
-  const displayPannel = getDisplayPannel();
+  const displayPannel = getDisplayPanel();
   displayPannel.innerText = message;
 };
 
@@ -256,12 +277,13 @@ const setupGame = () => {
 const loadAccount = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, tiles, state, setupTiles }) => {
+    .then(({ players, portfolio, tiles, state, corporations }) => {
       renderPlayers(players);
       displayPlayerProfile(portfolio, players);
       displayIncorporatedTiles(tiles);
       renderActivityMessage(state, players);
       setUpPlayerTilePlacing(players, state);
+      renderCorporations(corporations);
     });
 
   setupInfoCard();
