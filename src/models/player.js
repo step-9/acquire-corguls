@@ -92,9 +92,10 @@ const initializeAccountStocks = () => {
 };
 
 const createPlayers = players => {
-  const stocks = initializeAccountStocks();
   const balance = 0;
-  return players.map(player => new Player(player.username, balance, stocks));
+  return players.map(
+    player => new Player(player.username, balance, initializeAccountStocks())
+  );
 };
 
 module.exports = { createPlayers, Player };
