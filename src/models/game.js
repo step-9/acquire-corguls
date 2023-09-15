@@ -77,7 +77,6 @@ class Game {
     const tile = { position, isPlaced: true };
     const adjacentTiles = this.#getAdjacentTiles(position);
 
-    console.log(tile, adjacentTiles);
     const foundCorporation = adjacentTiles.every(tile =>
       this.#incorporatedTiles.includes(tile)
     );

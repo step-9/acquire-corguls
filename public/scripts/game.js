@@ -1,7 +1,7 @@
 const GAME_STATUS = {
-  "setup": "setup",
   "place-tile": "'s turn.",
   "tile-placed": " placed a tile.",
+  "establish-corporation": " is establishing a corporation",
 };
 
 const CORPORATIONS_IDS = {
@@ -50,6 +50,14 @@ const refillTile = () => {
     const tileElements = getTileElements();
     placeNewTile(tileElements);
     setTimeout(() => removeHighlight(tileElements), transitionDelay);
+  });
+};
+
+const establishCorporation = data => {
+  fetch("/game/establish", {
+    method: "POST",
+    body: JSON.stringify(data),
+    "content-type": "application/json",
   });
 };
 
@@ -243,6 +251,10 @@ const displayMessage = state => {
       displayPanel.innerHTML = "";
       displayPanel.append(...generaterefillTileBtn());
     },
+
+    "establish-corporation": () => {
+      displayPanel.innerText = "Select a corporation to establish...";
+    },
   };
 
   renderMessage[state]();
@@ -286,6 +298,24 @@ const setUpPlayerTilePlacing = (players, state) => {
   tileContainer.classList.add("disable-click");
 };
 
+const setupCorporationSelection = (players, corporations, state) => {
+  const self = players.find(({ you }) => you);
+  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
+  const isInCorrectState = state === "establish-corporation";
+
+  if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
+
+  Object.entries(corporations)
+    .filter(corp => !corp.isActive)
+    .map(([name]) => {
+      const corp = getCorporation(name);
+
+      corp.onclick = () => establishCorporation({ name });
+      return corp;
+    })
+    .forEach(corp => corp.classList.remove("active"));
+};
+
 const setupGame = () => {
   fetch("/game/status")
     .then(res => res.json())
@@ -300,7 +330,7 @@ const setupGame = () => {
   setupInfoCard();
 };
 
-const loadAccount = () => {
+const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
     .then(({ players, portfolio, tiles, state, corporations }) => {
@@ -309,6 +339,7 @@ const loadAccount = () => {
       displayIncorporatedTiles(tiles);
       renderActivityMessage(state, players);
       setUpPlayerTilePlacing(players, state);
+      setupCorporationSelection(players, corporations, state);
       renderCorporations(corporations);
     });
 
@@ -319,7 +350,7 @@ const keepPlayerProfileUpdated = () => {
   const interval = 1000;
   setupGame();
   setTimeout(() => {
-    setInterval(loadAccount, interval);
+    setInterval(renderGame, interval);
   }, interval * 0);
 };
 
