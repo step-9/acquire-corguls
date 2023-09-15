@@ -20,16 +20,18 @@ const endTurn = () => {
   fetch("/game/end-turn", { method: "POST" });
 };
 
-const displayInitialMessages = (setupTiles) => {
+const displayInitialMessages = setupTiles => {
   if (!setupTiles) return;
 
-  const messages = setupTiles.map(([name, { position }]) => {
-    const columnSpecification = position.y + 1;
-    const rowSpecification = String.fromCharCode(position.x + 65);
-    const tile = columnSpecification + rowSpecification;
+  const messages = setupTiles
+    .map(([name, { position }]) => {
+      const columnSpecification = position.y + 1;
+      const rowSpecification = String.fromCharCode(position.x + 65);
+      const tile = columnSpecification + rowSpecification;
 
-    return `${tile} was placed for ${name}.`;
-  }).join("\n");
+      return `${tile} was placed for ${name}.`;
+    })
+    .join("\n");
 
   getDisplayPannel().innerText = messages;
 };
@@ -167,13 +169,13 @@ const renderPlayers = players => {
 };
 
 const generateEndTurnBtn = () => {
-  return generateComponent([
-    "div",
-    [
-      ["p", "End turn"],
-      ["button", "End", { type: "button", onclick: "endTurn()" }],
-    ],
+  const endTurnMessageElement = generateComponent(["p", "End turn"]);
+  const endButton = generateComponent([
+    "button",
+    "End",
+    { type: "button", onclick: "endTurn()", class: "end-turn-button" },
   ]);
+  return [endTurnMessageElement, endButton];
 };
 
 const displayMessage = state => {
@@ -185,7 +187,7 @@ const displayMessage = state => {
 
     "tile-placed": () => {
       displayPannel.innerHTML = "";
-      displayPannel.append(generateEndTurnBtn());
+      displayPannel.append(...generateEndTurnBtn());
     },
   };
 
@@ -217,14 +219,13 @@ const renderActivityMessage = (state, players) => {
   customizeActivityMessage(self, currentPlayer, state);
 };
 
-const setUpPlayerTilePlacing = players => {
+const setUpPlayerTilePlacing = (players, state) => {
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
 
-  console.log(self, currentPlayer, self.username === currentPlayer.username);
   const tileContainer = getTileContainer();
 
-  if (isSamePlayer(self, currentPlayer)) {
+  if (isSamePlayer(self, currentPlayer) && state === "place-tile") {
     return tileContainer.classList.remove("disable-click");
   }
 
@@ -252,18 +253,18 @@ const loadAccount = () => {
       displayPlayerProfile(portfolio, players);
       displayIncorporatedTiles(tiles);
       renderActivityMessage(state, players);
-      setUpPlayerTilePlacing(players);
+      setUpPlayerTilePlacing(players, state);
     });
 
   setupInfoCard();
 };
 
 const keepPlayerProfileUpdated = () => {
-  const interval = 1000;
+  const interval = 10;
   setupGame();
   setTimeout(() => {
     setInterval(loadAccount, interval);
-  }, interval * 10);
+  }, interval * 1000);
 };
 
 window.onload = keepPlayerProfileUpdated;

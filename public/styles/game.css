@@ -311,3 +311,9 @@
   font-size: 1.2em;
   background-color: var(--light-gray);
 }
+
+#activity-bar button {
+  font-size: inherit;
+  margin-left: 1em;
+  padding: 0 0.2em;
+}

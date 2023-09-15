@@ -110,6 +110,7 @@ class Game {
     this.#currentPlayer().endTurn();
     this.#turns++;
     this.#currentPlayer().startTurn();
+    this.#state = GAME_STATES.placeTile;
     // refill
   }
 
