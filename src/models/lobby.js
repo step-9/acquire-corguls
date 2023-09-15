@@ -1,36 +1,36 @@
 class Lobby {
+  #hasExpired;
   #players;
   #size;
-  #game;
 
   constructor(size) {
     this.#players = [];
+    this.#hasExpired = false;
     this.#size = size;
-    this.#game = null;
   }
 
   addPlayer(player) {
     this.#players.push(player);
   }
 
+  #isPossibleToStartGame() {
+    return this.#players.length >= this.#size.lowerLimit;
+  }
+
   isFull() {
-    return this.#players.length === this.#size;
+    return this.#players.length === this.#size.upperLimit;
   }
 
-  startGame(game) {
-    this.#game = game;
-    this.#game.start();
-  }
-
-  #hasGameStarted() {
-    return this.#game !== null;
+  expire() {
+    this.#hasExpired = true;
   }
 
   status() {
     return {
       players: this.#players.map(player => ({ ...player })),
       isFull: this.isFull(),
-      hasGameStarted: this.#hasGameStarted(),
+      hasExpired: this.#hasExpired,
+      isPossibleToStartGame: this.#isPossibleToStartGame(),
     };
   }
 }

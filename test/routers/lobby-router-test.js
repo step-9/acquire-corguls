@@ -8,7 +8,8 @@ const Lobby = require("../../src/models/lobby");
 
 describe("GET /lobby", () => {
   it("should not allow if player is not authorized", (_, done) => {
-    const lobby = new Lobby(3);
+    const size = { lowerLimit: 3, upperLimit: 3 };
+    const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter, { lobby });
@@ -16,7 +17,8 @@ describe("GET /lobby", () => {
   });
 
   it("should serve the lobby page", (_, done) => {
-    const lobby = new Lobby(3);
+    const size = { lowerLimit: 3, upperLimit: 3 };
+    const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter, { lobby });
@@ -31,7 +33,7 @@ describe("GET /lobby", () => {
 
 describe("POST /lobby/players", () => {
   it("should add the player in the lobby", (_, done) => {
-    const size = 3;
+    const size = { lowerLimit: 3, upperLimit: 3 };
     const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
@@ -51,34 +53,11 @@ describe("POST /lobby/players", () => {
       });
   });
 
-  it("should start the game if room is full", (_, done) => {
-    const size = 3;
-    const username = "player3";
+  it("should not add player if the lobby is full", (_, done) => {
+    const size = { lowerLimit: 3, upperLimit: 3 };
     const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
-    const gameRouter = createGameRouter({});
-    const shuffle = x => x;
-    const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
-
-    lobby.addPlayer({ username: "player1" });
-    lobby.addPlayer({ username: "player2" });
-
-    request(app)
-      .post("/lobby/players")
-      .send({ username })
-      .expect(302)
-      .expect("location", "/lobby")
-      .end(err => {
-        assert.ok(lobby.status().hasGameStarted);
-        done(err);
-      });
-  });
-
-  it("should not add player if the game has started", (_, done) => {
-    const size = 3;
-    const lobby = new Lobby(size);
-    const lobbyRouter = createLobbyRouter();
-    const gameRouter = createGameRouter({});
+    const gameRouter = createGameRouter();
     const shuffle = x => x;
     const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
     const players = [
@@ -100,9 +79,9 @@ describe("POST /lobby/players", () => {
           .post("/lobby/players")
           .send(player4)
           .expect(401)
-          .expect({ error: "Game has already started!" })
+          .expect({ error: "Lobby is full !" })
           .end(err => {
-            assert.deepStrictEqual(lobby.status().players, players);
+            assert.deepStrictEqual(lobby.isFull(), true);
             done(err);
           });
       });
@@ -110,8 +89,9 @@ describe("POST /lobby/players", () => {
 });
 
 describe("GET /lobby/status", () => {
-  it("should get the latest status of the lobby", (_, done) => {
-    const lobby = new Lobby(3);
+  it("should provide fields to determine whether or not to start the game.", (_, done) => {
+    const size = { lowerLimit: 3, upperLimit: 3 };
+    const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter();
     const shuffle = x => x;
@@ -124,7 +104,8 @@ describe("GET /lobby/status", () => {
     const expectedStatus = {
       players: [player],
       isFull: false,
-      hasGameStarted: false,
+      hasExpired: false,
+      isPossibleToStartGame: false,
     };
 
     request(app)
@@ -137,7 +118,8 @@ describe("GET /lobby/status", () => {
   });
 
   it("should not allow if the player is not a member of the lobby", (_, done) => {
-    const lobby = new Lobby(3);
+    const size = { lowerLimit: 3, upperLimit: 3 };
+    const lobby = new Lobby(size);
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter();
     const shuffle = x => x;

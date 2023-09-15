@@ -358,7 +358,7 @@ const keepPlayerProfileUpdated = () => {
   setupGame();
   setTimeout(() => {
     setInterval(renderGame, interval);
-  }, interval * 0);
+  }, interval * 10);
 };
 
 window.onload = keepPlayerProfileUpdated;

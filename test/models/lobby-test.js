@@ -1,18 +1,17 @@
 const assert = require("assert");
 const { describe, it } = require("node:test");
 const Lobby = require("../../src/models/lobby");
-const { createPlayers } = require("../../src/models/player");
-const { Game } = require("../../src/models/game");
 
 describe("Lobby", () => {
   describe("status", () => {
     it("should get the lobby status", () => {
-      const size = 3;
+      const size = { lowerLimit: 3, upperLimit: 3 };
       const lobby = new Lobby(size);
       const expectedStatus = {
         players: [],
         isFull: false,
-        hasGameStarted: false,
+        hasExpired: false,
+        isPossibleToStartGame: false,
       };
 
       assert.deepEqual(lobby.status(), expectedStatus);
@@ -21,7 +20,7 @@ describe("Lobby", () => {
 
   describe("addPlayer", () => {
     it("should add a player to the lobby", () => {
-      const size = 3;
+      const size = { lowerLimit: 3, upperLimit: 3 };
       const lobby = new Lobby(size);
       const username = "player";
       const player = { username };
@@ -34,14 +33,14 @@ describe("Lobby", () => {
 
   describe("isFull", () => {
     it("should not be full when lobby is empty", () => {
-      const size = 3;
+      const size = { lowerLimit: 3, upperLimit: 3 };
       const lobby = new Lobby(size);
 
-      assert.ok(!lobby.isFull());
+      assert.strictEqual(lobby.isFull(), false);
     });
 
-    it("should not be full when less than 3 players are present", () => {
-      const size = 3;
+    it("should not be full when lobby has less than maximum lobby size", () => {
+      const size = { lowerLimit: 3, upperLimit: 3 };
       const lobby = new Lobby(size);
       const username1 = "player1";
       const username2 = "player2";
@@ -51,11 +50,11 @@ describe("Lobby", () => {
       lobby.addPlayer(player1);
       lobby.addPlayer(player2);
 
-      assert.ok(!lobby.isFull());
+      assert.strictEqual(lobby.isFull(), false);
     });
 
-    it("should be full if player count is same as lobby size", () => {
-      const size = 2;
+    it("should be full if player count is same as max lobby size", () => {
+      const size = { lowerLimit: 2, upperLimit: 2 };
       const lobby = new Lobby(size);
       const username1 = "player1";
       const username2 = "player2";
@@ -68,9 +67,9 @@ describe("Lobby", () => {
       assert.ok(lobby.isFull());
     });
 
-    describe("startGame", () => {
-      it("should start a game with existing players", () => {
-        const size = 2;
+    describe("expire", () => {
+      it("should mark the lobby as expired", () => {
+        const size = { lowerLimit: 2, upperLimit: 2 };
         const lobby = new Lobby(size);
         const username1 = "player1";
         const username2 = "player2";
@@ -80,13 +79,16 @@ describe("Lobby", () => {
 
         lobby.addPlayer(player1);
         lobby.addPlayer(player2);
+        lobby.expire();
 
-        const { players } = lobby.status();
-        const shuffle = x => x;
-        const game = new Game(createPlayers(players), shuffle);
-        lobby.startGame(game);
+        const expectedLobbyStatus = {
+          players: [player1, player2],
+          isFull: true,
+          hasExpired: true,
+          isPossibleToStartGame: true,
+        };
 
-        assert.ok(lobby.status().hasGameStarted);
+        assert.deepStrictEqual(lobby.status(), expectedLobbyStatus);
       });
     });
   });

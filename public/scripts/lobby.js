@@ -1,6 +1,7 @@
 const getPlayerSection = () => document.querySelector("#players");
 const getMessageElement = () => document.querySelector("#message");
 const getAnimationSection = () => document.querySelector("#animation");
+const getStartBtn = () => document.querySelector("#start-btn");
 
 const getLobbyStatus = () => {
   return fetch("/lobby/status").then(res => res.json());
@@ -36,10 +37,14 @@ const redirectToGame = () => {
   }, 1000);
 };
 
+const gameHasStarted = ({ isPossibleToStartGame, hasExpired }) => {
+  return isPossibleToStartGame && hasExpired;
+};
+
 const updateLobby = () => {
   getLobbyStatus().then(status => {
     renderPlayers(status.players);
-    if (status.hasGameStarted) redirectToGame();
+    if (gameHasStarted(status)) redirectToGame();
   });
 };
 
@@ -58,9 +63,21 @@ const animate = () => {
   }, 500);
 };
 
+const startGame = () => {
+  return fetch("/game/start", { method: "POST" }).then(redirectToGame);
+};
+
+const setUpStartButton = () => {
+  const startBtn = getStartBtn();
+  startBtn.onclick = () => {
+    startGame();
+  };
+};
+
 const main = () => {
   animate();
   keepLobbyUpdated();
+  setUpStartButton();
 };
 
 window.onload = main;

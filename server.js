@@ -12,8 +12,8 @@ const logServerInfo = () => {
 };
 
 const setUpLobby = () => {
-  const maxPlayers = 2;
-  return new Lobby(maxPlayers);
+  const size = { lowerLimit: 3, upperLimit: 6 };
+  return new Lobby(size);
 };
 
 const main = () => {
