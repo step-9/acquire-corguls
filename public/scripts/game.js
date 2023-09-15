@@ -260,11 +260,11 @@ const loadAccount = () => {
 };
 
 const keepPlayerProfileUpdated = () => {
-  const interval = 10;
+  const interval = 1000;
   setupGame();
   setTimeout(() => {
     setInterval(loadAccount, interval);
-  }, interval * 1000);
+  }, interval * 10);
 };
 
 window.onload = keepPlayerProfileUpdated;
