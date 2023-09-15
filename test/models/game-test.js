@@ -109,6 +109,39 @@ describe("Game", () => {
       assert.deepStrictEqual(portfolio, player1.portfolio());
       assert.notDeepStrictEqual(portfolio, player2.portfolio());
     });
+
+    it("should find corporation when tile is placed next to incorporated tile", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const corporations = createCorporations();
+      const shuffle = x => x;
+
+      const game = new Game([player1, player2], shuffle, corporations);
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 4 });
+      game.placeTile("Biswa", { x: 0, y: 3 });
+
+      const { state } = game.status(player1.username);
+
+      assert.strictEqual(state, "establish-corporation");
+    });
+
+    it("should not be in find corporation state when placed next to 0 adjacent tiles", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const corporations = createCorporations();
+      const shuffle = x => x;
+
+      const game = new Game([player1, player2], shuffle, corporations);
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 3 });
+
+      const { state } = game.status(player1.username);
+
+      assert.strictEqual(state, "tile-placed");
+    });
   });
 
   describe("placeTile", () => {

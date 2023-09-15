@@ -3,6 +3,7 @@ const GAME_STATES = {
   setup: "setup",
   placeTile: "place-tile",
   tilePlaced: "tile-placed",
+  establishCorporation: "establish-corporation",
 };
 
 class Game {
@@ -56,12 +57,48 @@ class Game {
     this.#incorporatedTiles.push(tile);
   }
 
+  #getAdjacentTiles(currentTilePosition) {
+    const isHorizontallyAdjacent = (tile1, tile2) =>
+      Math.abs(tile1.x - tile2.x) === 1 && Math.abs(tile1.y - tile2.y) === 0;
+
+    const isVerticallyAdjacent = (tile1, tile2) =>
+      Math.abs(tile1.x - tile2.x) === 0 && Math.abs(tile1.y - tile2.y) === 1;
+
+    const isAdjacent = (tile1, tile2) =>
+      isHorizontallyAdjacent(tile1, tile2) ||
+      isVerticallyAdjacent(tile1, tile2);
+
+    return this.#incorporatedTiles.filter(tile =>
+      isAdjacent(currentTilePosition, tile.position)
+    ); // return obj
+  }
+
+  #consolidateTile(position) {
+    const tile = { position, isPlaced: true };
+    const adjacentTiles = this.#getAdjacentTiles(position);
+
+    console.log(tile, adjacentTiles);
+    const foundCorporation = adjacentTiles.every(tile =>
+      this.#incorporatedTiles.includes(tile)
+    );
+
+    switch (true) {
+      case adjacentTiles.length === 0: {
+        this.#addToIncorporatedTiles(tile);
+        this.#state = GAME_STATES.tilePlaced;
+        break;
+      }
+
+      case foundCorporation: {
+        this.#state = GAME_STATES.establishCorporation;
+      }
+    }
+  }
+
   placeTile(username, position) {
     const player = this.#players.find(player => player.username === username);
-    const tile = { position, isPlaced: true };
-    this.#addToIncorporatedTiles(tile);
+    this.#consolidateTile(position);
     player.placeTile(position);
-    this.#state = GAME_STATES.tilePlaced;
   }
 
   #decidePlayingOrder() {

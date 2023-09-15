@@ -12,7 +12,7 @@ module.exports = {
   extends: "eslint:recommended",
 
   rules: {
-    indent: ["error", 2],
+    indent: ["error", 2, { "SwitchCase": 1 }],
     quotes: ["error", "double"],
     semi: ["error", "always"],
     "no-constructor-return": ["error", "always"],
@@ -30,7 +30,7 @@ module.exports = {
       "rules": {
         "no-undef": "off",
         "no-unused-vars": "off",
-      }
-    }
-  ]
+      },
+    },
+  ],
 };
