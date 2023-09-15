@@ -101,4 +101,50 @@ describe("Game", () => {
       assert.notDeepStrictEqual(portfolio, player2.portfolio());
     });
   });
+
+  describe("placeTile", () => {
+    it("should remove a tile from the tile stack", () => {
+      const player1 = new Player("Biswa");
+      const shuffle = x => x;
+
+      const game = new Game([player1], shuffle);
+      game.start();
+
+      const expectedPlayerPortfolio = {
+        tiles: [
+          { position: { x: 0, y: 0 }, isPlaced: true },
+          { position: { x: 0, y: 1 }, isPlaced: false },
+          { position: { x: 0, y: 2 }, isPlaced: false },
+          { position: { x: 0, y: 3 }, isPlaced: false },
+          { position: { x: 0, y: 4 }, isPlaced: false },
+          { position: { x: 0, y: 5 }, isPlaced: false },
+        ],
+        stocks: {},
+        balance: 6000,
+      };
+
+      game.placeTile("Biswa", { x: 0, y: 0 });
+
+      assert.deepStrictEqual(player1.portfolio(), expectedPlayerPortfolio);
+    });
+  });
+
+  describe("changeTurn", () => {
+    it("should change the current player", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Honu");
+      const shuffle = x => x;
+
+      const game = new Game([player1, player2], shuffle);
+      game.start();
+
+      assert.strictEqual(player1.isTakingTurn, true);
+      assert.strictEqual(player2.isTakingTurn, false);
+
+      game.changeTurn();
+
+      assert.strictEqual(player1.isTakingTurn, false);
+      assert.strictEqual(player2.isTakingTurn, true);
+    });
+  });
 });

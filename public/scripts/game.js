@@ -9,10 +9,15 @@ const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
 const getPlayersDiv = () => document.querySelector("#players");
 const getDisplayPannel = () => document.querySelector("#display-pannel");
+const getTileContainer = () => document.querySelector("#tile-container");
 
 const displayAccountBalance = balance => {
   const balanceContainer = document.querySelector("#balance-container");
   balanceContainer.innerText = "$" + balance;
+};
+
+const endTurn = () => {
+  fetch("/game/end-turn", { method: "POST" });
 };
 
 const displayInitialMessages = (setupTiles) => {
@@ -56,6 +61,11 @@ const displayResponse = ({ message }) => {
   displayPannel.innerText = message;
 };
 
+const disablePlayerTiles = () => {
+  const tileContainer = getTileContainer();
+  tileContainer.classList.add("disable-click");
+};
+
 const setUpTiles = ({ position }) => {
   fetch("/game/tile", {
     method: "POST",
@@ -63,11 +73,13 @@ const setUpTiles = ({ position }) => {
       "content-type": "application/json",
     },
     body: JSON.stringify(position),
-  }).then(res => {
-    if (res.status === 200) {
-      fillSpace(position);
-    }
-  });
+  })
+    .then(res => {
+      if (res.status === 200) {
+        fillSpace(position);
+      }
+    })
+    .then(disablePlayerTiles);
 };
 
 const displayTile = (tileElement, position) => {
@@ -78,7 +90,7 @@ const displayTile = (tileElement, position) => {
 };
 
 const attatchListener = (tileElement, tile) => {
-  tileElement.onclick = () => {
+  tileElement.onclick = event => {
     tileElement.classList.add("used-tile");
     setUpTiles(tile);
   };
@@ -88,11 +100,10 @@ const addVisualAttribute = (tileElement, isPlaced) => {
   if (isPlaced) tileElement.classList.add("used-tile");
 };
 
-const displayAndSetupAccountTiles = tiles => {
-  const tileContainer = document.querySelector("#tile-container");
+const displayAndSetupAccountTiles = (tiles, players) => {
+  const tileContainer = getTileContainer();
   const tileElements = Array.from(tileContainer.children);
 
-  tileElements.forEach(tileElement => (tileElement.innerText = ""));
   tiles.forEach(({ position, isPlaced }, tileID) => {
     const tileElement = tileElements[tileID];
 
@@ -121,10 +132,10 @@ const displayPlayerName = username => {
   usernameContainer.innerText = username.toUpperCase();
 };
 
-const displayPlayerProfile = ({ balance, stocks, tiles }) => {
+const displayPlayerProfile = ({ balance, stocks, tiles }, players) => {
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
-  displayAndSetupAccountTiles(tiles);
+  displayAndSetupAccountTiles(tiles, players);
 };
 
 const displayIncorporatedTiles = ({ incorporatedTiles }) => {
@@ -153,24 +164,37 @@ const renderPlayers = players => {
   playersDiv.append(...playerElements);
 };
 
+const generateEndTurnBtn = () => {
+  return generateComponent([
+    "div",
+    [
+      ["p", "End turn"],
+      ["button", "End", { type: "button", onclick: "endTurn()" }],
+    ],
+  ]);
+};
+
 const displayMessage = state => {
   const displayPannel = getDisplayPannel();
-  const message = {
-    "place-tile": "Place a tile...",
-    "tile-placed": "You placed a tile.",
+  const renderMessage = {
+    "place-tile": () => {
+      displayPannel.innerText = "Place a tile...";
+    },
+
+    "tile-placed": () => {
+      displayPannel.innerHTML = "";
+      displayPannel.append(generateEndTurnBtn());
+    },
   };
 
-  displayPannel.innerText = message[state];
+  renderMessage[state]();
 };
 
 const isSamePlayer = (self, currentPlayer) =>
   self.username === currentPlayer.username;
 
-const determineDisplayName = (self, currentPlayer) => {
-  if (!isSamePlayer(self, currentPlayer)) {
-    return currentPlayer.username;
-  }
-};
+const determineDisplayName = (self, currentPlayer) =>
+  isSamePlayer(self, currentPlayer) ? "You" : currentPlayer.username;
 
 const customizeActivityMessage = (self, currentPlayer, state) => {
   const displayName = determineDisplayName(self, currentPlayer);
@@ -188,8 +212,21 @@ const renderActivityMessage = (state, players) => {
   if (state === GAME_STATUS.setup) return;
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
+  customizeActivityMessage(self, currentPlayer, state);
+};
 
-  players.forEach(() => customizeActivityMessage(self, currentPlayer, state));
+const setUpPlayerTilePlacing = players => {
+  const self = players.find(({ you }) => you);
+  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
+
+  console.log(self, currentPlayer, self.username === currentPlayer.username);
+  const tileContainer = getTileContainer();
+
+  if (isSamePlayer(self, currentPlayer)) {
+    return tileContainer.classList.remove("disable-click");
+  }
+
+  tileContainer.classList.add("disable-click");
 };
 
 const setupGame = () => {
@@ -210,9 +247,10 @@ const loadAccount = () => {
     .then(res => res.json())
     .then(({ players, portfolio, tiles, state, setupTiles }) => {
       renderPlayers(players);
-      displayPlayerProfile(portfolio);
+      displayPlayerProfile(portfolio, players);
       displayIncorporatedTiles(tiles);
       renderActivityMessage(state, players);
+      setUpPlayerTilePlacing(players);
     });
 
   setupInfoCard();

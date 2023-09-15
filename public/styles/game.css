@@ -156,7 +156,9 @@
 #tile-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 1em;
+  align-items: center;
+  justify-content: center;
+  gap: 1.3em;
 }
 
 .tile {
@@ -288,6 +290,11 @@
 .used-tile {
   transition-duration: 0.5s;
   background-color: var(--gray);
+}
+
+.disable-click {
+  pointer-events: none;
+  opacity: 70%;
 }
 
 .tile:hover {

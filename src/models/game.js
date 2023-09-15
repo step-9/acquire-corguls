@@ -2,7 +2,7 @@ const { range } = require("lodash");
 const GAME_STATES = {
   setup: "setup",
   placeTile: "place-tile",
-  tilePlaced: "tile-placed"
+  tilePlaced: "tile-placed",
 };
 
 class Game {
@@ -12,6 +12,7 @@ class Game {
   #players;
   #incorporatedTiles;
   #setupTiles;
+  #turns;
 
   constructor(players, shuffle) {
     this.#tiles = [];
@@ -19,6 +20,7 @@ class Game {
     this.#players = players;
     this.#shuffle = shuffle;
     this.#state = GAME_STATES.setup;
+    this.#turns = 0;
   }
 
   #createTilesStack() {
@@ -43,7 +45,7 @@ class Game {
     });
   }
 
-  #suffleTiles() {
+  #shuffleTiles() {
     this.#tiles = this.#shuffle(this.#tiles);
   }
 
@@ -61,8 +63,7 @@ class Game {
   }
 
   #decidePlayingOrder() {
-    this.#setupTiles = this.#players.map(player =>
-      [player, this.#pickTile()]);
+    this.#setupTiles = this.#players.map(player => [player, this.#pickTile()]);
 
     const firstTiles = this.#setupTiles.toSorted(([, a], [, b]) => {
       return a.position.x - b.position.x || a.position.y - b.position.y;
@@ -70,20 +71,25 @@ class Game {
 
     this.#players = firstTiles.map(([a]) => a);
     firstTiles.forEach(([, tilePosition]) =>
-      this.#addToIncorporatedTiles(tilePosition));
+      this.#addToIncorporatedTiles(tilePosition)
+    );
+  }
+
+  #currentPlayer() {
+    return this.#players[this.#turns % this.#players.length];
   }
 
   setup() {
     this.#createTilesStack();
-    this.#suffleTiles();
+    this.#shuffleTiles();
     this.#provideInitialAsset();
     this.#decidePlayingOrder();
   }
 
   start() {
     this.setup();
-    this.#players[0].startTurn();
     this.#state = GAME_STATES.placeTile;
+    this.#currentPlayer().startTurn();
   }
 
   playerDetails(username) {
@@ -100,11 +106,20 @@ class Game {
     }));
   }
 
+  changeTurn() {
+    this.#currentPlayer().endTurn();
+    this.#turns++;
+    this.#currentPlayer().startTurn();
+    // refill
+  }
+
   status(username) {
     return {
       state: this.#state,
-      setupTiles: this.#setupTiles.map(([player, tile]) =>
-        [player.username, tile]),
+      setupTiles: this.#setupTiles.map(([player, tile]) => [
+        player.username,
+        tile,
+      ]),
       tiles: {
         incorporatedTiles: this.#incorporatedTiles,
       },

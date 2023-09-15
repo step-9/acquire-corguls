@@ -19,12 +19,19 @@ const placeTile = (req, res) => {
   res.status(200).end();
 };
 
+const endPlayerTurn = (req, res) => {
+  const { game } = req.app.context;
+  game.changeTurn();
+  res.end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
   router.get("/", authorizeLobbyMember, serveGamePage);
   router.get("/status", authorizeLobbyMember, serveGameStats);
   router.post("/tile", authorizeLobbyMember, placeTile);
+  router.post("/end-turn", authorizeLobbyMember, endPlayerTurn);
 
   return router;
 };
