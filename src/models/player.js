@@ -41,6 +41,15 @@ class Player {
     this.#tiles.push(tile);
   }
 
+  refillTile(newTile) {
+    for (let tileID = 0; tileID < this.#tiles.length; tileID++) {
+      const tile = this.#tiles[tileID];
+      if (tile.isPlaced) {
+        this.#tiles[tileID] = newTile;
+      }
+    }
+  }
+
   placeTile(position) {
     const targetTile = this.#tiles.find(
       tile => tile.position.x === position.x && tile.position.y === position.y

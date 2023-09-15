@@ -106,7 +106,13 @@ class Game {
     }));
   }
 
+  #refillTile() {
+    const newTile = this.#pickTile();
+    this.#currentPlayer().refillTile(newTile);
+  }
+
   changeTurn() {
+    this.#refillTile();
     this.#currentPlayer().endTurn();
     this.#turns++;
     this.#currentPlayer().startTurn();

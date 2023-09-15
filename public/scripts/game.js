@@ -10,6 +10,10 @@ const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
 const getPlayersDiv = () => document.querySelector("#players");
 const getDisplayPannel = () => document.querySelector("#display-pannel");
 const getTileContainer = () => document.querySelector("#tile-container");
+const getTileElements = () => {
+  const tileContainer = getTileContainer();
+  return Array.from(tileContainer.children);
+};
 
 const displayAccountBalance = balance => {
   const balanceContainer = document.querySelector("#balance-container");
@@ -17,7 +21,12 @@ const displayAccountBalance = balance => {
 };
 
 const endTurn = () => {
-  fetch("/game/end-turn", { method: "POST" });
+  fetch("/game/end-turn", { method: "POST" }).then(() => {
+    const tileElements = getTileElements();
+    tileElements.forEach(tileElement =>
+      tileElement.classList.remove("used-tile")
+    );
+  });
 };
 
 const displayInitialMessages = setupTiles => {
@@ -105,8 +114,7 @@ const addVisualAttribute = (tileElement, isPlaced) => {
 };
 
 const displayAndSetupAccountTiles = (tiles, players) => {
-  const tileContainer = getTileContainer();
-  const tileElements = Array.from(tileContainer.children);
+  const tileElements = getTileElements();
 
   tiles.forEach(({ position, isPlaced }, tileID) => {
     const tileElement = tileElements[tileID];
@@ -264,7 +272,7 @@ const keepPlayerProfileUpdated = () => {
   setupGame();
   setTimeout(() => {
     setInterval(loadAccount, interval);
-  }, interval * 10);
+  }, interval * 0);
 };
 
 window.onload = keepPlayerProfileUpdated;
