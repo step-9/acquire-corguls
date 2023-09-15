@@ -29,7 +29,9 @@ const joinPlayer = (req, res) => {
 
 const sendLobbyStatus = (req, res) => {
   const { lobby } = req.app.context;
-  res.json(lobby.status());
+  const { username } = req.cookies;
+
+  res.json(lobby.status(username));
 };
 
 const createLobbyRouter = () => {

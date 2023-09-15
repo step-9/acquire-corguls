@@ -35,3 +35,7 @@ input {
 .highlight {
   box-shadow: 0.1em 0.1em 0.4em rgb(253, 234, 234);
 }
+
+.hide {
+  display: none;
+}

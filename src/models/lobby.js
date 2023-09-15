@@ -25,12 +25,18 @@ class Lobby {
     this.#hasExpired = true;
   }
 
-  status() {
+  #getSelf(username) {
+    return this.#players.filter(player => player.username === username).pop();
+  }
+
+  status(username) {
     return {
       players: this.#players.map(player => ({ ...player })),
       isFull: this.isFull(),
       hasExpired: this.#hasExpired,
       isPossibleToStartGame: this.#isPossibleToStartGame(),
+      host: this.#players[0],
+      self: this.#getSelf(username),
     };
   }
 }

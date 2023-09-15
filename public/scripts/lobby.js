@@ -37,6 +37,15 @@ const redirectToGame = () => {
   }, 1000);
 };
 
+const isHost = (host, self) => self.username === host.username;
+
+const renderStartBtn = ({ host, self }) => {
+  const startButton = getStartBtn();
+  if (isHost(host, self)) {
+    startButton.classList.remove("hide");
+  }
+};
+
 const gameHasStarted = ({ isPossibleToStartGame, hasExpired }) => {
   return isPossibleToStartGame && hasExpired;
 };
@@ -44,6 +53,7 @@ const gameHasStarted = ({ isPossibleToStartGame, hasExpired }) => {
 const updateLobby = () => {
   getLobbyStatus().then(status => {
     renderPlayers(status.players);
+    renderStartBtn(status);
     if (gameHasStarted(status)) redirectToGame();
   });
 };

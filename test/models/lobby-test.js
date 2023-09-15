@@ -12,6 +12,8 @@ describe("Lobby", () => {
         isFull: false,
         hasExpired: false,
         isPossibleToStartGame: false,
+        host: undefined,
+        self: undefined,
       };
 
       assert.deepEqual(lobby.status(), expectedStatus);
@@ -27,7 +29,7 @@ describe("Lobby", () => {
 
       lobby.addPlayer(player);
 
-      assert.deepStrictEqual(lobby.status().players, [player]);
+      assert.deepStrictEqual(lobby.status("player").players, [player]);
     });
   });
 
@@ -86,9 +88,11 @@ describe("Lobby", () => {
           isFull: true,
           hasExpired: true,
           isPossibleToStartGame: true,
+          host: player1,
+          self: player1,
         };
 
-        assert.deepStrictEqual(lobby.status(), expectedLobbyStatus);
+        assert.deepStrictEqual(lobby.status("player1"), expectedLobbyStatus);
       });
     });
   });

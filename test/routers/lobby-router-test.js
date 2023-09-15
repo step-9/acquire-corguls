@@ -106,6 +106,8 @@ describe("GET /lobby/status", () => {
       isFull: false,
       hasExpired: false,
       isPossibleToStartGame: false,
+      host: player,
+      self: player,
     };
 
     request(app)
