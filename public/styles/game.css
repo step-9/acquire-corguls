@@ -317,3 +317,38 @@
   margin-left: 1em;
   padding: 0 0.2em;
 }
+
+.space.phoenix {
+  background-color: var(--phoenix-color);
+  color: white;
+}
+
+.space.quantum {
+  background-color: var(--quantum-color);
+  color: white;
+}
+
+.space.hydra {
+  background-color: var(--hydra-color);
+  color: white;
+}
+
+.space.zeta {
+  background-color: var(--zeta-color);
+  color: white;
+}
+
+.space.sackson {
+  background-color: var(--sackson-color);
+  color: white;
+}
+
+.space.fusion {
+  background-color: var(--fusion-color);
+  color: white;
+}
+
+.space.america {
+  background-color: var(--america-color);
+  color: white;
+}

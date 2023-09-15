@@ -15,6 +15,7 @@ const CORPORATIONS_IDS = {
 };
 
 const getCorporation = id => document.getElementById(id);
+const getBoard = () => document.querySelectorAll(".space");
 const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
@@ -75,6 +76,7 @@ const renderCorporations = corporations => {
     corporation.querySelector(".price").innerText = `$${stats.price}`;
     corporation.querySelector(".size").innerText = stats.tiles.length;
     corporation.querySelector(".stocks").innerText = stats.stocks;
+    stats.tiles.forEach(({ position }) => fillSpace(position, name));
   });
 };
 
@@ -96,15 +98,15 @@ const displayAccountStocks = stocks => {
   });
 };
 
-const fillSpace = position => {
+const fillSpace = (position, corpClass = "placed-tile") => {
+  const board = getBoard();
   const tileId = position.x * 12 + position.y;
-  const tiles = document.querySelectorAll(".space");
-  tiles[tileId].classList.add("placed-tile");
+  board[tileId].classList.add(corpClass);
 };
 
 const displayResponse = ({ message }) => {
-  const displayPannel = getDisplayPanel();
-  displayPannel.innerText = message;
+  const displayPanel = getDisplayPanel();
+  displayPanel.innerText = message;
 };
 
 const disablePlayerTiles = () => {
@@ -135,7 +137,7 @@ const displayTile = (tileElement, position) => {
   tileElement.innerText = columnSpecification + rowSpecification;
 };
 
-const attatchListener = (tileElement, tile) => {
+const attachListener = (tileElement, tile) => {
   tileElement.onclick = event => {
     tileElement.classList.add("used-tile");
     setUpTiles(tile);
@@ -164,7 +166,7 @@ const displayAndSetupAccountTiles = (newTile, tiles, players) => {
     const tileElement = tileElements[tileID];
     displayTile(tileElement, tile.position);
     addVisualAttribute(tileElement, tile.isPlaced);
-    attatchListener(tileElement, tile);
+    attachListener(tileElement, tile);
     highlightTile(tile, tileToHighlight, tileElement);
   });
 };
@@ -231,15 +233,15 @@ const generateEndTurnBtn = () => {
 };
 
 const displayMessage = state => {
-  const displayPannel = getDisplayPanel();
+  const displayPanel = getDisplayPanel();
   const renderMessage = {
     "place-tile": () => {
-      displayPannel.innerText = "Place a tile...";
+      displayPanel.innerText = "Place a tile...";
     },
 
     "tile-placed": () => {
-      displayPannel.innerHTML = "";
-      displayPannel.append(...generateEndTurnBtn());
+      displayPanel.innerHTML = "";
+      displayPanel.append(...generateEndTurnBtn());
     },
   };
 
@@ -260,8 +262,8 @@ const customizeActivityMessage = (self, currentPlayer, state) => {
   }
 
   const message = `${displayName}${GAME_STATUS[state]}`;
-  const displayPannel = getDisplayPanel();
-  displayPannel.innerText = message;
+  const displayPanel = getDisplayPanel();
+  displayPanel.innerText = message;
 };
 
 const renderActivityMessage = (state, players) => {
@@ -287,11 +289,12 @@ const setUpPlayerTilePlacing = (players, state) => {
 const setupGame = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, tiles, state, setupTiles }) => {
+    .then(({ players, portfolio, tiles, setupTiles, corporations }) => {
       renderPlayers(players);
       displayPlayerProfile(portfolio);
       displayIncorporatedTiles(tiles);
       displayInitialMessages(setupTiles);
+      renderCorporations(corporations);
     });
 
   setupInfoCard();
