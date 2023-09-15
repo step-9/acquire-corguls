@@ -33,5 +33,5 @@ input {
 }
 
 .highlight {
-  outline: 3px solid #ff6b00;
+  box-shadow: 0.1em 0.1em 0.4em rgb(253, 234, 234);
 }

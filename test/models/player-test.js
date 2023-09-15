@@ -105,7 +105,6 @@ describe("Player", () => {
       player.placeTile({ x: 0, y: 0 });
       player.refillTile({ position: { x: 2, y: 2 }, isPlaced: false });
       const { tiles } = player.portfolio();
-      console.log("hello tiles", tiles);
 
       const playerTiles = [
         {

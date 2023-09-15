@@ -44,7 +44,7 @@ const removeHighlight = tileElements => {
   );
 };
 
-const endTurn = () => {
+const refillTile = () => {
   const transitionDelay = 1000;
   fetch("/game/end-turn", { method: "POST" }).then(() => {
     const tileElements = getTileElements();
@@ -138,7 +138,7 @@ const displayTile = (tileElement, position) => {
 };
 
 const attachListener = (tileElement, tile) => {
-  tileElement.onclick = event => {
+  tileElement.onclick = () => {
     tileElement.classList.add("used-tile");
     setUpTiles(tile);
   };
@@ -222,14 +222,14 @@ const renderPlayers = players => {
   playersDiv.append(...playerElements);
 };
 
-const generateEndTurnBtn = () => {
-  const endTurnMessageElement = generateComponent(["p", "End turn"]);
+const generaterefillTileBtn = () => {
+  const refillTileMessageElement = generateComponent(["p", "Refill you tile"]);
   const endButton = generateComponent([
     "button",
-    "End",
-    { type: "button", onclick: "endTurn()", class: "end-turn-button" },
+    "Refill",
+    { type: "button", onclick: "refillTile()" },
   ]);
-  return [endTurnMessageElement, endButton];
+  return [refillTileMessageElement, endButton];
 };
 
 const displayMessage = state => {
@@ -241,7 +241,7 @@ const displayMessage = state => {
 
     "tile-placed": () => {
       displayPanel.innerHTML = "";
-      displayPanel.append(...generateEndTurnBtn());
+      displayPanel.append(...generaterefillTileBtn());
     },
   };
 

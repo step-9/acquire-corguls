@@ -313,9 +313,10 @@
 }
 
 #activity-bar button {
-  font-size: inherit;
+  font-size: 0.8em;
   margin-left: 1em;
-  padding: 0 0.2em;
+  padding: 0.5em;
+  box-shadow: 0.1em 0.1em 0.3em black;
 }
 
 .space.phoenix {

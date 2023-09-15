@@ -243,7 +243,7 @@ describe("GameRouter", () => {
         balance: 6000,
         newTile: { position: { x: 1, y: 2 }, isPlaced: false },
       };
-      
+
       const gameStatus = {
         setupTiles: [
           ["player1", { position: { x: 1, y: 0 }, isPlaced: true }],
@@ -284,10 +284,7 @@ describe("GameRouter", () => {
                     .set("cookie", "username=player1")
                     .expect(200)
                     .expect(gameStatus)
-                    .end((err, res) => {
-                      console.log(JSON.stringify(res.body, null, 2));
-                      done(err);
-                    });
+                    .end(done);
                 });
             });
         });
