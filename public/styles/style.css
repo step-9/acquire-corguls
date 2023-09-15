@@ -39,3 +39,8 @@ input {
 .hide {
   display: none;
 }
+
+.disable-click {
+  pointer-events: none;
+  opacity: 85%;
+}

@@ -39,11 +39,14 @@ const redirectToGame = () => {
 
 const isHost = (host, self) => self.username === host.username;
 
-const renderStartBtn = ({ host, self }) => {
+const renderStartBtn = ({ host, self, isPossibleToStartGame }) => {
   const startButton = getStartBtn();
   if (isHost(host, self)) {
     startButton.classList.remove("hide");
+    startButton.classList.add("disable-click");
   }
+
+  if (isPossibleToStartGame) startButton.classList.remove("disable-click");
 };
 
 const gameHasStarted = ({ isPossibleToStartGame, hasExpired }) => {

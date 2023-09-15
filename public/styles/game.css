@@ -292,11 +292,6 @@
   background-color: var(--gray);
 }
 
-.disable-click {
-  pointer-events: none;
-  opacity: 85%;
-}
-
 .tile:hover {
   cursor: pointer;
   user-select: none;
