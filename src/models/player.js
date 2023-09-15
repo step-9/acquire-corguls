@@ -4,6 +4,7 @@ class Player {
   #stocks;
   #balance;
   #isTakingTurn;
+  #newTile;
 
   constructor(username, balance = 0, stocks = [], tiles = []) {
     this.#username = username;
@@ -11,6 +12,7 @@ class Player {
     this.#stocks = stocks;
     this.#balance = balance;
     this.#isTakingTurn = false;
+    this.#newTile = undefined;
   }
 
   get username() {
@@ -23,6 +25,7 @@ class Player {
 
   portfolio() {
     return {
+      newTile: this.#newTile,
       tiles: [...this.#tiles],
       stocks: { ...this.#stocks },
       balance: this.#balance,
@@ -41,13 +44,18 @@ class Player {
     this.#tiles.push(tile);
   }
 
-  refillTile(newTile) {
+  #replaceWithUsedTile() {
     for (let tileID = 0; tileID < this.#tiles.length; tileID++) {
       const tile = this.#tiles[tileID];
       if (tile.isPlaced) {
-        this.#tiles[tileID] = newTile;
+        this.#tiles[tileID] = this.#newTile;
       }
     }
+  }
+
+  refillTile(newTile) {
+    this.#newTile = newTile;
+    this.#replaceWithUsedTile();
   }
 
   placeTile(position) {

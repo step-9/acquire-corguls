@@ -38,6 +38,7 @@ describe("Player", () => {
         balance: 0,
         tiles: [],
         stocks: {},
+        newTile: undefined,
       });
     });
   });

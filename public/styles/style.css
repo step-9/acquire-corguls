@@ -25,3 +25,7 @@ input {
   font-size: inherit;
   padding: 0.2em 0.4em;
 }
+
+.highlight {
+  border: 2px solid orange;
+}

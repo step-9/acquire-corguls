@@ -28,6 +28,7 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
+        newTile: undefined,
       });
 
       assert.deepStrictEqual(player2.portfolio(), {
@@ -41,6 +42,7 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
+        newTile: undefined,
       });
     });
 
@@ -82,6 +84,7 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
+        newTile: undefined,
       });
     });
   });
@@ -128,6 +131,7 @@ describe("Game", () => {
         ],
         stocks: {},
         balance: 6000,
+        newTile: undefined,
       };
 
       game.placeTile("Biswa", { x: 0, y: 0 });

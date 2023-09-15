@@ -31,12 +31,24 @@ const displayAccountBalance = balance => {
   balanceContainer.innerText = "$" + balance;
 };
 
+const placeNewTile = tileElements => {
+  tileElements.forEach(tileElement => {
+    tileElement.classList.remove("used-tile");
+  });
+};
+
+const removeHighlight = tileElements => {
+  tileElements.forEach(tileElement =>
+    tileElement.classList.remove("highlight")
+  );
+};
+
 const endTurn = () => {
+  const transitionDelay = 1000;
   fetch("/game/end-turn", { method: "POST" }).then(() => {
     const tileElements = getTileElements();
-    tileElements.forEach(tileElement =>
-      tileElement.classList.remove("used-tile")
-    );
+    placeNewTile(tileElements);
+    setTimeout(() => removeHighlight(tileElements), transitionDelay);
   });
 };
 
@@ -134,15 +146,26 @@ const addVisualAttribute = (tileElement, isPlaced) => {
   if (isPlaced) tileElement.classList.add("used-tile");
 };
 
-const displayAndSetupAccountTiles = (tiles, players) => {
+const isSameTile = (tile1, tile2) =>
+  tile1.position.x === tile2.position.x &&
+  tile1.position.y === tile2.position.y;
+
+const highlightTile = (tile, tileToHighlight, tileElement) => {
+  if (isSameTile(tile, tileToHighlight)) {
+    tileElement.classList.add("highlight");
+  }
+};
+
+const displayAndSetupAccountTiles = (newTile, tiles, players) => {
+  const tileToHighlight = newTile || { position: {} };
   const tileElements = getTileElements();
 
-  tiles.forEach(({ position, isPlaced }, tileID) => {
+  tiles.forEach((tile, tileID) => {
     const tileElement = tileElements[tileID];
-
-    displayTile(tileElement, position);
-    addVisualAttribute(tileElement, isPlaced);
-    attatchListener(tileElement, { position, isPlaced });
+    displayTile(tileElement, tile.position);
+    addVisualAttribute(tileElement, tile.isPlaced);
+    attatchListener(tileElement, tile);
+    highlightTile(tile, tileToHighlight, tileElement);
   });
 };
 
@@ -165,10 +188,10 @@ const displayPlayerName = username => {
   usernameContainer.innerText = username.toUpperCase();
 };
 
-const displayPlayerProfile = ({ balance, stocks, tiles }, players) => {
+const displayPlayerProfile = ({ balance, stocks, tiles, newTile }, players) => {
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
-  displayAndSetupAccountTiles(tiles, players);
+  displayAndSetupAccountTiles(newTile, tiles, players);
 };
 
 const displayIncorporatedTiles = ({ incorporatedTiles }) => {

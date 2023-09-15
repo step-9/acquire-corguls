@@ -294,7 +294,7 @@
 
 .disable-click {
   pointer-events: none;
-  opacity: 70%;
+  opacity: 85%;
 }
 
 .tile:hover {
