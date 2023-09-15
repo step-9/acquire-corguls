@@ -96,6 +96,31 @@ describe("Player", () => {
     });
   });
 
+  describe("refillTile", () => {
+    it("should refill the blank tiles space", () => {
+      const player = new Player("Bittu");
+      player.addTile({ position: { x: 0, y: 0 }, isPlaced: false });
+      player.addTile({ position: { x: 1, y: 1 }, isPlaced: false });
+      player.placeTile({ x: 0, y: 0 });
+      player.refillTile({ position: { x: 2, y: 2 }, isPlaced: false });
+      const { tiles } = player.portfolio();
+      console.log("hello tiles", tiles);
+
+      const playerTiles = [
+        {
+          isPlaced: false,
+          position: { x: 2, y: 2 },
+        },
+        {
+          isPlaced: false,
+          position: { x: 1, y: 1 },
+        },
+      ];
+
+      assert.deepStrictEqual(tiles, playerTiles);
+    });
+  });
+
   describe("startTurn", () => {
     it("should start player's turn", () => {
       const player = new Player("Bittu");
