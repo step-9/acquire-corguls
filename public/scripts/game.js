@@ -81,18 +81,17 @@ const renderMessagePairHolder = messageElements => {
 const displayInitialMessages = setupTiles => {
   if (!setupTiles) return;
 
-  const messages = setupTiles
-    .map(([name, { position }]) => {
-      const columnSpecification = position.y + 1;
-      const rowSpecification = String.fromCharCode(position.x + 65);
-      const tile = columnSpecification + rowSpecification;
+  const messages = setupTiles.map(([name, { position }]) => {
+    const columnSpecification = position.y + 1;
+    const rowSpecification = String.fromCharCode(position.x + 65);
+    const tile = columnSpecification + rowSpecification;
 
-      const tileSetupMessageElement = document.createElement;
-      return `${tile}: ${name}.`;
-    })
-    .join("\n");
+    const tileSetupMessageElement = document.createElement("div");
+    tileSetupMessageElement.innerText = `${tile} placed for ${name}.`;
+    return tileSetupMessageElement;
+  });
 
-  getDisplayPanel().innerText = messages;
+  getDisplayPanel().append(...messages);
 };
 
 const renderCorporations = corporations => {
@@ -390,7 +389,7 @@ const keepPlayerProfileUpdated = () => {
   setupGame();
   setTimeout(() => {
     setInterval(renderGame, interval);
-  }, interval * 1);
+  }, interval * 10);
 };
 
 window.onload = keepPlayerProfileUpdated;
