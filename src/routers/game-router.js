@@ -62,11 +62,30 @@ const startGame = (req, res) => {
   res.end();
 };
 
+const verifyHost = (req, res, next) => {
+  const { username } = req.cookies;
+  const { lobby } = req.app.context;
+  const { self, host } = lobby.status(username);
+
+  if (self.username !== host.username) {
+    const error = "Invalid request !";
+    return res.status(400).json({ error });
+  }
+
+  next();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
   router.get("/", authorizeLobbyMember, verifyStart, serveGamePage);
-  router.post("/start", authorizeLobbyMember, verifyStart, startGame);
+  router.post(
+    "/start",
+    authorizeLobbyMember,
+    verifyHost,
+    verifyStart,
+    startGame
+  );
   router.get("/status", authorizeLobbyMember, serveGameStats);
   router.post("/tile", authorizeLobbyMember, placeTile);
   router.post("/end-turn", authorizeLobbyMember, endPlayerTurn);

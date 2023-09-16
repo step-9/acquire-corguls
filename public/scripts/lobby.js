@@ -22,19 +22,7 @@ const renderPlayers = players => {
 };
 
 const redirectToGame = () => {
-  const messageElement = getMessageElement();
-  let delay = 3;
-
-  messageElement.innerText = "Loading Game";
-  const interval = setInterval(() => {
-    delay--;
-
-    if (delay === 0) {
-      window.location.assign("/game");
-      clearInterval(interval);
-      return;
-    }
-  }, 1000);
+  window.location.assign("/game");
 };
 
 const isHost = (host, self) => self.username === host.username;
@@ -77,7 +65,11 @@ const animate = () => {
 };
 
 const startGame = () => {
-  return fetch("/game/start", { method: "POST" }).then(redirectToGame);
+  return fetch("/game/start", { method: "POST" }).then(res => {
+    if (res.status === 200) {
+      redirectToGame();
+    }
+  });
 };
 
 const setUpStartButton = () => {
