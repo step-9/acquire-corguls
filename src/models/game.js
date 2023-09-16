@@ -123,9 +123,9 @@ class Game {
     player.addStocks(name, 1);
     corporation.decrementStocks(1);
 
-    this.#incorporatedTiles = this.#usedTiles.filter(
-      tile => tile.belongsTo === "incorporated"
-    );
+    // this.#incorporatedTiles = this.#usedTiles.filter(
+    //   tile => tile.belongsTo === "incorporated"
+    // );
 
     this.#state = GAME_STATES.tilePlaced;
   }

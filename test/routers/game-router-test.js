@@ -565,7 +565,32 @@ describe("GameRouter", () => {
         ],
         state: "tile-placed",
         tiles: {
-          incorporatedTiles: [],
+          incorporatedTiles: [
+            {
+              belongsTo: "phoenix",
+              isPlaced: true,
+              position: {
+                x: 1,
+                y: 0,
+              },
+            },
+            {
+              belongsTo: "phoenix",
+              isPlaced: true,
+              position: {
+                x: 1,
+                y: 1,
+              },
+            },
+            {
+              belongsTo: "phoenix",
+              isPlaced: true,
+              position: {
+                x: 0,
+                y: 0,
+              },
+            },
+          ],
         },
         players: [
           { username: username1, isTakingTurn: true, you: true },
