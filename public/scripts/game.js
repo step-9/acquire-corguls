@@ -63,20 +63,33 @@ const establishCorporation = data => {
   });
 };
 
+const createMessageElements = (name, position) => {
+  const columnSpecification = position.y + 1;
+  const rowSpecification = String.fromCharCode(position.x + 65);
+  const tile = columnSpecification + rowSpecification;
+
+  return generateComponent(["div", `${name}: ${tile}`, { class: "messgae" }]);
+};
+
+const renderMessagePairHolder = messageElements => {
+  const messagePairHolder = document.createElement("div");
+  messagePairHolder.append(...messageElements);
+  messagePairHolder.classList.add("message-pair-holder");
+  getDisplayPanel().append(messagePairHolder);
+};
+
 const displayInitialMessages = setupTiles => {
   if (!setupTiles) return;
 
-  const messages = setupTiles
-    .map(([name, { position }]) => {
-      const columnSpecification = position.y + 1;
-      const rowSpecification = String.fromCharCode(position.x + 65);
-      const tile = columnSpecification + rowSpecification;
+  for (let tileID = 0; tileID < setupTiles.length; tileID += 2) {
+    const firstPlayer = setupTiles[tileID];
+    const secondPlayer = setupTiles[tileID + 1];
+    const messageElements = [firstPlayer, secondPlayer].map(
+      ([name, { position }]) => createMessageElements(name, position)
+    );
 
-      return `${tile} was placed for ${name}.`;
-    })
-    .join("\n");
-
-  getDisplayPanel().innerText = messages;
+    renderMessagePairHolder(messageElements);
+  }
 };
 
 const renderCorporations = corporations => {
@@ -240,7 +253,15 @@ const generateRefillTileBtn = () => {
     "Refill",
     { type: "button", onclick: "refillTile()" },
   ]);
+
   return [refillTileMessageElement, endButton];
+};
+
+const renderTilePlacedMessage = () => {
+  const refillTilePrompt = document.createElement("div");
+  refillTilePrompt.classList.add("refill-tile-prompt");
+  refillTilePrompt.append(...generateRefillTileBtn());
+  getDisplayPanel.append(refillTilePrompt);
 };
 
 const displayMessage = state => {
@@ -252,7 +273,7 @@ const displayMessage = state => {
 
     "tile-placed": () => {
       displayPanel.innerHTML = "";
-      displayPanel.append(...generateRefillTileBtn());
+      renderTilePlacedMessage();
     },
 
     "establish-corporation": () => {
@@ -359,7 +380,7 @@ const keepPlayerProfileUpdated = () => {
   setupGame();
   setTimeout(() => {
     setInterval(renderGame, interval);
-  }, interval * 10);
+  }, interval * 1);
 };
 
 window.onload = keepPlayerProfileUpdated;
