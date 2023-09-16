@@ -166,13 +166,17 @@ describe("GameRouter", () => {
       const shuffle = x => x;
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
-      const userDetails = {
+      const gameStatus = {
         state: "tile-placed",
         setupTiles: [["player", { position: { x: 0, y: 6 }, isPlaced: true }]],
         tiles: {
           incorporatedTiles: [
             { position: { x: 0, y: 6 }, isPlaced: true },
-            { position: { x: 0, y: 0 }, isPlaced: true },
+            {
+              position: { x: 0, y: 0 },
+              isPlaced: true,
+              belongsTo: "incorporated",
+            },
           ],
         },
         players: [{ username, isTakingTurn: true, you: true }],
@@ -207,7 +211,6 @@ describe("GameRouter", () => {
           request(app)
             .post("/game/start")
             .set("cookie", "username=player")
-            .expect(200)
             .end(() => {
               request(app)
                 .post("/game/tile")
@@ -220,8 +223,96 @@ describe("GameRouter", () => {
                     .set("cookie", "username=player")
                     .expect(200)
                     .expect("content-type", new RegExp("application/json"))
-                    .expect(userDetails)
-                    .end(done);
+                    .end((err, res) => {
+                      assert.deepStrictEqual(res.body, gameStatus);
+                      done(err);
+                    });
+                });
+            });
+        });
+    });
+  });
+
+  describe("POST /game/end-turn", () => {
+    it("should change the turn of a player", (_, done) => {
+      const size = { lowerLimit: 2, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const username1 = "player1";
+      const username2 = "player2";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      const portfolio = {
+        tiles: [
+          { position: { x: 0, y: 0 }, isPlaced: false },
+          { position: { x: 0, y: 1 }, isPlaced: false },
+          { position: { x: 0, y: 2 }, isPlaced: false },
+          { position: { x: 0, y: 3 }, isPlaced: false },
+          { position: { x: 0, y: 4 }, isPlaced: false },
+          { position: { x: 0, y: 5 }, isPlaced: false },
+        ],
+        stocks: {
+          phoenix: 0,
+          quantum: 0,
+          hydra: 0,
+          fusion: 0,
+          america: 0,
+          sackson: 0,
+          zeta: 0,
+        },
+        balance: 6000,
+        newTile: { position: { x: 1, y: 2 }, isPlaced: false },
+      };
+
+      const gameStatus = {
+        setupTiles: [
+          ["player1", { position: { x: 1, y: 0 }, isPlaced: true }],
+          ["player2", { position: { x: 1, y: 1 }, isPlaced: true }],
+        ],
+        state: "place-tile",
+        tiles: {
+          incorporatedTiles: [
+            { position: { x: 1, y: 0 }, isPlaced: true },
+            { position: { x: 1, y: 1 }, isPlaced: true },
+          ],
+        },
+        players: [
+          { username: username1, isTakingTurn: false, you: true },
+          { username: username2, isTakingTurn: true, you: false },
+        ],
+        portfolio,
+        corporations,
+      };
+
+      request(app)
+        .post("/lobby/players")
+        .send({ username: username1 })
+        .expect(200)
+        .end(() => {
+          request(app)
+            .post("/lobby/players")
+            .send({ username: username2 })
+            .expect(200)
+            .end(() => {
+              request(app)
+                .post("/game/start")
+                .set("cookie", "username=player1")
+                .expect(200)
+                .end(() => {
+                  request(app)
+                    .post("/game/end-turn")
+                    .set("cookie", "username=player1")
+                    .expect(200)
+                    .end(() => {
+                      request(app)
+                        .get("/game/status")
+                        .set("cookie", "username=player1")
+                        .expect(200)
+                        .expect(gameStatus)
+                        .end(done);
+                    });
                 });
             });
         });
@@ -435,7 +526,10 @@ describe("GameRouter", () => {
       const gameRouter = createGameRouter();
       const shuffle = x => x;
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
-      const tileToPlace = { position: { x: 0, y: 0 }, isPlaced: true };
+      const tileToPlace = [
+        { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
+        { position: { x: 1, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
+      ];
 
       const portfolio = {
         tiles: [
@@ -460,12 +554,18 @@ describe("GameRouter", () => {
 
       const gameStatus = {
         setupTiles: [
-          ["player1", { position: { x: 1, y: 0 }, isPlaced: true }],
-          ["player2", { position: { x: 1, y: 1 }, isPlaced: true }],
+          [
+            "player1",
+            { position: { x: 1, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
+          ],
+          [
+            "player2",
+            { position: { x: 1, y: 1 }, isPlaced: true, belongsTo: "phoenix" },
+          ],
         ],
         state: "tile-placed",
         tiles: {
-          incorporatedTiles: [{ position: { x: 1, y: 1 }, isPlaced: true }],
+          incorporatedTiles: [],
         },
         players: [
           { username: username1, isTakingTurn: true, you: true },
@@ -476,9 +576,16 @@ describe("GameRouter", () => {
           ...corporations,
           phoenix: {
             stocks: 24,
-            tiles: [{ position: { x: 1, y: 0 }, isPlaced: true }, tileToPlace],
+            tiles: [
+              ...tileToPlace,
+              {
+                position: { x: 1, y: 1 },
+                isPlaced: true,
+                belongsTo: "phoenix",
+              },
+            ],
             isActive: true,
-            price: 400,
+            price: 500,
             majority: 2000,
             minority: 1000,
           },

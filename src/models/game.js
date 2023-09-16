@@ -1,4 +1,4 @@
-const { range } = require("lodash");
+const { range, groupBy } = require("lodash");
 const GAME_STATES = {
   setup: "setup",
   placeTile: "place-tile",
@@ -13,12 +13,14 @@ class Game {
   #shuffle;
   #players;
   #incorporatedTiles;
+  #usedTiles;
   #setupTiles;
   #turns;
-  #adjacentTilesOfLastTile;
+  #connectedTiles;
 
   constructor(players, shuffle, corporations) {
     this.#tiles = [];
+    this.#usedTiles = [];
     this.#incorporatedTiles = [];
     this.#corporations = corporations;
     this.#players = players;
@@ -58,44 +60,51 @@ class Game {
     this.#incorporatedTiles.push(tile);
   }
 
-  #getAdjacentTiles(currentTilePosition) {
-    const isHorizontallyAdjacent = (tile1, tile2) =>
-      Math.abs(tile1.x - tile2.x) === 1 && Math.abs(tile1.y - tile2.y) === 0;
+  #findConnectedTiles({ x, y }, grid = []) {
+    const tile = this.#usedTiles.find(
+      ({ position }) => position.x === x && position.y === y
+    );
 
-    const isVerticallyAdjacent = (tile1, tile2) =>
-      Math.abs(tile1.x - tile2.x) === 0 && Math.abs(tile1.y - tile2.y) === 1;
+    if (tile && !grid.includes(tile)) {
+      grid.push(tile);
+      this.#findConnectedTiles({ x: x + 1, y }, grid);
+      this.#findConnectedTiles({ x: x - 1, y }, grid);
+      this.#findConnectedTiles({ x, y: y + 1 }, grid);
+      this.#findConnectedTiles({ x, y: y - 1 }, grid);
+    }
 
-    const isAdjacent = (tile1, tile2) =>
-      isHorizontallyAdjacent(tile1, tile2) ||
-      isVerticallyAdjacent(tile1, tile2);
-
-    return this.#incorporatedTiles.filter(tile =>
-      isAdjacent(currentTilePosition, tile.position)
-    ); // return obj
+    return grid;
   }
 
   #consolidateTile(position) {
     const tile = { position, isPlaced: true };
-    this.#adjacentTilesOfLastTile = this.#getAdjacentTiles(position);
+    this.#usedTiles.push(tile);
+    this.#addToIncorporatedTiles(tile);
+    this.#connectedTiles = this.#findConnectedTiles(position);
 
-    const foundCorporation = this.#adjacentTilesOfLastTile.every(tile =>
-      this.#incorporatedTiles.includes(tile)
+    const groupedTiles = groupBy(
+      this.#connectedTiles.map(tile => {
+        tile.belongsTo = tile.belongsTo || "incorporated";
+        return tile;
+      }),
+      "belongsTo"
     );
 
+    const foundCorporation = () =>
+      Object.keys(groupedTiles).length === 1 &&
+      groupedTiles.incorporated.length > 1;
+
     switch (true) {
-      case this.#adjacentTilesOfLastTile.length === 0: {
+      case this.#connectedTiles.length === 1: {
         this.#state = GAME_STATES.tilePlaced;
         break;
       }
 
-      case foundCorporation: {
+      case foundCorporation(): {
         this.#state = GAME_STATES.establishCorporation;
         break;
       }
     }
-
-    this.#addToIncorporatedTiles(tile);
-    this.#adjacentTilesOfLastTile.push(tile);
   }
 
   establishCorporation({ name }) {
@@ -103,13 +112,19 @@ class Game {
     const corporation = this.#corporations[name];
 
     corporation.establish();
-    corporation.addTiles(this.#adjacentTilesOfLastTile);
+
+    corporation.setTiles(
+      this.#connectedTiles.map(tile => {
+        tile.belongsTo = name;
+        return tile;
+      })
+    );
 
     player.addStocks(name, 1);
     corporation.decrementStocks(1);
 
-    this.#incorporatedTiles = this.#incorporatedTiles.filter(
-      tile => !this.#adjacentTilesOfLastTile.includes(tile)
+    this.#incorporatedTiles = this.#usedTiles.filter(
+      tile => tile.belongsTo === "incorporated"
     );
 
     this.#state = GAME_STATES.tilePlaced;
@@ -129,9 +144,10 @@ class Game {
     });
 
     this.#players = firstTiles.map(([a]) => a);
-    firstTiles.forEach(([, tilePosition]) =>
-      this.#addToIncorporatedTiles(tilePosition)
-    );
+    firstTiles.forEach(([, tile]) => {
+      this.#usedTiles.push(tile);
+      this.#addToIncorporatedTiles(tile);
+    });
   }
 
   #currentPlayer() {

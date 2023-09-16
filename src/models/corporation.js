@@ -46,8 +46,8 @@ class Corporation {
     this.#isActive = true;
   }
 
-  addTiles(tiles) {
-    this.#tiles.push(...tiles);
+  setTiles(tiles) {
+    this.#tiles = [...tiles];
   }
 
   stats() {
