@@ -42,5 +42,6 @@ input {
 
 .disable-click {
   pointer-events: none;
+  color: gray;
   opacity: 85%;
 }
