@@ -78,18 +78,13 @@ const verifyHost = (req, res, next) => {
 const createGameRouter = () => {
   const router = new express.Router();
 
-  router.get("/", authorizeLobbyMember, verifyStart, serveGamePage);
-  router.post(
-    "/start",
-    authorizeLobbyMember,
-    verifyHost,
-    verifyStart,
-    startGame
-  );
-  router.get("/status", authorizeLobbyMember, serveGameStats);
-  router.post("/tile", authorizeLobbyMember, placeTile);
-  router.post("/end-turn", authorizeLobbyMember, endPlayerTurn);
-  router.post("/establish", authorizeLobbyMember, establishCorporation);
+  router.use(authorizeLobbyMember);
+  router.get("/", verifyStart, serveGamePage);
+  router.post("/start", verifyHost, verifyStart, startGame);
+  router.get("/status", serveGameStats);
+  router.post("/tile", placeTile);
+  router.post("/end-turn", endPlayerTurn);
+  router.post("/establish", establishCorporation);
 
   return router;
 };

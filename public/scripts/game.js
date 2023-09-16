@@ -211,10 +211,10 @@ const setupInfoCard = () => {
   };
 };
 
-const displayPlayerName = username => {
-  const usernameContainer = document.querySelector("#username");
-  usernameContainer.innerText = username.toUpperCase();
-};
+// const displayPlayerName = username => {
+//   const usernameContainer = document.querySelector("#username");
+//   usernameContainer.innerText = username.toUpperCase();
+// };
 
 const displayPlayerProfile = ({ balance, stocks, tiles, newTile }, players) => {
   displayAccountBalance(balance);
@@ -256,7 +256,7 @@ const renderPlayers = players => {
 };
 
 const generateRefillTileBtn = () => {
-  const refillTileMessageElement = generateComponent(["p", "Refill you tile"]);
+  const refillTileMessageElement = generateComponent(["p", "Refill your tile"]);
   const endButton = generateComponent([
     "button",
     "Refill",
@@ -389,7 +389,7 @@ const keepPlayerProfileUpdated = () => {
   setupGame();
   setTimeout(() => {
     setInterval(renderGame, interval);
-  }, interval * 10);
+  }, interval * 1);
 };
 
 window.onload = keepPlayerProfileUpdated;

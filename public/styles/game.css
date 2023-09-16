@@ -108,6 +108,12 @@
   background-color: var(--light-gray);
 }
 
+#account > .stocks {
+  padding: 1em 0em;
+  border-radius: 5px;
+  background-color: var(--light-gray);
+}
+
 .balance > header,
 .stocks > header,
 .tiles > header {
@@ -320,13 +326,13 @@
   background-color: var(--light-gray);
 }
 
-.refill-tile-prompt{
+.refill-tile-prompt {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.message-pair-holder{
+.message-pair-holder {
   display: flex;
   gap: 2em;
 }
