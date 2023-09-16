@@ -76,6 +76,7 @@ class Game {
     return grid;
   }
 
+  // eslint-disable-next-line complexity
   #consolidateTile(position) {
     const tile = { position, isPlaced: true };
     this.#usedTiles.push(tile);

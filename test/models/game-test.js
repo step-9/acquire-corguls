@@ -153,7 +153,7 @@ describe("Game", () => {
 
       game.placeTile("Biswa", { x: 0, y: 0 });
       game.establishCorporation({ name: "phoenix" });
-      game.placeTile("Biswa", { x: 0, y: 1 })
+      game.placeTile("Biswa", { x: 0, y: 1 });
 
       const { corporations } = game.status(player1.username);
 
