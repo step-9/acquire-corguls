@@ -142,6 +142,24 @@ describe("Game", () => {
 
       assert.strictEqual(state, "tile-placed");
     });
+
+    it("should grow a corporation if tile placed next to that corporation", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const shuffle = x => x;
+
+      const game = new Game([player1, player2], shuffle, createCorporations());
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 0 });
+      game.establishCorporation({ name: "phoenix" });
+      game.placeTile("Biswa", { x: 0, y: 1 })
+
+      const { corporations } = game.status(player1.username);
+
+      assert.strictEqual(corporations.phoenix.price, 600);
+      assert.strictEqual(corporations.phoenix.tiles.length, 4);
+    });
   });
 
   describe("placeTile", () => {

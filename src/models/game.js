@@ -94,6 +94,10 @@ class Game {
       Object.keys(groupedTiles).length === 1 &&
       groupedTiles.incorporated.length > 1;
 
+    const growCorporation = () =>
+      Object.keys(groupedTiles).length === 2 &&
+      groupedTiles.incorporated.length >= 1;
+
     switch (true) {
       case this.#connectedTiles.length === 1: {
         this.#state = GAME_STATES.tilePlaced;
@@ -102,6 +106,15 @@ class Game {
 
       case foundCorporation(): {
         this.#state = GAME_STATES.establishCorporation;
+        break;
+      }
+
+      case growCorporation(): {
+        const corp = Object.keys(groupedTiles)
+          .find((belongsTo) => belongsTo !== "incorporated");
+        this.#connectedTiles.forEach(tile => tile.belongsTo = corp);
+        this.#corporations[corp].setTiles(this.#connectedTiles);
+        this.#state = GAME_STATES.tilePlaced;
         break;
       }
     }
