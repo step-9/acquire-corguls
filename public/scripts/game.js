@@ -81,15 +81,18 @@ const renderMessagePairHolder = messageElements => {
 const displayInitialMessages = setupTiles => {
   if (!setupTiles) return;
 
-  for (let tileID = 0; tileID < setupTiles.length; tileID += 2) {
-    const firstPlayer = setupTiles[tileID];
-    const secondPlayer = setupTiles[tileID + 1];
-    const messageElements = [firstPlayer, secondPlayer].map(
-      ([name, { position }]) => createMessageElements(name, position)
-    );
+  const messages = setupTiles
+    .map(([name, { position }]) => {
+      const columnSpecification = position.y + 1;
+      const rowSpecification = String.fromCharCode(position.x + 65);
+      const tile = columnSpecification + rowSpecification;
 
-    renderMessagePairHolder(messageElements);
-  }
+      const tileSetupMessageElement = document.createElement;
+      return `${tile}: ${name}.`;
+    })
+    .join("\n");
+
+  getDisplayPanel().innerText = messages;
 };
 
 const renderCorporations = corporations => {
@@ -268,7 +271,7 @@ const renderTilePlacedMessage = () => {
   const refillTilePrompt = document.createElement("div");
   refillTilePrompt.classList.add("refill-tile-prompt");
   refillTilePrompt.append(...generateRefillTileBtn());
-  getDisplayPanel.append(refillTilePrompt);
+  getDisplayPanel().append(refillTilePrompt);
 };
 
 const displayMessage = state => {
