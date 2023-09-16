@@ -111,9 +111,10 @@ class Game {
       }
 
       case growCorporation(): {
-        const corp = Object.keys(groupedTiles)
-          .find((belongsTo) => belongsTo !== "incorporated");
-        this.#connectedTiles.forEach(tile => tile.belongsTo = corp);
+        const corp = Object.keys(groupedTiles).find(
+          belongsTo => belongsTo !== "incorporated"
+        );
+        this.#connectedTiles.forEach(tile => (tile.belongsTo = corp));
         this.#corporations[corp].setTiles(this.#connectedTiles);
         this.#state = GAME_STATES.tilePlaced;
         break;
