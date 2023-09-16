@@ -233,7 +233,14 @@ const renderPlayers = players => {
     return generateComponent([
       "div",
       [
-        ["div", "", { class: "profile-pic" }],
+        [
+          "img",
+          "",
+          {
+            class: "profile-pic",
+            src: `https://source.boringavatars.com/beam/120/${username}`,
+          },
+        ],
         ["div", username, { class: "name" }],
       ],
       {
