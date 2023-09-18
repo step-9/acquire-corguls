@@ -179,6 +179,21 @@ describe("Game", () => {
       assert.strictEqual(corporations.phoenix.price, 600);
       assert.strictEqual(corporations.phoenix.size, 4);
     });
+
+    it("should mark a corporation safe if it has 11 or more size", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const shuffle = x => x;
+      const corporations = createCorporations();
+      const game = new Game([player1, player2], shuffle, corporations);
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 0 });
+      corporations.phoenix.increaseSize(10);
+      game.establishCorporation({ name: "phoenix" });
+
+      assert.ok(corporations.phoenix.stats().isSafe);
+    });
   });
 
   describe("placeTile", () => {

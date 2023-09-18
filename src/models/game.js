@@ -87,6 +87,7 @@ class Game {
 
     connectedIncorporatedTiles.forEach(tile => (tile.belongsTo = name));
     corporation.increaseSize(connectedIncorporatedTiles.length);
+    if (corporation.stats().size > 10) corporation.markSafe();
   };
 
   #consolidateTile(position) {

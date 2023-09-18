@@ -2,7 +2,7 @@ const GAME_STATUS = {
   "place-tile": "'s turn.",
   "tile-placed": " placed a tile.",
   "establish-corporation": " is establishing a corporation",
-  "buy-stocks": " is buying stocks"
+  "buy-stocks": " is buying stocks",
 };
 
 const CORPORATIONS_IDS = {
@@ -108,6 +108,8 @@ const displayInitialMessages = setupTiles => {
 const renderCorporations = corporations => {
   Object.entries(corporations).forEach(([name, stats]) => {
     const corporation = getCorporation(name);
+
+    if (stats.isSafe) corporation.classList.add("safe");
 
     corporation.querySelector(".price").innerText = `$${stats.price}`;
     corporation.querySelector(".size").innerText = stats.size;
@@ -373,8 +375,9 @@ const setupBuyStocks = (players, corporations, portfolio, state) => {
 
   if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
 
-  const activeCorporations = Object.entries(corporations)
-    .filter(([, corp]) => corp.isActive && corp.stocks > 0);
+  const activeCorporations = Object.entries(corporations).filter(
+    ([, corp]) => corp.isActive && corp.stocks > 0
+  );
 
   if (activeCorporations.length === 0) return renderTilePlacedMessage();
 
