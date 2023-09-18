@@ -5,12 +5,14 @@ class Corporation {
   #size;
   #stocks;
   #isActive;
+  #isSafe;
 
   constructor(basePrice, size = 0) {
     this.#stocks = 25;
     this.#basePrice = basePrice;
     this.#size = size;
     this.#isActive = false;
+    this.#isSafe = false;
   }
 
   #range() {
@@ -38,6 +40,10 @@ class Corporation {
     this.#size += delta;
   }
 
+  markSafe() {
+    this.#isSafe = true;
+  }
+
   stats() {
     return {
       stocks: this.#stocks,
@@ -46,6 +52,7 @@ class Corporation {
       price: this.#price(),
       majority: 2000,
       minority: 1000,
+      isSafe: this.#isSafe,
     };
   }
 

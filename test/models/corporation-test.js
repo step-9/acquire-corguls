@@ -22,6 +22,7 @@ describe("Corporation", () => {
         size: 0,
         price: 0,
         isActive: false,
+        isSafe: false,
         majority: 2000,
         minority: 1000,
       };
@@ -36,6 +37,7 @@ describe("Corporation", () => {
         size,
         stocks: 25,
         isActive: false,
+        isSafe: false,
         price: 800,
         majority: 2000,
         minority: 1000,
@@ -51,6 +53,7 @@ describe("Corporation", () => {
         size,
         stocks: 25,
         isActive: false,
+        isSafe: false,
         price: 900,
         majority: 2000,
         minority: 1000,
@@ -66,6 +69,7 @@ describe("Corporation", () => {
         size,
         stocks: 25,
         isActive: false,
+        isSafe: false,
         price: 1000,
         majority: 2000,
         minority: 1000,
@@ -81,6 +85,7 @@ describe("Corporation", () => {
         size,
         stocks: 25,
         isActive: false,
+        isSafe: false,
         price: 1100,
         majority: 2000,
         minority: 1000,
@@ -96,6 +101,7 @@ describe("Corporation", () => {
         size,
         stocks: 25,
         isActive: false,
+        isSafe: false,
         price: 1200,
         majority: 2000,
         minority: 1000,
@@ -130,6 +136,15 @@ describe("Corporation", () => {
       assert.strictEqual(phoenix.stats().size, 0);
       phoenix.increaseSize(10);
       assert.strictEqual(phoenix.stats().size, 10);
+    });
+  });
+
+  describe("markSafe", () => {
+    it("should mark a corporation safe", () => {
+      const phoenix = new Corporation();
+      assert.ok(!phoenix.stats().isSafe);
+      phoenix.markSafe();
+      assert.ok(phoenix.stats().isSafe);
     });
   });
 });

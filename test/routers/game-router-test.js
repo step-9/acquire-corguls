@@ -12,6 +12,7 @@ describe("GameRouter", () => {
       stocks: 25,
       size: 0,
       isActive: false,
+      isSafe: false,
       price: 0,
       majority: 2000,
       minority: 1000,
@@ -20,6 +21,7 @@ describe("GameRouter", () => {
       stocks: 25,
       size: 0,
       isActive: false,
+      isSafe: false,
       price: 0,
       majority: 2000,
       minority: 1000,
@@ -28,6 +30,7 @@ describe("GameRouter", () => {
       stocks: 25,
       size: 0,
       isActive: false,
+      isSafe: false,
       price: 0,
       majority: 2000,
       minority: 1000,
@@ -36,6 +39,7 @@ describe("GameRouter", () => {
       stocks: 25,
       size: 0,
       isActive: false,
+      isSafe: false,
       price: 0,
       majority: 2000,
       minority: 1000,
@@ -44,6 +48,7 @@ describe("GameRouter", () => {
       stocks: 25,
       size: 0,
       isActive: false,
+      isSafe: false,
       price: 0,
       majority: 2000,
       minority: 1000,
@@ -52,6 +57,7 @@ describe("GameRouter", () => {
       stocks: 25,
       size: 0,
       isActive: false,
+      isSafe: false,
       price: 0,
       majority: 2000,
       minority: 1000,
@@ -60,6 +66,7 @@ describe("GameRouter", () => {
       stocks: 25,
       size: 0,
       isActive: false,
+      isSafe: false,
       price: 0,
       majority: 2000,
       minority: 1000,
@@ -496,6 +503,7 @@ describe("GameRouter", () => {
             stocks: 24,
             size: 3,
             isActive: true,
+            isSafe: false,
             price: 500,
             majority: 2000,
             minority: 1000,
@@ -580,14 +588,8 @@ describe("GameRouter", () => {
 
       const gameStatus = {
         setupTiles: [
-          [
-            "player1",
-            { position: { x: 1, y: 0 }, isPlaced: true },
-          ],
-          [
-            "player2",
-            { position: { x: 1, y: 1 }, isPlaced: true },
-          ],
+          ["player1", { position: { x: 1, y: 0 }, isPlaced: true }],
+          ["player2", { position: { x: 1, y: 1 }, isPlaced: true }],
         ],
         state: "tile-placed",
         placedTiles: [
@@ -627,6 +629,7 @@ describe("GameRouter", () => {
             stocks: 21,
             size: 3,
             isActive: true,
+            isSafe: false,
             price: 500,
             majority: 2000,
             minority: 1000,
@@ -666,7 +669,7 @@ describe("GameRouter", () => {
                             .send({
                               name: "phoenix",
                               quantity: 3,
-                              price: 1000
+                              price: 1000,
                             })
                             .set("cookie", "username=player1")
                             .expect(200)
