@@ -296,7 +296,7 @@
   content: url("/images/money-icon.png");
 }
 
-.placed-tile {
+.incorporated {
   transition-duration: 0.5s;
   background-color: var(--dark-gray);
   color: var(--light-gray);

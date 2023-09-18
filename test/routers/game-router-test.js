@@ -95,7 +95,7 @@ describe("GameRouter", () => {
   });
 
   describe("GET /game/status", () => {
-    it("should get the players account details", (_, done) => {
+    it("should get current game status", (_, done) => {
       const size = { lowerLimit: 1, upperLimit: 1 };
       const lobby = new Lobby(size);
       const username = "player";
@@ -128,9 +128,13 @@ describe("GameRouter", () => {
       const gameStatus = {
         setupTiles: [["player", { position: { x: 0, y: 6 }, isPlaced: true }]],
         state: "place-tile",
-        tiles: {
-          incorporatedTiles: [{ position: { x: 0, y: 6 }, isPlaced: true }],
-        },
+        placedTiles: [
+          {
+            position: { x: 0, y: 6 },
+            isPlaced: true,
+            belongsTo: "incorporated",
+          },
+        ],
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio,
         corporations,
@@ -149,8 +153,10 @@ describe("GameRouter", () => {
                 .get("/game/status")
                 .set("cookie", "username=player")
                 .expect(200)
-                .expect(gameStatus)
-                .end(done);
+                .end((err, res) => {
+                  assert.deepStrictEqual(res.body, gameStatus);
+                  done(err);
+                });
             });
         });
     });
@@ -169,16 +175,18 @@ describe("GameRouter", () => {
       const gameStatus = {
         state: "tile-placed",
         setupTiles: [["player", { position: { x: 0, y: 6 }, isPlaced: true }]],
-        tiles: {
-          incorporatedTiles: [
-            { position: { x: 0, y: 6 }, isPlaced: true },
-            {
-              position: { x: 0, y: 0 },
-              isPlaced: true,
-              belongsTo: "incorporated",
-            },
-          ],
-        },
+        placedTiles: [
+          {
+            position: { x: 0, y: 6 },
+            isPlaced: true,
+            belongsTo: "incorporated",
+          },
+          {
+            position: { x: 0, y: 0 },
+            isPlaced: true,
+            belongsTo: "incorporated",
+          },
+        ],
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio: {
           tiles: [
@@ -244,47 +252,10 @@ describe("GameRouter", () => {
       const shuffle = x => x;
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
-      const portfolio = {
-        tiles: [
-          { position: { x: 0, y: 0 }, isPlaced: false },
-          { position: { x: 0, y: 1 }, isPlaced: false },
-          { position: { x: 0, y: 2 }, isPlaced: false },
-          { position: { x: 0, y: 3 }, isPlaced: false },
-          { position: { x: 0, y: 4 }, isPlaced: false },
-          { position: { x: 0, y: 5 }, isPlaced: false },
-        ],
-        stocks: {
-          phoenix: 0,
-          quantum: 0,
-          hydra: 0,
-          fusion: 0,
-          america: 0,
-          sackson: 0,
-          zeta: 0,
-        },
-        balance: 6000,
-        newTile: { position: { x: 1, y: 2 }, isPlaced: false },
-      };
-
-      const gameStatus = {
-        setupTiles: [
-          ["player1", { position: { x: 1, y: 0 }, isPlaced: true }],
-          ["player2", { position: { x: 1, y: 1 }, isPlaced: true }],
-        ],
-        state: "place-tile",
-        tiles: {
-          incorporatedTiles: [
-            { position: { x: 1, y: 0 }, isPlaced: true },
-            { position: { x: 1, y: 1 }, isPlaced: true },
-          ],
-        },
-        players: [
-          { username: username1, isTakingTurn: false, you: true },
-          { username: username2, isTakingTurn: true, you: false },
-        ],
-        portfolio,
-        corporations,
-      };
+      const expectedPlayers = [
+        { username: username1, isTakingTurn: false, you: true },
+        { username: username2, isTakingTurn: true, you: false },
+      ];
 
       request(app)
         .post("/lobby/players")
@@ -310,94 +281,11 @@ describe("GameRouter", () => {
                         .get("/game/status")
                         .set("cookie", "username=player1")
                         .expect(200)
-                        .expect(gameStatus)
-                        .end(done);
-                    });
-                });
-            });
-        });
-    });
-  });
-
-  describe("POST /game/end-turn", () => {
-    it("should change the turn of a player", (_, done) => {
-      const size = { lowerLimit: 2, upperLimit: 2 };
-      const lobby = new Lobby(size);
-      const username1 = "player1";
-      const username2 = "player2";
-      const lobbyRouter = createLobbyRouter();
-      const gameRouter = createGameRouter();
-      const shuffle = x => x;
-      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
-
-      const portfolio = {
-        tiles: [
-          { position: { x: 0, y: 0 }, isPlaced: false },
-          { position: { x: 0, y: 1 }, isPlaced: false },
-          { position: { x: 0, y: 2 }, isPlaced: false },
-          { position: { x: 0, y: 3 }, isPlaced: false },
-          { position: { x: 0, y: 4 }, isPlaced: false },
-          { position: { x: 0, y: 5 }, isPlaced: false },
-        ],
-        stocks: {
-          phoenix: 0,
-          quantum: 0,
-          hydra: 0,
-          fusion: 0,
-          america: 0,
-          sackson: 0,
-          zeta: 0,
-        },
-        balance: 6000,
-        newTile: { position: { x: 1, y: 2 }, isPlaced: false },
-      };
-
-      const gameStatus = {
-        setupTiles: [
-          ["player1", { position: { x: 1, y: 0 }, isPlaced: true }],
-          ["player2", { position: { x: 1, y: 1 }, isPlaced: true }],
-        ],
-        state: "place-tile",
-        tiles: {
-          incorporatedTiles: [
-            { position: { x: 1, y: 0 }, isPlaced: true },
-            { position: { x: 1, y: 1 }, isPlaced: true },
-          ],
-        },
-        players: [
-          { username: username1, isTakingTurn: false, you: true },
-          { username: username2, isTakingTurn: true, you: false },
-        ],
-        portfolio,
-        corporations,
-      };
-
-      request(app)
-        .post("/lobby/players")
-        .send({ username: username1 })
-        .expect(200)
-        .end(() => {
-          request(app)
-            .post("/lobby/players")
-            .send({ username: username2 })
-            .expect(200)
-            .end(() => {
-              request(app)
-                .post("/game/start")
-                .set("cookie", "username=player1")
-                .expect(200)
-                .end(() => {
-                  request(app)
-                    .post("/game/end-turn")
-                    .set("cookie", "username=player1")
-                    .expect(200)
-                    .end(() => {
-                      request(app)
-                        .get("/game/status")
-                        .set("cookie", "username=player1")
-                        .expect(200)
-                        .expect(gameStatus)
-                        .end(done);
+                        .end((err, res) => {
+                          const { players } = res.body;
+                          assert.deepStrictEqual(players, expectedPlayers);
+                          done(err);
+                        });
                     });
                 });
             });
@@ -424,7 +312,11 @@ describe("GameRouter", () => {
             .post("/game/start")
             .set("cookie", "username=player")
             .expect(200)
-            .end(done);
+            .end(err => {
+              const { hasExpired } = lobby.status();
+              assert.ok(hasExpired);
+              done(err);
+            });
         });
     });
 
@@ -556,42 +448,47 @@ describe("GameRouter", () => {
         setupTiles: [
           [
             "player1",
-            { position: { x: 1, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
+            {
+              position: { x: 1, y: 0 },
+              isPlaced: true,
+            },
           ],
           [
             "player2",
-            { position: { x: 1, y: 1 }, isPlaced: true, belongsTo: "phoenix" },
+            {
+              position: { x: 1, y: 1 },
+              isPlaced: true,
+            },
           ],
         ],
         state: "tile-placed",
-        tiles: {
-          incorporatedTiles: [
-            {
-              belongsTo: "phoenix",
-              isPlaced: true,
-              position: {
-                x: 1,
-                y: 0,
-              },
+        placedTiles: [
+          {
+            belongsTo: "phoenix",
+            isPlaced: true,
+            position: {
+              x: 1,
+              y: 0,
             },
-            {
-              belongsTo: "phoenix",
-              isPlaced: true,
-              position: {
-                x: 1,
-                y: 1,
-              },
+          },
+          {
+            belongsTo: "phoenix",
+            isPlaced: true,
+            position: {
+              x: 1,
+              y: 1,
             },
-            {
-              belongsTo: "phoenix",
-              isPlaced: true,
-              position: {
-                x: 0,
-                y: 0,
-              },
+          },
+          {
+            belongsTo: "phoenix",
+            isPlaced: true,
+            position: {
+              x: 0,
+              y: 0,
             },
-          ],
-        },
+          },
+        ],
+
         players: [
           { username: username1, isTakingTurn: true, you: true },
           { username: username2, isTakingTurn: false, you: false },

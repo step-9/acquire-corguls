@@ -124,7 +124,7 @@ const displayAccountStocks = stocks => {
   });
 };
 
-const fillSpace = (position, corpClass = "placed-tile") => {
+const fillSpace = (position, corpClass) => {
   const board = getBoard();
   const tileId = position.x * 12 + position.y;
   board[tileId].classList.add(corpClass);
@@ -211,19 +211,16 @@ const setupInfoCard = () => {
   };
 };
 
-// const displayPlayerName = username => {
-//   const usernameContainer = document.querySelector("#username");
-//   usernameContainer.innerText = username.toUpperCase();
-// };
-
 const displayPlayerProfile = ({ balance, stocks, tiles, newTile }, players) => {
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
   displayAndSetupAccountTiles(newTile, tiles, players);
 };
 
-const displayIncorporatedTiles = ({ incorporatedTiles }) => {
-  incorporatedTiles.forEach(({ position }) => fillSpace(position));
+const renderBoard = placedTiles => {
+  placedTiles.forEach(({ position, belongsTo }) =>
+    fillSpace(position, belongsTo)
+  );
 };
 
 const renderPlayers = players => {
@@ -357,10 +354,10 @@ const setupCorporationSelection = (players, corporations, state) => {
 const setupGame = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, tiles, setupTiles, corporations }) => {
+    .then(({ players, portfolio, placedTiles, setupTiles, corporations }) => {
       renderPlayers(players);
       displayPlayerProfile(portfolio);
-      displayIncorporatedTiles(tiles);
+      renderBoard(placedTiles);
       displayInitialMessages(setupTiles);
       renderCorporations(corporations);
     });
@@ -371,10 +368,10 @@ const setupGame = () => {
 const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, tiles, state, corporations }) => {
+    .then(({ players, portfolio, state, placedTiles, corporations }) => {
       renderPlayers(players);
       displayPlayerProfile(portfolio, players);
-      displayIncorporatedTiles(tiles);
+      renderBoard(placedTiles);
       renderActivityMessage(state, players);
       setUpPlayerTilePlacing(players, state);
       setupCorporationSelection(players, corporations, state);

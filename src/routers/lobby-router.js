@@ -37,9 +37,9 @@ const sendLobbyStatus = (req, res) => {
 const createLobbyRouter = () => {
   const router = new express.Router();
 
-  router.get("/", authorize, serveLobbyPage);
+  router.get("/", authorize, authorizeLobbyMember, serveLobbyPage);
   router.post("/players", doNotJoinIfLobbyIsFull, joinPlayer);
-  router.get("/status", authorizeLobbyMember, sendLobbyStatus);
+  router.get("/status", authorize, authorizeLobbyMember, sendLobbyStatus);
 
   return router;
 };

@@ -7,27 +7,47 @@ const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
 
 describe("GET /lobby", () => {
-  it("should not allow if player is not authorized", (_, done) => {
-    const size = { lowerLimit: 3, upperLimit: 3 };
-    const lobby = new Lobby(size);
-    const lobbyRouter = createLobbyRouter();
-    const gameRouter = createGameRouter({});
-    const app = createApp(lobbyRouter, gameRouter, { lobby });
-    request(app).get("/lobby").expect(302).expect("location", "/").end(done);
-  });
-
   it("should serve the lobby page", (_, done) => {
     const size = { lowerLimit: 3, upperLimit: 3 };
+    const username = "player";
     const lobby = new Lobby(size);
+    lobby.addPlayer({ username });
     const lobbyRouter = createLobbyRouter();
     const gameRouter = createGameRouter({});
     const app = createApp(lobbyRouter, gameRouter, { lobby });
     request(app)
       .get("/lobby")
-      .set("cookie", "username=player")
+      .set("cookie", `username=${username}`)
       .expect(200)
       .expect("content-type", new RegExp("text/html"))
       .end(done);
+  });
+
+  it("should not allow unauthorized access", (_, done) => {
+    const size = { lowerLimit: 3, upperLimit: 3 };
+    const username = "player";
+    const lobby = new Lobby(size);
+    lobby.addPlayer({ username });
+    const lobbyRouter = createLobbyRouter();
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
+    request(app)
+      .get("/lobby")
+      .set("cookie", "username=abcd")
+      .expect(302)
+      .expect("location", "/")
+      .end(done);
+  });
+
+  it("should not allow if player is not in lobby", (_, done) => {
+    const size = { lowerLimit: 3, upperLimit: 3 };
+    const username = "player";
+    const lobby = new Lobby(size);
+    lobby.addPlayer({ username });
+    const lobbyRouter = createLobbyRouter();
+    const gameRouter = createGameRouter({});
+    const app = createApp(lobbyRouter, gameRouter, { lobby });
+    request(app).get("/lobby").expect(302).expect("location", "/").end(done);
   });
 });
 

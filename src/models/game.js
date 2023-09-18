@@ -13,14 +13,14 @@ class Game {
   #shuffle;
   #players;
   #incorporatedTiles;
-  #usedTiles;
+  #placedTiles;
   #setupTiles;
   #turns;
   #connectedTiles;
 
   constructor(players, shuffle, corporations) {
     this.#tiles = [];
-    this.#usedTiles = [];
+    this.#placedTiles = [];
     this.#incorporatedTiles = [];
     this.#corporations = corporations;
     this.#players = players;
@@ -61,7 +61,7 @@ class Game {
   }
 
   #findConnectedTiles({ x, y }, grid = []) {
-    const tile = this.#usedTiles.find(
+    const tile = this.#placedTiles.find(
       ({ position }) => position.x === x && position.y === y
     );
 
@@ -78,18 +78,13 @@ class Game {
 
   // eslint-disable-next-line complexity
   #consolidateTile(position) {
-    const tile = { position, isPlaced: true };
-    this.#usedTiles.push(tile);
+    const tile = { position, isPlaced: true, belongsTo: "incorporated" };
+
+    this.#placedTiles.push(tile);
     this.#addToIncorporatedTiles(tile);
     this.#connectedTiles = this.#findConnectedTiles(position);
 
-    const groupedTiles = groupBy(
-      this.#connectedTiles.map(tile => {
-        tile.belongsTo = tile.belongsTo || "incorporated";
-        return tile;
-      }),
-      "belongsTo"
-    );
+    const groupedTiles = groupBy(this.#connectedTiles, "belongsTo");
 
     const foundCorporation = () =>
       Object.keys(groupedTiles).length === 1 &&
@@ -138,13 +133,10 @@ class Game {
     player.addStocks(name, 1);
     corporation.decrementStocks(1);
 
-    // this.#incorporatedTiles = this.#usedTiles.filter(
-    //   tile => tile.belongsTo === "incorporated"
-    // );
-
     this.#state = GAME_STATES.tilePlaced;
   }
 
+  //Remove username
   placeTile(username, position) {
     const player = this.#players.find(player => player.username === username);
     this.#consolidateTile(position);
@@ -159,8 +151,14 @@ class Game {
     });
 
     this.#players = firstTiles.map(([a]) => a);
+
     firstTiles.forEach(([, tile]) => {
-      this.#usedTiles.push(tile);
+      this.#placedTiles.push({
+        ...tile,
+        belongsTo: "incorporated",
+        isPlaced: true,
+      });
+
       this.#addToIncorporatedTiles(tile);
     });
   }
@@ -226,12 +224,10 @@ class Game {
         player.username,
         tile,
       ]),
-      tiles: {
-        incorporatedTiles: this.#incorporatedTiles,
-      },
       players: this.#getPlayers(username),
       portfolio: this.playerDetails(username),
       corporations: this.#getCorporationStats(),
+      placedTiles: this.#placedTiles,
     };
   }
 }
