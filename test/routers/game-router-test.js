@@ -556,10 +556,6 @@ describe("GameRouter", () => {
       const gameRouter = createGameRouter();
       const shuffle = x => x;
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
-      const tileToPlace = [
-        { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
-        { position: { x: 1, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
-      ];
 
       const portfolio = {
         tiles: [
