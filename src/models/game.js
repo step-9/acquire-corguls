@@ -17,6 +17,7 @@ class Game {
   #setupTiles;
   #turns;
   #connectedTiles;
+  #handlers;
 
   constructor(players, shuffle, corporations) {
     this.#tiles = [];
@@ -87,7 +88,6 @@ class Game {
     corporation.increaseSize(connectedIncorporatedTiles.length);
   };
 
-  // eslint-disable-next-line complexity
   #consolidateTile(position) {
     const tile = { position, isPlaced: true, belongsTo: "incorporated" };
 
@@ -96,36 +96,8 @@ class Game {
     this.#connectedTiles = this.#findConnectedTiles(position);
 
     const groupedTiles = groupBy(this.#connectedTiles, "belongsTo");
-
-    const foundCorporation = () =>
-      Object.keys(groupedTiles).length === 1 &&
-      groupedTiles.incorporated.length > 1;
-
-    const growCorporation = () =>
-      Object.keys(groupedTiles).length === 2 &&
-      groupedTiles.incorporated.length >= 1;
-
-    switch (true) {
-      case this.#connectedTiles.length === 1: {
-        this.#state = GAME_STATES.tilePlaced;
-        break;
-      }
-
-      case foundCorporation(): {
-        this.#state = GAME_STATES.establishCorporation;
-        break;
-      }
-
-      case growCorporation(): {
-        const name = Object.keys(groupedTiles).find(
-          belongsTo => belongsTo !== "incorporated"
-        );
-
-        this.#growCorporation(name);
-        this.#state = GAME_STATES.tilePlaced;
-        break;
-      }
-    }
+    const { handler } = this.#handlers.find(({ match }) => match(groupedTiles));
+    handler(groupedTiles);
   }
 
   establishCorporation({ name }) {
@@ -172,11 +144,49 @@ class Game {
     return this.#players[this.#turns % this.#players.length];
   }
 
+  // TODO: Refactor it
+  #setupHandlers() {
+    const foundCorporation = groupedTiles =>
+      Object.keys(groupedTiles).length === 1 &&
+      groupedTiles.incorporated.length > 1;
+
+    const growCorporation = groupedTiles =>
+      Object.keys(groupedTiles).length === 2 &&
+      groupedTiles.incorporated.length >= 1;
+
+    this.#handlers = [
+      {
+        match: foundCorporation,
+        handler: () => {
+          this.#state = GAME_STATES.establishCorporation;
+        },
+      },
+      {
+        match: growCorporation,
+        handler: groupedTiles => {
+          const name = Object.keys(groupedTiles).find(
+            belongsTo => belongsTo !== "incorporated"
+          );
+
+          this.#growCorporation(name);
+          this.#state = GAME_STATES.tilePlaced;
+        },
+      },
+      {
+        match: () => true,
+        handler: () => {
+          this.#state = GAME_STATES.tilePlaced;
+        },
+      },
+    ];
+  }
+
   setup() {
     this.#createTilesStack();
     this.#shuffleTiles();
     this.#provideInitialAsset();
     this.#decidePlayingOrder();
+    this.#setupHandlers();
   }
 
   start() {
