@@ -10,7 +10,7 @@ describe("GameRouter", () => {
   const corporations = {
     phoenix: {
       stocks: 25,
-      tiles: [],
+      size: 0,
       isActive: false,
       price: 0,
       majority: 2000,
@@ -18,7 +18,7 @@ describe("GameRouter", () => {
     },
     quantum: {
       stocks: 25,
-      tiles: [],
+      size: 0,
       isActive: false,
       price: 0,
       majority: 2000,
@@ -26,7 +26,7 @@ describe("GameRouter", () => {
     },
     fusion: {
       stocks: 25,
-      tiles: [],
+      size: 0,
       isActive: false,
       price: 0,
       majority: 2000,
@@ -34,7 +34,7 @@ describe("GameRouter", () => {
     },
     hydra: {
       stocks: 25,
-      tiles: [],
+      size: 0,
       isActive: false,
       price: 0,
       majority: 2000,
@@ -42,7 +42,7 @@ describe("GameRouter", () => {
     },
     america: {
       stocks: 25,
-      tiles: [],
+      size: 0,
       isActive: false,
       price: 0,
       majority: 2000,
@@ -50,7 +50,7 @@ describe("GameRouter", () => {
     },
     zeta: {
       stocks: 25,
-      tiles: [],
+      size: 0,
       isActive: false,
       price: 0,
       majority: 2000,
@@ -58,7 +58,7 @@ describe("GameRouter", () => {
     },
     sackson: {
       stocks: 25,
-      tiles: [],
+      size: 0,
       isActive: false,
       price: 0,
       majority: 2000,
@@ -418,10 +418,6 @@ describe("GameRouter", () => {
       const gameRouter = createGameRouter();
       const shuffle = x => x;
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
-      const tileToPlace = [
-        { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
-        { position: { x: 1, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
-      ];
 
       const portfolio = {
         tiles: [
@@ -498,14 +494,7 @@ describe("GameRouter", () => {
           ...corporations,
           phoenix: {
             stocks: 24,
-            tiles: [
-              ...tileToPlace,
-              {
-                position: { x: 1, y: 1 },
-                isPlaced: true,
-                belongsTo: "phoenix",
-              },
-            ],
+            size: 3,
             isActive: true,
             price: 500,
             majority: 2000,

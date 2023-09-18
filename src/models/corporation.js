@@ -1,40 +1,28 @@
-const { CORPORATION_TYPES } = require("../constants");
+const { BASE_PRICES } = require("../constants");
 
 class Corporation {
-  #rates;
-  #tiles;
+  #basePrice;
+  #size;
   #stocks;
   #isActive;
 
-  constructor(rates, tiles = []) {
+  constructor(basePrice, size = 0) {
     this.#stocks = 25;
-    this.#rates = rates;
-    this.#tiles = tiles;
+    this.#basePrice = basePrice;
+    this.#size = size;
     this.#isActive = false;
   }
 
-  // eslint-disable-next-line complexity
-  #determineRange() {
-    const size = this.#tiles.length;
-
-    switch (true) {
-      case size >= 41:
-        return "41+";
-      case size >= 31:
-        return "31-40";
-      case size >= 21:
-        return "21-30";
-      case size >= 11:
-        return "11-20";
-      case size >= 6:
-        return "6-10";
-    }
-
-    return size;
+  #range() {
+    const size = this.#size;
+    const lowerBounds = [41, 31, 21, 11, 6, 5, 4, 3, 2, 0];
+    const boundIndex = lowerBounds.findIndex(lowerBound => size >= lowerBound);
+    return lowerBounds.length - 1 - boundIndex;
   }
 
-  #currentPrice() {
-    return this.#rates[this.#determineRange()] || 0;
+  #price() {
+    return this.#size === 0 ? 0 : this.#basePrice + 100 * this.#range();
+    // TODO: Refactor it
   }
 
   decrementStocks(quantity) {
@@ -46,16 +34,16 @@ class Corporation {
     this.#isActive = true;
   }
 
-  setTiles(tiles) {
-    this.#tiles = [...tiles];
+  increaseSize(delta) {
+    this.#size += delta;
   }
 
   stats() {
     return {
       stocks: this.#stocks,
-      tiles: [...this.#tiles],
+      size: this.#size,
       isActive: this.#isActive,
-      price: this.#currentPrice(),
+      price: this.#price(),
       majority: 2000,
       minority: 1000,
     };
@@ -72,13 +60,13 @@ class Corporation {
 
 const createCorporations = () => {
   return {
-    phoenix: new Corporation(CORPORATION_TYPES.large),
-    quantum: new Corporation(CORPORATION_TYPES.large),
-    fusion: new Corporation(CORPORATION_TYPES.medium),
-    hydra: new Corporation(CORPORATION_TYPES.medium),
-    america: new Corporation(CORPORATION_TYPES.medium),
-    zeta: new Corporation(CORPORATION_TYPES.small),
-    sackson: new Corporation(CORPORATION_TYPES.small),
+    phoenix: new Corporation(BASE_PRICES.large),
+    quantum: new Corporation(BASE_PRICES.large),
+    fusion: new Corporation(BASE_PRICES.medium),
+    hydra: new Corporation(BASE_PRICES.medium),
+    america: new Corporation(BASE_PRICES.medium),
+    zeta: new Corporation(BASE_PRICES.small),
+    sackson: new Corporation(BASE_PRICES.small),
   };
 };
 

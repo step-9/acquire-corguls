@@ -99,9 +99,8 @@ const renderCorporations = corporations => {
     const corporation = getCorporation(name);
 
     corporation.querySelector(".price").innerText = `$${stats.price}`;
-    corporation.querySelector(".size").innerText = stats.tiles.length;
+    corporation.querySelector(".size").innerText = stats.size;
     corporation.querySelector(".stocks").innerText = stats.stocks;
-    stats.tiles.forEach(({ position }) => fillSpace(position, name));
   });
 };
 

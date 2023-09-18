@@ -76,6 +76,17 @@ class Game {
     return grid;
   }
 
+  #growCorporation = name => {
+    const corporation = this.#corporations[name];
+
+    const connectedIncorporatedTiles = this.#connectedTiles.filter(
+      ({ belongsTo }) => belongsTo === "incorporated"
+    );
+
+    connectedIncorporatedTiles.forEach(tile => (tile.belongsTo = name));
+    corporation.increaseSize(connectedIncorporatedTiles.length);
+  };
+
   // eslint-disable-next-line complexity
   #consolidateTile(position) {
     const tile = { position, isPlaced: true, belongsTo: "incorporated" };
@@ -106,11 +117,11 @@ class Game {
       }
 
       case growCorporation(): {
-        const corp = Object.keys(groupedTiles).find(
+        const name = Object.keys(groupedTiles).find(
           belongsTo => belongsTo !== "incorporated"
         );
-        this.#connectedTiles.forEach(tile => (tile.belongsTo = corp));
-        this.#corporations[corp].setTiles(this.#connectedTiles);
+
+        this.#growCorporation(name);
         this.#state = GAME_STATES.tilePlaced;
         break;
       }
@@ -122,13 +133,7 @@ class Game {
     const corporation = this.#corporations[name];
 
     corporation.establish();
-
-    corporation.setTiles(
-      this.#connectedTiles.map(tile => {
-        tile.belongsTo = name;
-        return tile;
-      })
-    );
+    this.#growCorporation(name);
 
     player.addStocks(name, 1);
     corporation.decrementStocks(1);

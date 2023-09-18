@@ -158,7 +158,7 @@ describe("Game", () => {
       const { corporations } = game.status(player1.username);
 
       assert.strictEqual(corporations.phoenix.price, 600);
-      assert.strictEqual(corporations.phoenix.tiles.length, 4);
+      assert.strictEqual(corporations.phoenix.size, 4);
     });
   });
 
