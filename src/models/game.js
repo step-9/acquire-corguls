@@ -147,9 +147,13 @@ class Game {
 
   // TODO: Refactor it
   #setupHandlers() {
+    const noActiveCorporation = () =>
+      Object.values(this.#corporations).find(corp => !corp.isActive);
+
     const foundCorporation = groupedTiles =>
       Object.keys(groupedTiles).length === 1 &&
-      groupedTiles.incorporated.length > 1;
+      groupedTiles.incorporated.length > 1 &&
+      noActiveCorporation();
 
     const growCorporation = groupedTiles =>
       Object.keys(groupedTiles).length === 2 &&

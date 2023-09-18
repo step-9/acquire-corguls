@@ -127,7 +127,7 @@ describe("Game", () => {
       assert.strictEqual(state, "establish-corporation");
     });
 
-    it("should not be in find corporation state when placed next to 0 adjacent tiles", () => {
+    it("should not be in find corporation state when no adjacent tiles are there", () => {
       const player1 = new Player("Biswa");
       const player2 = new Player("Bittu");
       const corporations = createCorporations();
@@ -140,6 +140,25 @@ describe("Game", () => {
 
       const { state } = game.status(player1.username);
 
+      assert.strictEqual(state, "buy-stocks");
+    });
+
+    it("should not establish if all corporation has been established", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const corporations = createCorporations();
+      const shuffle = x => x;
+
+      Object.values(corporations).forEach(corp => corp.establish());
+
+      const game = new Game([player1, player2], shuffle, corporations);
+
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 4 });
+      game.placeTile("Biswa", { x: 0, y: 3 });
+
+      const { state } = game.status(player1.username);
       assert.strictEqual(state, "buy-stocks");
     });
 
@@ -221,7 +240,7 @@ describe("Game", () => {
       const transactionDetails = {
         name: "phoenix",
         quantity: 3,
-        price: 1000
+        price: 1000,
       };
 
       game.start();
@@ -245,7 +264,7 @@ describe("Game", () => {
       const transactionDetails = {
         name: "phoenix",
         quantity: 3,
-        price: 6001
+        price: 6001,
       };
 
       game.start();
@@ -258,6 +277,25 @@ describe("Game", () => {
       assert.strictEqual(balance, 6000);
       assert.strictEqual(stocks.phoenix, 0);
       assert.strictEqual(corporations["phoenix"].stocks, 25);
+    });
+  });
+
+  describe("establishCorporation", () => {
+    it("should establish a corporation", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const corporations = createCorporations();
+      const shuffle = x => x;
+
+      const game = new Game([player1, player2], shuffle, corporations);
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 4 });
+      game.placeTile("Biswa", { x: 0, y: 3 });
+
+      assert.ok(!corporations.phoenix.isActive);
+      game.establishCorporation({ name: "phoenix" });
+      assert.ok(corporations.phoenix.isActive);
     });
   });
 });
