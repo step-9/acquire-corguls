@@ -29,6 +29,15 @@ const endPlayerTurn = (req, res) => {
   res.end();
 };
 
+const buyStocks = (req, res) => {
+  const { game } = req.app.context;
+  const { name, quantity, price } = req.body;
+  console.log(name, quantity, price);
+
+  game.buyStocks({ name, quantity, price });
+  res.end();
+};
+
 const establishCorporation = (req, res) => {
   const { game } = req.app.context;
   const { name } = req.body;
@@ -84,6 +93,7 @@ const createGameRouter = () => {
   router.get("/status", serveGameStats);
   router.post("/tile", placeTile);
   router.post("/end-turn", endPlayerTurn);
+  router.post("/buy-stocks", buyStocks);
   router.post("/establish", establishCorporation);
 
   return router;

@@ -6,7 +6,7 @@ class Player {
   #isTakingTurn;
   #newTile;
 
-  constructor(username, balance = 0, stocks = [], tiles = []) {
+  constructor(username, balance = 0, stocks = {}, tiles = []) {
     this.#username = username;
     this.#tiles = tiles;
     this.#stocks = stocks;
@@ -21,6 +21,10 @@ class Player {
 
   get isTakingTurn() {
     return this.#isTakingTurn;
+  }
+
+  get balance() {
+    return this.#balance;
   }
 
   portfolio() {

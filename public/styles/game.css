@@ -412,7 +412,7 @@
   content: "Sackson";
 }
 
-.corporation:not(.active) {
+.corporation:not(.non-selectable) {
   cursor: pointer;
   transform: scale(1.04);
   border: 1px solid white;
@@ -420,6 +420,6 @@
   box-shadow: 1px 1px 5px 2px var(--dark-gray);
 }
 
-.corporation.active {
+.corporation.non-selectable {
   pointer-events: none;
 }

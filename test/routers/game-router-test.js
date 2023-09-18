@@ -173,7 +173,7 @@ describe("GameRouter", () => {
       const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
 
       const gameStatus = {
-        state: "tile-placed",
+        state: "buy-stocks",
         setupTiles: [["player", { position: { x: 0, y: 6 }, isPlaced: true }]],
         placedTiles: [
           {
@@ -457,7 +457,7 @@ describe("GameRouter", () => {
             },
           ],
         ],
-        state: "tile-placed",
+        state: "buy-stocks",
         placedTiles: [
           {
             belongsTo: "phoenix",
@@ -537,6 +537,151 @@ describe("GameRouter", () => {
                             .end((err, res) => {
                               assert.deepStrictEqual(res.body, gameStatus);
                               done(err);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+  });
+
+  describe("POST /game/buy-stocks", () => {
+    it("should buy stocks of an active corporation", (_, done) => {
+      const size = { lowerLimit: 2, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const username1 = "player1";
+      const username2 = "player2";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+      const tileToPlace = [
+        { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
+        { position: { x: 1, y: 0 }, isPlaced: true, belongsTo: "phoenix" },
+      ];
+
+      const portfolio = {
+        tiles: [
+          { position: { x: 0, y: 0 }, isPlaced: true },
+          { position: { x: 0, y: 1 }, isPlaced: false },
+          { position: { x: 0, y: 2 }, isPlaced: false },
+          { position: { x: 0, y: 3 }, isPlaced: false },
+          { position: { x: 0, y: 4 }, isPlaced: false },
+          { position: { x: 0, y: 5 }, isPlaced: false },
+        ],
+        stocks: {
+          phoenix: 4,
+          quantum: 0,
+          hydra: 0,
+          fusion: 0,
+          america: 0,
+          sackson: 0,
+          zeta: 0,
+        },
+        balance: 5000,
+      };
+
+      const gameStatus = {
+        setupTiles: [
+          [
+            "player1",
+            { position: { x: 1, y: 0 }, isPlaced: true },
+          ],
+          [
+            "player2",
+            { position: { x: 1, y: 1 }, isPlaced: true },
+          ],
+        ],
+        state: "tile-placed",
+        placedTiles: [
+          {
+            belongsTo: "phoenix",
+            isPlaced: true,
+            position: {
+              x: 1,
+              y: 0,
+            },
+          },
+          {
+            belongsTo: "phoenix",
+            isPlaced: true,
+            position: {
+              x: 1,
+              y: 1,
+            },
+          },
+          {
+            belongsTo: "phoenix",
+            isPlaced: true,
+            position: {
+              x: 0,
+              y: 0,
+            },
+          },
+        ],
+        players: [
+          { username: username1, isTakingTurn: true, you: true },
+          { username: username2, isTakingTurn: false, you: false },
+        ],
+        portfolio,
+        corporations: {
+          ...corporations,
+          phoenix: {
+            stocks: 21,
+            size: 3,
+            isActive: true,
+            price: 500,
+            majority: 2000,
+            minority: 1000,
+          },
+        },
+      };
+
+      request(app)
+        .post("/lobby/players")
+        .send({ username: username1 })
+        .expect(200)
+        .end(() => {
+          request(app)
+            .post("/lobby/players")
+            .send({ username: username2 })
+            .expect(200)
+            .end(() => {
+              request(app)
+                .post("/game/start")
+                .set("cookie", "username=player1")
+                .expect(200)
+                .end(() => {
+                  request(app)
+                    .post("/game/tile")
+                    .set("cookie", "username=player1")
+                    .send({ x: 0, y: 0 })
+                    .expect(200)
+                    .end(() => {
+                      request(app)
+                        .post("/game/establish")
+                        .send({ name: "phoenix" })
+                        .set("cookie", "username=player1")
+                        .expect(200)
+                        .end(() => {
+                          request(app)
+                            .post("/game/buy-stocks")
+                            .send({
+                              name: "phoenix",
+                              quantity: 3,
+                              price: 1000
+                            })
+                            .set("cookie", "username=player1")
+                            .expect(200)
+                            .end(() => {
+                              request(app)
+                                .get("/game/status")
+                                .set("cookie", "username=player1")
+                                .end((err, res) => {
+                                  assert.deepStrictEqual(res.body, gameStatus);
+                                  done(err);
+                                });
                             });
                         });
                     });

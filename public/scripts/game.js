@@ -2,6 +2,7 @@ const GAME_STATUS = {
   "place-tile": "'s turn.",
   "tile-placed": " placed a tile.",
   "establish-corporation": " is establishing a corporation",
+  "buy-stocks": " is buying stocks"
 };
 
 const CORPORATIONS_IDS = {
@@ -55,6 +56,16 @@ const refillTile = () => {
 
 const establishCorporation = data => {
   fetch("/game/establish", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "content-type": "application/json",
+    },
+  });
+};
+
+const buyStocks = data => {
+  fetch("/game/buy-stocks", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -284,6 +295,10 @@ const displayMessage = state => {
     "establish-corporation": () => {
       displayPanel.innerText = "Select a corporation to establish...";
     },
+
+    "buy-stocks": () => {
+      displayPanel.innerText = "Buying stocks...";
+    },
   };
 
   renderMessage[state]();
@@ -334,7 +349,7 @@ const setupCorporationSelection = (players, corporations, state) => {
 
   if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) {
     [...document.querySelectorAll(".corporation")].forEach(corp =>
-      corp.classList.add("active")
+      corp.classList.add("non-selectable")
     );
     return;
   }
@@ -347,7 +362,29 @@ const setupCorporationSelection = (players, corporations, state) => {
       corp.onclick = () => establishCorporation({ name });
       return corp;
     })
-    .forEach(corp => corp.classList.remove("active"));
+    .forEach(corp => corp.classList.remove("non-selectable"));
+};
+
+// eslint-disable-next-line complexity
+const setupBuyStocks = (players, corporations, portfolio, state) => {
+  const self = players.find(({ you }) => you);
+  const isInCorrectState = "buy-stocks" === state;
+  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
+
+  if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
+
+  const activeCorporations = Object.entries(corporations)
+    .filter(([, corp]) => corp.isActive && corp.stocks > 0);
+
+  if (activeCorporations.length === 0) return renderTilePlacedMessage();
+
+  activeCorporations
+    .map(([name, { price }]) => {
+      const corp = getCorporation(name);
+      corp.onclick = () => buyStocks({ name, quantity: 3, price: price * 3 });
+      return corp;
+    })
+    .forEach(corp => corp.classList.remove("non-selectable"));
 };
 
 const setupGame = () => {
@@ -374,6 +411,7 @@ const renderGame = () => {
       renderActivityMessage(state, players);
       setUpPlayerTilePlacing(players, state);
       setupCorporationSelection(players, corporations, state);
+      setupBuyStocks(players, corporations, portfolio, state);
       renderCorporations(corporations);
     });
 

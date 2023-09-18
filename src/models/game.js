@@ -4,6 +4,7 @@ const GAME_STATES = {
   placeTile: "place-tile",
   tilePlaced: "tile-placed",
   establishCorporation: "establish-corporation",
+  buyStocks: "buy-stocks",
 };
 
 class Game {
@@ -110,7 +111,7 @@ class Game {
     player.addStocks(name, 1);
     corporation.decrementStocks(1);
 
-    this.#state = GAME_STATES.tilePlaced;
+    this.#state = GAME_STATES.buyStocks;
   }
 
   //Remove username
@@ -169,13 +170,13 @@ class Game {
           );
 
           this.#growCorporation(name);
-          this.#state = GAME_STATES.tilePlaced;
+          this.#state = GAME_STATES.buyStocks;
         },
       },
       {
         match: () => true,
         handler: () => {
-          this.#state = GAME_STATES.tilePlaced;
+          this.#state = GAME_STATES.buyStocks;
         },
       },
     ];
@@ -221,6 +222,20 @@ class Game {
     this.#currentPlayer().startTurn();
     this.#state = GAME_STATES.placeTile;
     // refill
+  }
+
+  // eslint-disable-next-line complexity
+  buyStocks({ name, quantity, price }) {
+    const player = this.#currentPlayer();
+    const corp = this.#corporations[name];
+
+    if (corp.isActive && corp.stocks >= quantity && player.balance >= price) {
+      corp.decrementStocks(quantity);
+      player.addExpense(price);
+      player.addStocks(name, quantity);
+    }
+
+    this.#state = GAME_STATES.tilePlaced;
   }
 
   #getCorporationStats() {
