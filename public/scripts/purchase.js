@@ -120,7 +120,7 @@ class Purchase {
     stockBuyingPrompt.append(...this.#generateConfirmCancel());
 
     this.#displayPanel.innerHTML = "";
-    this.#totalPrice.innerText = `Total: ${this.#cart.price}`;
+    this.#totalPrice.innerText = `Total: $${this.#cart.price}`;
     this.#displayPanel.append(cartElement, stockBuyingPrompt);
   }
 
@@ -137,6 +137,7 @@ class Purchase {
       if (this.#cart.quantity > 0) {
         this.#confirmPurchase();
         refillTile();
+        //create transaction slip, activity log
         return;
       }
     };
