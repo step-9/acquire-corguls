@@ -413,7 +413,7 @@
   content: "Sackson";
 }
 
-.corporation:not(.non-selectable) {
+#corporations.selectable .corporation:not(.non-selectable) {
   cursor: pointer;
   transform: scale(1.04);
   border: 1px solid white;
@@ -421,7 +421,8 @@
   box-shadow: 1px 1px 5px 2px var(--dark-gray);
 }
 
-.corporation.non-selectable {
+#corporations.selectable .corporation.non-selectable {
+  filter: opacity(0.3);
   pointer-events: none;
 }
 
@@ -468,4 +469,20 @@
 .game-over {
   flex-direction: column;
   gap: 1em;
+}
+
+.new-tile {
+  filter: opacity(0.5);
+  -webkit-animation: blink linear 0.5s infinite;
+  animation: blink linear 0.5s infinite;
+}
+
+@keyframes blink {
+  20% {
+    filter: opacity(0.2);
+  }
+
+  100% {
+    filter: opacity(1);
+  }
 }

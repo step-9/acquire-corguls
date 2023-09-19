@@ -38,6 +38,7 @@ const getTileElements = () => {
   const tileContainer = getTileContainer();
   return Array.from(tileContainer.children);
 };
+const getCorporations = () => document.querySelector("#corporations");
 
 const displayAccountBalance = balance => {
   const balanceContainer = document.querySelector("#balance-container");
@@ -203,9 +204,14 @@ const isSameTile = (tile1, tile2) =>
   tile1.position.x === tile2.position.x &&
   tile1.position.y === tile2.position.y;
 
+const animateElement = (element, transactionType, delay = 1000) => {
+  element.classList.add(transactionType);
+  setTimeout(() => element.classList.remove(transactionType), delay);
+};
+
 const highlightTile = (tile, tileToHighlight, tileElement) => {
   if (isSameTile(tile, tileToHighlight)) {
-    tileElement.classList.add("highlight");
+    animateElement(tileElement, "new-tile");
   }
 };
 
@@ -243,10 +249,22 @@ const displayPlayerProfile = ({ portfolio, players }) => {
   displayAndSetupAccountTiles(newTile, tiles, players);
 };
 
+const animateTile = (position, transitionType, duration = 1000) => {
+  const board = getBoard();
+  const tileId = position.x * 12 + position.y;
+  const tile = board[tileId];
+
+  tile.classList.add(transitionType);
+  setTimeout(() => tile.classList.remove(transitionType), duration);
+};
+
 const renderBoard = ({ placedTiles }) => {
   placedTiles.forEach(({ position, belongsTo }) =>
     fillSpace(position, belongsTo)
   );
+
+  const newTilePlaced = placedTiles.at(-1);
+  animateTile(newTilePlaced.position, "new-tile");
 };
 
 const renderPlayers = ({ players }) => {
@@ -366,13 +384,17 @@ const setupCorporationSelection = ({ players, corporations, state }) => {
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
   const isInCorrectState = state === "establish-corporation";
+  const corporationsContainer = getCorporations();
 
   if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) {
+    corporationsContainer.classList.remove("selectable");
     [...document.querySelectorAll(".corporation")].forEach(corp =>
       corp.classList.add("non-selectable")
     );
     return;
   }
+
+  corporationsContainer.classList.add("selectable");
 
   Object.entries(corporations)
     .filter(([, corp]) => !corp.isActive)

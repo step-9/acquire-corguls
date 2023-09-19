@@ -2,7 +2,6 @@
   padding: 0 0.5em;
   gap: 1em;
   flex-grow: 1;
-  /* justify-content: flex-start; */
 }
 
 .player .profile-pic {
@@ -28,7 +27,8 @@
 }
 
 .player.active > * {
-  outline: 3px solid var(--active-player);
+  outline: 3px solid rgb(233, 248, 255);
+  box-shadow: 0 0 10px 6px rgb(22, 176, 228);
 }
 
 .player.self .name {

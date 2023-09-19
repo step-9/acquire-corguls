@@ -21,7 +21,7 @@ class Purchase {
 
   #selectStocks() {
     const activeCorporations = Object.entries(this.#corporations).filter(
-      ([, corp]) => corp.isActive && corp.stocks > 0
+      ([, corp]) => corp.isActive && corp.stocks >= 3
     );
 
     if (activeCorporations.length === 0) return renderTilePlacedMessage();
@@ -41,6 +41,8 @@ class Purchase {
         return corp;
       })
       .forEach(corp => corp.classList.remove("non-selectable"));
+
+    getCorporations().classList.add("selectable");
   }
 
   addToCart(name, price, quantity) {
