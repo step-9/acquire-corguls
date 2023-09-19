@@ -1,4 +1,4 @@
-const { range, groupBy } = require("lodash");
+const { range, groupBy, sortBy } = require("lodash");
 const GAME_STATES = {
   setup: "setup",
   placeTile: "place-tile",
@@ -62,6 +62,10 @@ class Game {
     this.#incorporatedTiles.push(tile);
   }
 
+  #getCorp(name) {
+    return this.#corporations[name];
+  }
+
   #findConnectedTiles({ x, y }, grid = []) {
     const tile = this.#placedTiles.find(
       ({ position }) => position.x === x && position.y === y
@@ -115,7 +119,7 @@ class Game {
     this.#state = GAME_STATES.buyStocks;
   }
 
-  //Remove username
+  // TODO: Remove username
   placeTile(username, position) {
     const player = this.#players.find(player => player.username === username);
     this.#consolidateTile(position);
@@ -146,6 +150,18 @@ class Game {
     return this.#players[this.#turns % this.#players.length];
   }
 
+  #findAcquirerAndDefunct() {
+    const corporatedTiles = this.#connectedTiles.filter(
+      ({ belongsTo }) => belongsTo !== "incorporated"
+    );
+
+    const groupedTiles = groupBy(corporatedTiles, "belongsTo");
+    const corps = Object.keys(groupedTiles).map(name => this.#getCorp(name));
+    const [acquirer, defunct] = sortBy(corps, corp => corp.size).reverse();
+
+    return { acquirer, defunct };
+  }
+
   // TODO: Refactor it
   #setupHandlers() {
     const noActiveCorporation = () =>
@@ -159,6 +175,8 @@ class Game {
     const growCorporation = groupedTiles =>
       Object.keys(groupedTiles).length === 2 &&
       groupedTiles.incorporated.length >= 1;
+
+    const isMerging = groupedTiles => Object.keys(groupedTiles).length > 2;
 
     this.#handlers = [
       {
@@ -175,6 +193,19 @@ class Game {
           );
 
           this.#growCorporation(name);
+          this.#state = GAME_STATES.buyStocks;
+        },
+      },
+      {
+        match: isMerging,
+        handler: () => {
+          const { acquirer, defunct } = this.#findAcquirerAndDefunct();
+          acquirer.acquire(defunct);
+
+          this.#connectedTiles.forEach(
+            tile => (tile.belongsTo = acquirer.name)
+          );
+
           this.#state = GAME_STATES.buyStocks;
         },
       },

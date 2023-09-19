@@ -1,3 +1,14 @@
+const CORPORATIONS = [
+  "phoenix",
+  "quantum",
+  "hydra",
+  "fusion",
+  "america",
+  "sackson",
+  "zeta",
+  "incorporated",
+];
+
 const GAME_STATUS = {
   "place-tile": "'s turn.",
   "tile-placed": " placed a tile.",
@@ -139,7 +150,9 @@ const displayAccountStocks = stocks => {
 const fillSpace = (position, corpClass) => {
   const board = getBoard();
   const tileId = position.x * 12 + position.y;
-  board[tileId].classList.add(corpClass);
+  const tile = board[tileId];
+  CORPORATIONS.forEach(corp => tile.classList.remove(corp));
+  tile.classList.add(corpClass);
 };
 
 const displayResponse = ({ message }) => {
