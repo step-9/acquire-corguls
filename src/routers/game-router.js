@@ -32,7 +32,6 @@ const endPlayerTurn = (req, res) => {
 const buyStocks = (req, res) => {
   const { game } = req.app.context;
   const { name, quantity, price } = req.body;
-  console.log(name, quantity, price);
 
   game.buyStocks({ name, quantity, price });
   res.end();

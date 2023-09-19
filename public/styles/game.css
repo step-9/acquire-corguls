@@ -464,3 +464,8 @@
 .disable-btn {
   opacity: 0.4;
 }
+
+.game-over {
+  flex-direction: column;
+  gap: 1em;
+}

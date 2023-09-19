@@ -399,6 +399,21 @@ const setupGame = () => {
   setupInfoCard();
 };
 
+const notifyGameEnd = () => {
+  const displayPanel = getDisplayPanel();
+  const gameEndElement = generateComponent([
+    "div",
+    [
+      ["p", "Game Over"],
+      ["button", "Stats"],
+    ],
+    { class: "game-over flex" },
+  ]);
+
+  displayPanel.innerHTML = "";
+  displayPanel.append(gameEndElement);
+};
+
 const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
@@ -406,7 +421,7 @@ const renderGame = () => {
       if (this.previousState === gameStatus.state) return;
 
       if (gameStatus.state === "game-end") {
-        console.log("game end");
+        notifyGameEnd();
         return;
       }
 
@@ -430,7 +445,7 @@ const keepPlayerProfileUpdated = () => {
   const gameRenderer = renderGame.bind({ previousState });
   setupGame();
   setTimeout(() => {
-    setInterval(renderGame, interval);
+    setInterval(gameRenderer, interval);
   }, interval * 1);
 };
 
