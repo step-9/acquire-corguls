@@ -301,6 +301,28 @@ describe("Game", () => {
       assert.strictEqual(player1.isTakingTurn, false);
       assert.strictEqual(player2.isTakingTurn, true);
     });
+
+    it("should not change the turn after the game is ended", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Honu");
+
+      const corporations = createCorporations();
+      corporations.hydra.establish();
+      corporations.hydra.markSafe();
+
+      const shuffle = x => x;
+
+      const game = new Game([player1, player2], shuffle, corporations);
+      game.start();
+
+      assert.strictEqual(player1.isTakingTurn, true);
+      assert.strictEqual(player2.isTakingTurn, false);
+
+      game.changeTurn();
+
+      assert.strictEqual(player1.isTakingTurn, true);
+      assert.strictEqual(player2.isTakingTurn, false);
+    });
   });
 
   describe("buyStocks", () => {

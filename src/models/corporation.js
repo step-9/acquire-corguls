@@ -84,6 +84,10 @@ class Corporation {
     return this.#size;
   }
 
+  get isSafe() {
+    return this.#isSafe;
+  }
+
   get name() {
     return this.#name;
   }

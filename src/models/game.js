@@ -7,6 +7,7 @@ const GAME_STATES = {
   tilePlaced: "tile-placed",
   establishCorporation: "establish-corporation",
   buyStocks: "buy-stocks",
+  gameEnd: "game-end",
 };
 
 class Game {
@@ -28,7 +29,7 @@ class Game {
     this.#incorporatedTiles = [];
     this.#corporations = corporations;
     this.#players = players;
-    this.#shuffle = shuffle;
+    this.#shuffle = x => x || shuffle;
     this.#state = GAME_STATES.setup;
     this.#turns = 0;
   }
@@ -254,7 +255,30 @@ class Game {
     this.#currentPlayer().refillTile(newTile);
   }
 
+  #isGameOver() {
+    const activeCorporations = Object.entries(this.#corporations).filter(
+      ([, { isActive }]) => isActive
+    );
+
+    if (activeCorporations.length === 0) return false;
+
+    const hasAcquired41Tiles = activeCorporations.some(
+      ([, corp]) => corp.size >= 41
+    );
+
+    const isEveryCorpStable = activeCorporations.every(
+      ([, corp]) => corp.isSafe
+    );
+
+    return hasAcquired41Tiles || isEveryCorpStable;
+  }
+
   changeTurn() {
+    if (this.#isGameOver()) {
+      this.#state = GAME_STATES.gameEnd;
+      return;
+    }
+
     this.#refillTile();
     this.#currentPlayer().endTurn();
     this.#turns++;

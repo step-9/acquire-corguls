@@ -404,6 +404,12 @@ const renderGame = () => {
     .then(res => res.json())
     .then(gameStatus => {
       if (this.previousState === gameStatus.state) return;
+
+      if (gameStatus.state === "game-end") {
+        console.log("game end");
+        return;
+      }
+
       renderPlayers(gameStatus);
       displayPlayerProfile(gameStatus);
       renderBoard(gameStatus);
