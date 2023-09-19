@@ -14,6 +14,7 @@ const GAME_STATUS = {
   "tile-placed": " placed a tile.",
   "establish-corporation": " is establishing a corporation",
   "buy-stocks": " is taking turn",
+  "game-end": " calculating earning",
 };
 
 const CORPORATIONS_IDS = {
@@ -439,12 +440,13 @@ const notifyGameEnd = () => {
 const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
+    // eslint-disable-next-line complexity
     .then(gameStatus => {
+      if (this.previousState === "game-end") return;
       if (this.previousState === gameStatus.state) return;
 
       if (gameStatus.state === "game-end") {
         notifyGameEnd();
-        return;
       }
 
       renderPlayers(gameStatus);
@@ -456,6 +458,7 @@ const renderGame = () => {
       startPurchase(gameStatus, getDisplayPanel(), getCorporation);
       renderCorporations(gameStatus);
       this.previousState = gameStatus.state;
+      console.log(this.previousState);
     });
 
   setupInfoCard();

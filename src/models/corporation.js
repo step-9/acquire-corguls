@@ -34,6 +34,11 @@ class Corporation {
     this.#stocks -= quantity;
   }
 
+  incrementStocks(quantity) {
+    if (!this.#isActive) return;
+    this.#stocks += quantity;
+  }
+
   establish() {
     this.#isActive = true;
   }

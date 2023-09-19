@@ -130,6 +130,25 @@ describe("Corporation", () => {
     });
   });
 
+  describe("incrementStock", () => {
+    it("should increase the quantity of stocks", () => {
+      const phoenix = new Corporation();
+
+      phoenix.establish();
+
+      assert.strictEqual(phoenix.stocks, 25);
+      phoenix.incrementStocks(1);
+      assert.strictEqual(phoenix.stocks, 26);
+    });
+
+    it("should not increase the stocks quantity if corporation is not established", () => {
+      const phoenix = new Corporation();
+
+      phoenix.incrementStocks(2);
+      assert.strictEqual(phoenix.stocks, 25);
+    });
+  });
+
   describe("increaseSize", () => {
     it("should increase the size by delta", () => {
       const phoenix = new Corporation();

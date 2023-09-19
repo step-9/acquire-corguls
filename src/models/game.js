@@ -273,9 +273,28 @@ class Game {
     return hasAcquired41Tiles || isEveryCorpStable;
   }
 
+  #sellBackStocks() {
+    const activeCorporations = Object.entries(this.#corporations).filter(
+      ([, { isActive }]) => isActive
+    );
+
+    activeCorporations.forEach(([name, corporation]) => {
+      this.#players.forEach(player => {
+        const { stocks } = player.portfolio();
+        const noOfStocks = stocks[name];
+        const { price: currentPrice } = corporation.stats();
+
+        player.sellStocks(name, noOfStocks);
+        player.addIncome(noOfStocks * currentPrice);
+        corporation.incrementStocks(noOfStocks);
+      });
+    });
+  }
+
   changeTurn() {
     if (this.#isGameOver()) {
       this.#state = GAME_STATES.gameEnd;
+      this.#sellBackStocks();
       return;
     }
 

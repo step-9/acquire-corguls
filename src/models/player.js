@@ -78,6 +78,10 @@ class Player {
     this.#isTakingTurn = true;
   }
 
+  sellStocks(corp, quantity) {
+    this.#stocks[corp] -= quantity;
+  }
+
   endTurn() {
     this.#isTakingTurn = false;
   }
