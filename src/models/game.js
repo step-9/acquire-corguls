@@ -208,6 +208,7 @@ class Game {
             tile => (tile.belongsTo = acquirer.name)
           );
 
+          if (acquirer.stats().size > 10) acquirer.markSafe();
           this.#state = GAME_STATES.buyStocks;
         },
       },

@@ -72,6 +72,10 @@ class Corporation {
     return this.#isActive;
   }
 
+  get isSafe() {
+    return this.#isSafe;
+  }
+
   get stocks() {
     return this.#stocks;
   }

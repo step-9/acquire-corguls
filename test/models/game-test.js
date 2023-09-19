@@ -223,6 +223,35 @@ describe("Game", () => {
         assert.strictEqual(tile.belongsTo, "phoenix");
       });
     });
+
+    it("should merge with the defunct if tile placed adjacent to two corps", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const shuffle = x => x;
+      const corporations = createCorporations();
+      const game = new Game([player1, player2], shuffle, corporations);
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 0 });
+      game.placeTile("Biswa", { x: 0, y: 1 });
+      game.placeTile("Biswa", { x: 0, y: 2 });
+      game.placeTile("Biswa", { x: 0, y: 3 });
+      game.establishCorporation({ name: "phoenix" });
+
+      game.changeTurn();
+
+      game.placeTile("Biswa", { x: 0, y: 5 });
+      game.placeTile("Bittu", { x: 0, y: 6 });
+      game.placeTile("Bittu", { x: 0, y: 7 });
+      game.placeTile("Bittu", { x: 0, y: 8 });
+      game.placeTile("Bittu", { x: 0, y: 9 });
+      game.placeTile("Bittu", { x: 0, y: 10 });
+      game.establishCorporation({ name: "quantum" });
+
+      game.placeTile("Biswa", { x: 0, y: 4 });
+
+      assert.ok(corporations.phoenix.isSafe);
+    });
   });
 
   describe("placeTile", () => {
