@@ -9,6 +9,7 @@ class Purchase {
   #getCorporation;
   #activeCorporations;
   #confirmButton;
+  #totalPrice;
 
   constructor({ corporations, portfolio }, displayPanel, getCorporation) {
     this.#portfolio = portfolio;
@@ -18,7 +19,6 @@ class Purchase {
     this.#getCorporation = getCorporation;
   }
 
-  // eslint-disable-next-line complexity
   #selectStocks() {
     const activeCorporations = Object.entries(this.#corporations).filter(
       ([, corp]) => corp.isActive && corp.stocks > 0
@@ -28,22 +28,13 @@ class Purchase {
 
     activeCorporations
       .map(([name, { price }]) => {
-        let count = 1;
         const corp = this.#getCorporation(name);
         corp.onclick = () => {
-          count--;
           this.addToCart(name, price * 3, 3);
 
           if (this.#portfolio.balance >= this.#cart.price) {
             this.#confirmButton.removeAttribute("disabled");
             this.#confirmButton.classList.remove("disable-btn");
-          }
-
-          console.log(count);
-          if (count < 1) {
-            console.log("non select");
-            corp.classList.add("non-selectable");
-            return;
           }
         };
 
@@ -123,16 +114,25 @@ class Purchase {
     );
 
     cartElement.classList.add("selected-stocks");
-    this.#displayPanel.prepend(cartElement);
+    const stockBuyingPrompt = document.createElement("div");
+
+    stockBuyingPrompt.classList.add("buying-prompt");
+    stockBuyingPrompt.append(...this.#generateConfirmCancel());
+
+    this.#displayPanel.innerHTML = "";
+    this.#totalPrice.innerText = `Total: ${this.#cart.price}`;
+    this.#displayPanel.append(cartElement, stockBuyingPrompt);
   }
 
   #generateConfirmCancel() {
-    const buySkipButtons = document.createElement("div");
+    this.#totalPrice = generateComponent(["p", "Total: $0"]);
+
     this.#confirmButton = generateComponent([
       "button",
       "Confirm",
       { type: "button", "disabled": true, class: "disable-btn" },
     ]);
+
     this.#confirmButton.onclick = () => {
       if (this.#cart.quantity > 0) {
         this.#confirmPurchase();
@@ -147,16 +147,14 @@ class Purchase {
       { type: "button", onclick: "refillTile()" },
     ]);
 
-    buySkipButtons.append(this.#confirmButton, skipButton);
-
-    return buySkipButtons;
+    return [this.#totalPrice, this.#confirmButton, skipButton];
   }
 
   #renderStockSelection() {
     const stockBuyingPrompt = document.createElement("div");
 
     stockBuyingPrompt.classList.add("buying-prompt");
-    stockBuyingPrompt.append(this.#generateConfirmCancel());
+    stockBuyingPrompt.append(...this.#generateConfirmCancel());
 
     this.#displayPanel.innerHTML = "";
     this.#displayPanel.append(stockBuyingPrompt);
