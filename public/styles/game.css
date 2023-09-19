@@ -424,10 +424,12 @@
   pointer-events: none;
 }
 
+.corporation .name {
+  display: flex;
+  justify-content: space-between;
+}
+
 .corporation.safe .name::after {
   content: url("/images/safe.png");
-  position: relative;
-  left: 8.5em;
-  top: 2px;
-  color: green;
+  padding: 3px;
 }
