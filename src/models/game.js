@@ -29,7 +29,7 @@ class Game {
     this.#incorporatedTiles = [];
     this.#corporations = corporations;
     this.#players = players;
-    this.#shuffle = x => x || shuffle;
+    this.#shuffle = shuffle;
     this.#state = GAME_STATES.setup;
     this.#turns = 0;
   }
