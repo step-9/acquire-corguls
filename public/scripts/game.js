@@ -13,7 +13,7 @@ const GAME_STATUS = {
   "place-tile": "'s turn.",
   "tile-placed": " placed a tile.",
   "establish-corporation": " is establishing a corporation",
-  "buy-stocks": " is buying stocks",
+  "buy-stocks": " is taking turn",
 };
 
 const CORPORATIONS_IDS = {
@@ -100,7 +100,7 @@ const renderMessagePairHolder = messageElements => {
   getDisplayPanel().append(messagePairHolder);
 };
 
-const displayInitialMessages = setupTiles => {
+const displayInitialMessages = ({ setupTiles }) => {
   if (!setupTiles) return;
 
   const messages = setupTiles.map(([name, { position }]) => {
@@ -116,7 +116,7 @@ const displayInitialMessages = setupTiles => {
   getDisplayPanel().append(...messages);
 };
 
-const renderCorporations = corporations => {
+const renderCorporations = ({ corporations }) => {
   Object.entries(corporations).forEach(([name, stats]) => {
     const corporation = getCorporation(name);
 
@@ -236,19 +236,20 @@ const setupInfoCard = () => {
   };
 };
 
-const displayPlayerProfile = ({ balance, stocks, tiles, newTile }, players) => {
+const displayPlayerProfile = ({ portfolio, players }) => {
+  const { balance, stocks, tiles, newTile } = portfolio;
   displayAccountBalance(balance);
   displayAccountStocks(stocks);
   displayAndSetupAccountTiles(newTile, tiles, players);
 };
 
-const renderBoard = placedTiles => {
+const renderBoard = ({ placedTiles }) => {
   placedTiles.forEach(({ position, belongsTo }) =>
     fillSpace(position, belongsTo)
   );
 };
 
-const renderPlayers = players => {
+const renderPlayers = ({ players }) => {
   const playersDiv = getPlayersDiv();
   const playerElements = players.map(({ isTakingTurn, username, you }) => {
     const activeClass = isTakingTurn ? " active" : "";
@@ -295,8 +296,10 @@ const renderTilePlacedMessage = () => {
   getDisplayPanel().append(refillTilePrompt);
 };
 
-const displayMessage = state => {
+const displayMessage = gameStatus => {
+  const { state } = gameStatus;
   const displayPanel = getDisplayPanel();
+
   const renderMessage = {
     "place-tile": () => {
       displayPanel.innerText = "Place a tile...";
@@ -312,7 +315,7 @@ const displayMessage = state => {
     },
 
     "buy-stocks": () => {
-      displayPanel.innerText = "Buying stocks...";
+      displayPanel.innerHTML = "";
     },
   };
 
@@ -325,26 +328,28 @@ const isSamePlayer = (self, currentPlayer) =>
 const determineDisplayName = (self, currentPlayer) =>
   isSamePlayer(self, currentPlayer) ? "You" : currentPlayer.username;
 
-const customizeActivityMessage = (self, currentPlayer, state) => {
+const customizeActivityMessage = (self, currentPlayer, gameStatus) => {
   const displayName = determineDisplayName(self, currentPlayer);
 
   if (isSamePlayer(self, currentPlayer)) {
-    return displayMessage(state);
+    return displayMessage(gameStatus);
   }
 
-  const message = `${displayName}${GAME_STATUS[state]}`;
+  const message = `${displayName}${GAME_STATUS[gameStatus.state]}`;
   const displayPanel = getDisplayPanel();
   displayPanel.innerText = message;
 };
 
-const renderActivityMessage = (state, players) => {
+const renderActivityMessage = gameStatus => {
+  const { state, players } = gameStatus;
+
   if (state === GAME_STATUS.setup) return;
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
-  customizeActivityMessage(self, currentPlayer, state);
+  customizeActivityMessage(self, currentPlayer, gameStatus);
 };
 
-const setUpPlayerTilePlacing = (players, state) => {
+const setUpPlayerTilePlacing = ({ players, state }) => {
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
 
@@ -357,7 +362,7 @@ const setUpPlayerTilePlacing = (players, state) => {
   tileContainer.classList.add("disable-click");
 };
 
-const setupCorporationSelection = (players, corporations, state) => {
+const setupCorporationSelection = ({ players, corporations, state }) => {
   const self = players.find(({ you }) => you);
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
   const isInCorrectState = state === "establish-corporation";
@@ -380,38 +385,15 @@ const setupCorporationSelection = (players, corporations, state) => {
     .forEach(corp => corp.classList.remove("non-selectable"));
 };
 
-// eslint-disable-next-line complexity
-const setupBuyStocks = (players, corporations, portfolio, state) => {
-  const self = players.find(({ you }) => you);
-  const isInCorrectState = "buy-stocks" === state;
-  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
-
-  if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
-
-  const activeCorporations = Object.entries(corporations).filter(
-    ([, corp]) => corp.isActive && corp.stocks > 0
-  );
-
-  if (activeCorporations.length === 0) return renderTilePlacedMessage();
-
-  activeCorporations
-    .map(([name, { price }]) => {
-      const corp = getCorporation(name);
-      corp.onclick = () => buyStocks({ name, quantity: 3, price: price * 3 });
-      return corp;
-    })
-    .forEach(corp => corp.classList.remove("non-selectable"));
-};
-
 const setupGame = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, placedTiles, setupTiles, corporations }) => {
-      renderPlayers(players);
-      displayPlayerProfile(portfolio);
-      renderBoard(placedTiles);
-      displayInitialMessages(setupTiles);
-      renderCorporations(corporations);
+    .then(gameStatus => {
+      renderPlayers(gameStatus);
+      displayPlayerProfile(gameStatus);
+      renderBoard(gameStatus);
+      displayInitialMessages(gameStatus);
+      renderCorporations(gameStatus);
     });
 
   setupInfoCard();
@@ -420,15 +402,17 @@ const setupGame = () => {
 const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
-    .then(({ players, portfolio, state, placedTiles, corporations }) => {
-      renderPlayers(players);
-      displayPlayerProfile(portfolio, players);
-      renderBoard(placedTiles);
-      renderActivityMessage(state, players);
-      setUpPlayerTilePlacing(players, state);
-      setupCorporationSelection(players, corporations, state);
-      setupBuyStocks(players, corporations, portfolio, state);
-      renderCorporations(corporations);
+    .then(gameStatus => {
+      if (this.previousState === gameStatus.state) return;
+      renderPlayers(gameStatus);
+      displayPlayerProfile(gameStatus);
+      renderBoard(gameStatus);
+      renderActivityMessage(gameStatus);
+      setUpPlayerTilePlacing(gameStatus);
+      setupCorporationSelection(gameStatus);
+      startPurchase(gameStatus, getDisplayPanel(), getCorporation);
+      renderCorporations(gameStatus);
+      this.previousState = gameStatus.state;
     });
 
   setupInfoCard();
@@ -436,6 +420,8 @@ const renderGame = () => {
 
 const keepPlayerProfileUpdated = () => {
   const interval = 1000;
+  const previousState = undefined;
+  const gameRenderer = renderGame.bind({ previousState });
   setupGame();
   setTimeout(() => {
     setInterval(renderGame, interval);
