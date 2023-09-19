@@ -689,4 +689,283 @@ describe("GameRouter", () => {
         });
     });
   });
+
+  describe("POST /game/test", () => {
+    it("should load a game from a state", (_, done) => {
+      const size = { lowerLimit: 1, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      const expectedStatus = {
+        "state": "place-tile",
+        "setupTiles": [
+          [
+            "biswa",
+            {
+              "position": {
+                "x": 1,
+                "y": 6,
+              },
+              "isPlaced": true,
+            },
+          ],
+        ],
+        "players": [
+          {
+            "username": "biswa",
+            "isTakingTurn": true,
+            "you": true,
+          },
+        ],
+        "portfolio": {
+          "tiles": [
+            {
+              "position": {
+                "x": 0,
+                "y": 0,
+              },
+              "isPlaced": false,
+            },
+            {
+              "position": {
+                "x": 0,
+                "y": 1,
+              },
+              "isPlaced": false,
+            },
+            {
+              "position": {
+                "x": 0,
+                "y": 2,
+              },
+              "isPlaced": false,
+            },
+            {
+              "position": {
+                "x": 0,
+                "y": 3,
+              },
+              "isPlaced": false,
+            },
+            {
+              "position": {
+                "x": 0,
+                "y": 4,
+              },
+              "isPlaced": false,
+            },
+            {
+              "position": {
+                "x": 0,
+                "y": 5,
+              },
+              "isPlaced": false,
+            },
+          ],
+          "stocks": {
+            "phoenix": 0,
+            "quantum": 0,
+            "hydra": 0,
+            "fusion": 0,
+            "america": 0,
+            "sackson": 0,
+            "zeta": 0,
+          },
+          "balance": 6000,
+        },
+        "placedTiles": [
+          {
+            "position": {
+              "x": 0,
+              "y": 6,
+            },
+            "isPlaced": true,
+            "belongsTo": "incorporated",
+          },
+        ],
+        corporations,
+      };
+
+      const gameState = {
+        "setupTiles": [
+          [
+            { username: "biswa" },
+            {
+              "position": {
+                "x": 1,
+                "y": 6,
+              },
+              "isPlaced": true,
+            },
+          ],
+        ],
+        "players": [
+          {
+            "username": "biswa",
+            "portfolio": {
+              "tiles": [
+                {
+                  "position": {
+                    "x": 0,
+                    "y": 0,
+                  },
+                  "isPlaced": false,
+                },
+                {
+                  "position": {
+                    "x": 0,
+                    "y": 1,
+                  },
+                  "isPlaced": false,
+                },
+                {
+                  "position": {
+                    "x": 0,
+                    "y": 2,
+                  },
+                  "isPlaced": false,
+                },
+                {
+                  "position": {
+                    "x": 0,
+                    "y": 3,
+                  },
+                  "isPlaced": false,
+                },
+                {
+                  "position": {
+                    "x": 0,
+                    "y": 4,
+                  },
+                  "isPlaced": false,
+                },
+                {
+                  "position": {
+                    "x": 0,
+                    "y": 5,
+                  },
+                  "isPlaced": false,
+                },
+              ],
+              "stocks": {
+                "phoenix": 0,
+                "quantum": 0,
+                "hydra": 0,
+                "fusion": 0,
+                "america": 0,
+                "sackson": 0,
+                "zeta": 0,
+              },
+              "balance": 6000,
+            },
+          },
+        ],
+        "placedTiles": [
+          {
+            "position": {
+              "x": 0,
+              "y": 6,
+            },
+            "isPlaced": true,
+            "belongsTo": "incorporated",
+          },
+        ],
+        corporations: {
+          "phoenix": {
+            "stocks": 25,
+            "size": 0,
+            "isActive": false,
+            "price": 0,
+            "majority": 2000,
+            "minority": 1000,
+            "isSafe": false,
+          },
+          "quantum": {
+            "stocks": 25,
+            "size": 0,
+            "isActive": false,
+            "price": 0,
+            "majority": 2000,
+            "minority": 1000,
+            "isSafe": false,
+          },
+          "fusion": {
+            "stocks": 25,
+            "size": 0,
+            "isActive": false,
+            "price": 0,
+            "majority": 2000,
+            "minority": 1000,
+            "isSafe": false,
+          },
+          "hydra": {
+            "stocks": 25,
+            "size": 0,
+            "isActive": false,
+            "price": 800,
+            "majority": 2000,
+            "minority": 1000,
+            "isSafe": false,
+          },
+          "america": {
+            "stocks": 25,
+            "size": 0,
+            "isActive": false,
+            "price": 0,
+            "majority": 2000,
+            "minority": 1000,
+            "isSafe": false,
+          },
+          "zeta": {
+            "stocks": 25,
+            "size": 0,
+            "isActive": false,
+            "price": 0,
+            "majority": 2000,
+            "minority": 1000,
+            "isSafe": false,
+          },
+          "sackson": {
+            "stocks": 25,
+            "size": 0,
+            "isActive": false,
+            "price": 0,
+            "majority": 2000,
+            "minority": 1000,
+            "isSafe": false,
+          },
+        },
+      };
+
+      request(app)
+        .post("/lobby/players")
+        .send({ username: "biswa" })
+        .expect(200)
+        .end(() => {
+          request(app)
+            .post("/game/start")
+            .set("cookie", "username=biswa")
+            .expect(200)
+            .end(() => {
+              request(app)
+                .post("/game/test")
+                .send(gameState)
+                .expect(200)
+                .end(() => {
+                  request(app)
+                    .get("/game/status")
+                    .expect(200)
+                    .set("cookie", "username=biswa")
+                    .end((err, res) => {
+                      assert.deepStrictEqual(res.body, expectedStatus);
+                      done(err);
+                    });
+                });
+            });
+        });
+    });
+  });
 });

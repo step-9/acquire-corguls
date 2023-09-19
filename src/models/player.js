@@ -81,6 +81,17 @@ class Player {
   endTurn() {
     this.#isTakingTurn = false;
   }
+
+  static fromJSON({ username, portfolio }) {
+    const player = new Player();
+
+    player.#username = username;
+    player.#tiles = portfolio.tiles;
+    player.#stocks = portfolio.stocks;
+    player.#balance = portfolio.balance;
+
+    return player;
+  }
 }
 
 const initializeAccountStocks = () => {

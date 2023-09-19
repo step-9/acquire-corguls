@@ -209,7 +209,7 @@ const highlightTile = (tile, tileToHighlight, tileElement) => {
   }
 };
 
-const displayAndSetupAccountTiles = (newTile, tiles, players) => {
+const displayAndSetupAccountTiles = (newTile, tiles) => {
   const tileToHighlight = newTile || { position: {} };
   const tileElements = getTileElements();
 

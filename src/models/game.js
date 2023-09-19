@@ -1,4 +1,6 @@
 const { range, groupBy, sortBy } = require("lodash");
+const { Player } = require("./player");
+const { Corporation } = require("./corporation");
 const GAME_STATES = {
   setup: "setup",
   placeTile: "place-tile",
@@ -257,7 +259,6 @@ class Game {
     this.#turns++;
     this.#currentPlayer().startTurn();
     this.#state = GAME_STATES.placeTile;
-    // refill
   }
 
   // eslint-disable-next-line complexity
@@ -296,8 +297,39 @@ class Game {
       placedTiles: this.#placedTiles,
     };
   }
+
+  static fromJSON({ tiles, players, corporations, setupTiles, placedTiles }) {
+    const game = new Game();
+
+    game.#state = GAME_STATES.placeTile;
+    game.#tiles = tiles;
+    game.#corporations = corporations;
+    game.#players = players;
+    game.#placedTiles = placedTiles;
+    game.#setupTiles = setupTiles;
+    game.#turns = 0;
+
+    players[0].startTurn();
+    game.#setupHandlers();
+
+    return game;
+  }
 }
+
+const loadGame = gameData => {
+  return Game.fromJSON({
+    ...gameData,
+    players: gameData.players.map(player => Player.fromJSON(player)),
+    corporations: Object.fromEntries(
+      Object.entries(gameData.corporations).map(([name, data]) => [
+        name,
+        Corporation.fromJSON({ ...data, name }),
+      ])
+    ),
+  });
+};
 
 module.exports = {
   Game,
+  loadGame,
 };

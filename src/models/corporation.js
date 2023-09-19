@@ -83,6 +83,19 @@ class Corporation {
   get name() {
     return this.#name;
   }
+
+  static fromJSON({ name, basePrice, stocks, size, isActive, isSafe }) {
+    const corp = new Corporation();
+
+    corp.#name = name;
+    corp.#basePrice = basePrice;
+    corp.#size = size;
+    corp.#stocks = stocks;
+    corp.#isActive = isActive;
+    corp.#isSafe = isSafe;
+
+    return corp;
+  }
 }
 
 const createCorporations = () => {

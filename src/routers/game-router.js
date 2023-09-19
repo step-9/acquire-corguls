@@ -1,6 +1,6 @@
 const express = require("express");
 const { authorizeLobbyMember } = require("../middleware/lobby");
-const { Game } = require("../models/game");
+const { Game, loadGame } = require("../models/game");
 const { createCorporations } = require("../models/corporation");
 const { createPlayers } = require("../models/player");
 
@@ -84,9 +84,17 @@ const verifyHost = (req, res, next) => {
   next();
 };
 
+const configureGame = (req, res) => {
+  const gameData = req.body;
+  const game = loadGame(gameData);
+  req.app.context.game = game;
+  res.status(201).end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
+  router.post("/test", configureGame);
   router.use(authorizeLobbyMember);
   router.get("/", verifyStart, serveGamePage);
   router.post("/start", verifyHost, verifyStart, startGame);
