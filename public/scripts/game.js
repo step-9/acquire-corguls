@@ -61,13 +61,12 @@ const removeHighlight = tileElements => {
 
 const refillTile = () => {
   const transitionDelay = 1000;
-  fetch("/game/end-turn", { method: "POST" })
-    .then(() => {
-      const tileElements = getTileElements();
-      placeNewTile(tileElements);
-      setTimeout(() => removeHighlight(tileElements), transitionDelay);
-    })
-    .then(highlightTile());
+  fetch("/game/end-turn", { method: "POST" }).then(() => {
+    const tileElements = getTileElements();
+    placeNewTile(tileElements);
+    setTimeout(() => removeHighlight(tileElements), transitionDelay);
+  });
+  // .then(highlightTile());
 };
 
 const establishCorporation = data => {

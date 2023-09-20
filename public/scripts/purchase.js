@@ -51,7 +51,7 @@ class Purchase {
   }
 
   #confirmPurchase() {
-    fetch("/game/buy-stocks", {
+    return fetch("/game/buy-stocks", {
       method: "POST",
       body: JSON.stringify(this.#cart),
       headers: {
@@ -137,10 +137,10 @@ class Purchase {
 
     this.#confirmButton.onclick = () => {
       if (this.#cart.quantity > 0) {
-        this.#confirmPurchase();
+        this.#confirmPurchase().then(refillTile);
         getCorporations().classList.remove("selectable");
 
-        refillTile();
+        // refillTile();
         return;
       }
     };
