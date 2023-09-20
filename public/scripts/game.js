@@ -367,7 +367,7 @@ const displayMessage = gameStatus => {
         generateComponent([
           "div",
           [
-            ["p", `${acquirer} acquired ${defunct}`],
+            ["p", MESSAGE_GENERATORS.merge("", { acquirer, defunct })],
             ["button", "OK", { onclick: "endMerge()" }],
           ],
           { class: "refill-tile-prompt" },
