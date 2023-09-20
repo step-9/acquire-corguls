@@ -80,6 +80,53 @@ const establishCorporation = data => {
   });
 };
 
+const sellBackStocks = (corporations, stocks) => {
+  return corporations.reduce((earning, { name, price }) => {
+    return earning + stocks[name] * price;
+  }, 0);
+};
+
+const rankPlayers = ({ players, corporations }) => {
+  const { name: corpName, price } = corporations;
+
+  return players
+    .map(({ stocks, balance, name }) => {
+      const sellBackEarning = sellBackStocks(corporations, stocks);
+      const finalBalance = balance + sellBackEarning;
+      return { name, balance: finalBalance };
+    })
+    .toSorted((a, b) => b.balance - a.balance);
+};
+
+const generateRankTable = playerRanks => {
+  const rankTable = generateComponent(["div", "Ranks", { class: "ranks" }]);
+
+  const rankElements = playerRanks.map(({ name, balance }) =>
+    generateComponent([
+      "p",
+      [
+        ["span", `${name} :`],
+        ["span", `$${balance}`],
+      ],
+      { class: "flex" },
+    ])
+  );
+
+  rankTable.append(...rankElements);
+  return rankTable;
+};
+
+const getGameResult = () => {
+  fetch("/game/end-result")
+    .then(res => res.json())
+    .then(result => {
+      const playerRanks = rankPlayers(result);
+      const displayPanel = getDisplayPanel();
+      displayPanel.innerHTML = "";
+      displayPanel.append(generateRankTable(playerRanks));
+    });
+};
+
 const buyStocks = data => {
   fetch("/game/buy-stocks", {
     method: "POST",
@@ -470,7 +517,7 @@ const notifyGameEnd = () => {
     "div",
     [
       ["p", "Game Over"],
-      ["button", "Stats"],
+      ["button", "Stats", { onclick: "getGameResult()" }],
     ],
     { class: "game-over flex" },
   ]);
@@ -482,11 +529,15 @@ const notifyGameEnd = () => {
 const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
-    // eslint-disable-next-line complexity
     .then(gameStatus => {
-      if (this.previousState === "game-end") return;
       if (this.previousState === gameStatus.state) return;
-      if (gameStatus.state === "game-end") notifyGameEnd();
+
+      if (gameStatus.state === "game-end") {
+        notifyGameEnd();
+        displayPlayerProfile(gameStatus);
+        this.previousState = gameStatus.state;
+        return;
+      }
 
       renderPlayers(gameStatus);
       displayPlayerProfile(gameStatus, this.previousState);

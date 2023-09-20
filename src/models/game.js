@@ -24,6 +24,7 @@ class Game {
   #turns;
   #connectedTiles;
   #handlers;
+  #result;
 
   constructor(players, shuffle, corporations) {
     this.#tiles = [];
@@ -299,9 +300,38 @@ class Game {
     });
   }
 
+  #saveGameResult() {
+    const activeCorporations = Object.entries(this.#corporations)
+      .filter(([, { isActive }]) => isActive)
+      .map(([name, corp]) => {
+        const { price, stocks, majority, minority } = corp.stats();
+
+        return {
+          name,
+          price,
+          stocks,
+          majority,
+          minority,
+        };
+      });
+
+    const players = this.#players.map(player => {
+      const { stocks, balance } = player.portfolio();
+
+      return {
+        stocks,
+        balance,
+        name: player.username,
+      };
+    });
+
+    this.#result = { players, corporations: activeCorporations };
+  }
+
   changeTurn() {
     if (this.#isGameOver()) {
       this.#state = GAME_STATES.gameEnd;
+      this.#saveGameResult();
       this.#sellBackStocks();
       return;
     }
@@ -349,6 +379,10 @@ class Game {
       corporations: this.#getCorporationStats(),
       placedTiles: this.#placedTiles,
     };
+  }
+
+  get result() {
+    return this.#result;
   }
 
   static fromJSON({ tiles, players, corporations, setupTiles, placedTiles }) {

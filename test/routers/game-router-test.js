@@ -6,6 +6,7 @@ const { createApp } = require("../../src/app");
 const { createLobbyRouter } = require("../../src/routers/lobby-router");
 const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
+const gameEndData = require("../test-data/all-stable-coporations.json");
 
 const joinPlayer = (app, username) => {
   return request(app)
@@ -30,6 +31,14 @@ const placeTile = (app, username, tile) => {
     .expect(200);
 };
 
+const loadGame = (app, username, gameData) => {
+  return request(app)
+    .post("/game/test")
+    .send(gameData)
+    .set("cookie", `username=${username}`)
+    .expect(201);
+};
+
 const establishCorp = (app, username, corpName) => {
   return request(app)
     .post("/game/establish")
@@ -51,6 +60,22 @@ const endMerge = (app, username) => {
     .post("/game/end-merge")
     .set("cookie", `username=${username}`)
     .expect(200);
+};
+
+const endTurn = (app, username) => {
+  return request(app)
+    .post("/game/end-turn")
+    .set("cookie", `username=${username}`)
+    .expect(200);
+};
+
+const gameResult = async (app, username) => {
+  const result = await request(app)
+    .get("/game/end-result")
+    .set("cookie", `username=${username}`)
+    .expect(200);
+
+  return result.body;
 };
 
 describe("GameRouter", () => {
@@ -1049,6 +1074,60 @@ describe("GameRouter", () => {
       await endMerge(app, player);
       status = await getGameStatus(app, player);
       chai.expect(status.state).to.not.equal("merge");
+    });
+  });
+
+  describe("POST /game/end-result", () => {
+    it("should give the game result", async () => {
+      const size = { lowerLimit: 1, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const player = "player";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, player);
+      await startGame(app, player);
+      await loadGame(app, player, gameEndData);
+      await placeTile(app, player, { "x": 6, "y": 6 });
+      await endTurn(app, player);
+
+      let status = await getGameStatus(app, player);
+      assert.strictEqual(status.state, "game-end");
+
+      const { players, corporations } = await gameResult(app, player);
+      assert.deepStrictEqual(players, [
+        {
+          balance: 4800,
+          name: "player",
+          stocks: {
+            america: 0,
+            fusion: 0,
+            hydra: 0,
+            phoenix: 3,
+            quantum: 0,
+            sackson: 0,
+            zeta: 0,
+          },
+        },
+      ]);
+      assert.deepStrictEqual(corporations, [
+        {
+          majority: 2000,
+          minority: 1000,
+          name: "quantum",
+          price: 900,
+          stocks: 21,
+        },
+        {
+          majority: 2000,
+          minority: 1000,
+          name: "fusion",
+          price: 800,
+          stocks: 21,
+        },
+      ]);
     });
   });
 });

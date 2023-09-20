@@ -494,3 +494,23 @@
     filter: opacity(1);
   }
 }
+
+.ranks {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.ranks > p {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 0.5em;
+}
+
+.ranks > p:first-child::after {
+  position: absolute;
+  right: 44%;
+  content: "🏆";
+}

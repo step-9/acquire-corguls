@@ -29,6 +29,11 @@ const endPlayerTurn = (req, res) => {
   res.end();
 };
 
+const gameResult = (req, res) => {
+  const { game } = req.app.context;
+  res.json(game.result);
+};
+
 const buyStocks = (req, res) => {
   const { game } = req.app.context;
   const { name, quantity, price } = req.body;
@@ -106,6 +111,7 @@ const createGameRouter = () => {
   router.get("/status", serveGameStats);
   router.post("/tile", placeTile);
   router.post("/end-turn", endPlayerTurn);
+  router.get("/end-result", gameResult);
   router.post("/buy-stocks", buyStocks);
   router.post("/establish", establishCorporation);
   router.post("/end-merge", endMerge);

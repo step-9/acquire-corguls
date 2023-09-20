@@ -138,8 +138,9 @@ class Purchase {
     this.#confirmButton.onclick = () => {
       if (this.#cart.quantity > 0) {
         this.#confirmPurchase();
+        getCorporations().classList.remove("selectable");
+
         refillTile();
-        //create transaction slip, activity log
         return;
       }
     };
