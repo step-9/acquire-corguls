@@ -292,7 +292,7 @@ const displayAndSetupAccountTiles = (gameStatus, previousState) => {
     displayTile(tileElement, tile.position);
     addVisualAttribute(tileElement, tile.isPlaced);
     attachListener(tileElement, tile);
-    highlightTile(tile, tileElement, previousState, gameStatus);
+    // highlightTile(tile, tileElement, previousState, gameStatus);
   });
 };
 
