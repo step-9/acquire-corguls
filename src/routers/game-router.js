@@ -90,6 +90,12 @@ const configureGame = (req, res) => {
   res.status(201).end();
 };
 
+const endMerge = (req, res) => {
+  const { game } = req.app.context;
+  game.endMerge();
+  res.status(200).end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
@@ -102,6 +108,7 @@ const createGameRouter = () => {
   router.post("/end-turn", endPlayerTurn);
   router.post("/buy-stocks", buyStocks);
   router.post("/establish", establishCorporation);
+  router.post("/end-merge", endMerge);
 
   return router;
 };

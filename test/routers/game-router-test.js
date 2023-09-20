@@ -1,10 +1,57 @@
-const assert = require("assert");
-const { describe, it } = require("node:test");
 const request = require("supertest");
+const assert = require("assert");
+const chai = require("chai");
+const { describe, it } = require("node:test");
 const { createApp } = require("../../src/app");
 const { createLobbyRouter } = require("../../src/routers/lobby-router");
 const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
+
+const joinPlayer = (app, username) => {
+  return request(app)
+    .post("/lobby/players")
+    .send({ username })
+    .expect(302)
+    .expect("location", "/lobby");
+};
+
+const startGame = (app, admin) => {
+  return request(app)
+    .post("/game/start")
+    .set("cookie", `username=${admin}`)
+    .expect(200);
+};
+
+const placeTile = (app, username, tile) => {
+  return request(app)
+    .post("/game/tile")
+    .set("cookie", `username=${username}`)
+    .send(tile)
+    .expect(200);
+};
+
+const establishCorp = (app, username, corpName) => {
+  return request(app)
+    .post("/game/establish")
+    .send({ name: corpName })
+    .set("cookie", `username=${username}`)
+    .expect(200);
+};
+
+const getGameStatus = async (app, username) => {
+  const result = await request(app)
+    .get("/game/status")
+    .set("cookie", `username=${username}`);
+
+  return result.body;
+};
+
+const endMerge = (app, username) => {
+  return request(app)
+    .post("/game/end-merge")
+    .set("cookie", `username=${username}`)
+    .expect(200);
+};
 
 describe("GameRouter", () => {
   const corporations = {
@@ -135,6 +182,7 @@ describe("GameRouter", () => {
       const gameStatus = {
         setupTiles: [["player", { position: { x: 0, y: 6 }, isPlaced: true }]],
         state: "place-tile",
+        stateInfo: {},
         placedTiles: [
           {
             position: { x: 0, y: 6 },
@@ -181,6 +229,7 @@ describe("GameRouter", () => {
 
       const gameStatus = {
         state: "buy-stocks",
+        stateInfo: {},
         setupTiles: [["player", { position: { x: 0, y: 6 }, isPlaced: true }]],
         placedTiles: [
           {
@@ -465,6 +514,7 @@ describe("GameRouter", () => {
           ],
         ],
         state: "buy-stocks",
+        stateInfo: {},
         placedTiles: [
           {
             belongsTo: "phoenix",
@@ -514,12 +564,12 @@ describe("GameRouter", () => {
       request(app)
         .post("/lobby/players")
         .send({ username: username1 })
-        .expect(200)
+        .expect(302)
         .end(() => {
           request(app)
             .post("/lobby/players")
             .send({ username: username2 })
-            .expect(200)
+            .expect(302)
             .end(() => {
               request(app)
                 .post("/game/start")
@@ -592,6 +642,7 @@ describe("GameRouter", () => {
           ["player2", { position: { x: 1, y: 1 }, isPlaced: true }],
         ],
         state: "tile-placed",
+        stateInfo: {},
         placedTiles: [
           {
             belongsTo: "phoenix",
@@ -701,6 +752,7 @@ describe("GameRouter", () => {
 
       const expectedStatus = {
         "state": "place-tile",
+        "stateInfo": {},
         "setupTiles": [
           [
             "biswa",
@@ -966,6 +1018,37 @@ describe("GameRouter", () => {
                 });
             });
         });
+    });
+  });
+
+  describe("POST /game/end-merge", () => {
+    it("should end the merge state", async () => {
+      const size = { lowerLimit: 1, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const player = "player";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, player);
+      await startGame(app, player);
+      await placeTile(app, player, { x: 0, y: 5 });
+      await establishCorp(app, player, "phoenix");
+
+      await placeTile(app, player, { x: 0, y: 1 });
+      await placeTile(app, player, { x: 0, y: 2 });
+      await placeTile(app, player, { x: 0, y: 3 });
+      await establishCorp(app, player, "quantum");
+
+      await placeTile(app, player, { x: 0, y: 4 });
+
+      let status = await getGameStatus(app, player);
+      assert.strictEqual(status.state, "merge");
+
+      await endMerge(app, player);
+      status = await getGameStatus(app, player);
+      chai.expect(status.state).to.not.equal("merge");
     });
   });
 });

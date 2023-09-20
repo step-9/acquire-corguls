@@ -8,11 +8,13 @@ const GAME_STATES = {
   establishCorporation: "establish-corporation",
   buyStocks: "buy-stocks",
   gameEnd: "game-end",
+  merge: "merge",
 };
 
 class Game {
   #tiles;
   #state;
+  #stateInfo; // attach with state
   #corporations;
   #shuffle;
   #players;
@@ -31,6 +33,7 @@ class Game {
     this.#players = players;
     this.#shuffle = shuffle;
     this.#state = GAME_STATES.setup;
+    this.#stateInfo = {};
     this.#turns = 0;
   }
 
@@ -210,7 +213,8 @@ class Game {
           );
 
           if (acquirer.stats().size > 10) acquirer.markSafe();
-          this.#state = GAME_STATES.buyStocks;
+          this.#state = GAME_STATES.merge;
+          this.#stateInfo = { acquirer: acquirer.name, defunct: defunct.name };
         },
       },
       {
@@ -220,6 +224,10 @@ class Game {
         },
       },
     ];
+  }
+
+  endMerge() {
+    this.#state = GAME_STATES.buyStocks;
   }
 
   setup() {
@@ -331,6 +339,7 @@ class Game {
   status(username) {
     return {
       state: this.#state,
+      stateInfo: this.#stateInfo,
       setupTiles: this.#setupTiles.map(([player, tile]) => [
         player.username,
         tile,

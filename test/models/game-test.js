@@ -224,7 +224,7 @@ describe("Game", () => {
       });
     });
 
-    it("should merge with the defunct if tile placed adjacent to two corps", () => {
+    it("acquirer should be safe after merging if grows 11 tiles or more", () => {
       const player1 = new Player("Biswa");
       const player2 = new Player("Bittu");
       const shuffle = x => x;
@@ -391,6 +391,35 @@ describe("Game", () => {
       assert.ok(!corporations.phoenix.isActive);
       game.establishCorporation({ name: "phoenix" });
       assert.ok(corporations.phoenix.isActive);
+    });
+  });
+
+  describe("endMerge", () => {
+    it("should end the merge state", () => {
+      const player1 = new Player("Biswa");
+      const player2 = new Player("Bittu");
+      const shuffle = x => x;
+      const corporations = createCorporations();
+      const game = new Game([player1, player2], shuffle, corporations);
+      game.start();
+
+      game.placeTile("Biswa", { x: 0, y: 0 });
+      game.placeTile("Biswa", { x: 0, y: 1 });
+      game.placeTile("Biswa", { x: 0, y: 2 });
+      game.placeTile("Biswa", { x: 0, y: 3 });
+      game.establishCorporation({ name: "phoenix" });
+
+      game.changeTurn();
+
+      game.placeTile("Biswa", { x: 0, y: 5 });
+      game.placeTile("Bittu", { x: 0, y: 6 });
+      game.establishCorporation({ name: "quantum" });
+
+      game.placeTile("Biswa", { x: 0, y: 4 });
+
+      assert.strictEqual(game.status("Biswa").state, "merge");
+      game.endMerge();
+      assert.strictEqual(game.status("Biswa").state, "buy-stocks");
     });
   });
 });
