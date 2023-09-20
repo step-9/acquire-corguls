@@ -441,7 +441,7 @@
 .corporation.safe .name::after {
   content: url("/images/safe.png");
   scale: 0.9;
-  padding: 2px 4px;
+  padding: 2px 3px;
 }
 
 .selected-stocks {
