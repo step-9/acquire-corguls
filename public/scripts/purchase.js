@@ -155,12 +155,15 @@ class Purchase {
 
   #renderStockSelection() {
     const stockBuyingPrompt = document.createElement("div");
-
+    const buyMsg = generateComponent([
+      "p",
+      "Select an active corporation to buy stocks",
+    ]);
     stockBuyingPrompt.classList.add("buying-prompt");
     stockBuyingPrompt.append(...this.#generateConfirmCancel());
 
     this.#displayPanel.innerHTML = "";
-    this.#displayPanel.append(stockBuyingPrompt);
+    this.#displayPanel.append(buyMsg, stockBuyingPrompt);
   }
 
   render() {
