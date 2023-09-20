@@ -334,8 +334,7 @@ const renderBoard = ({ placedTiles, state }) => {
   );
 
   const newTilePlaced = placedTiles.at(-1);
-  if (state === "tile-placed" || state === "buy-stocks")
-    animateTile(newTilePlaced.position, "new-tile");
+  animateTile(newTilePlaced.position, "new-tile");
 };
 
 const renderPlayers = ({ players }) => {
