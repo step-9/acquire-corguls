@@ -55,6 +55,7 @@ const generateRefillTileBtn = () => {
 
 const isSamePlayer = (self, currentPlayer) =>
   self.username === currentPlayer.username;
+
 const corporationsInMarket = corporations =>
   Object.entries(corporations).filter(
     ([, corp]) => corp.isActive && corp.stocks > 0
@@ -83,12 +84,23 @@ class Purchase {
     });
   }
 
+  #hasEnoughStocks(corp) {
+    const [, corporation] = this.#corporations.find(([name]) => name === corp);
+    const addedStocks = this.#cart.filter(({ name }) => name === corp).length;
+
+    return corporation.stocks - addedStocks >= 1;
+  }
+
   #selectStocks() {
     this.#corporations
       .map(([name, { price }]) => {
         const corp = document.getElementById(name);
 
-        corp.onclick = () => this.addToCart(name, price);
+        corp.onclick = () => {
+          if (this.#hasEnoughStocks(name)) {
+            this.addToCart(name, price);
+          }
+        };
         return corp;
       })
       .forEach(corp => corp.classList.remove("non-selectable"));
