@@ -563,7 +563,7 @@ const renderGame = () => {
       renderActivityMessage(gameStatus);
       setUpPlayerTilePlacing(gameStatus);
       setupCorporationSelection(gameStatus);
-      startPurchase(gameStatus, getDisplayPanel(), getCorporation);
+      startPurchase(gameStatus, getDisplayPanel());
       renderCorporations(gameStatus);
       previousState = gameStatus.state;
     });

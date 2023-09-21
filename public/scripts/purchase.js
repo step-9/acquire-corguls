@@ -51,54 +51,22 @@ const generateRefillTileBtn = () => {
 
 const isSamePlayer = (self, currentPlayer) =>
   self.username === currentPlayer.username;
+const corporationsInMarket = corporations =>
+  Object.entries(corporations).filter(
+    ([, corp]) => corp.isActive && corp.stocks > 0
+  );
 
 class Purchase {
   #cart;
   #portfolio;
   #corporations;
   #displayPanel;
-  #getCorporation;
-  #activeCorporations;
-  #confirmButton;
-  #totalPrice;
 
-  constructor({ corporations, portfolio }, displayPanel, getCorporation) {
+  constructor(corporations, portfolio, displayPanel) {
+    this.#cart = [];
     this.#portfolio = portfolio;
-    this.#corporations = corporations;
-    this.#cart = {};
     this.#displayPanel = displayPanel;
-    this.#getCorporation = getCorporation;
-  }
-
-  #selectStocks() {
-    const activeCorporations = Object.entries(this.#corporations).filter(
-      ([, corp]) => corp.isActive && corp.stocks >= 3
-    );
-
-    if (activeCorporations.length === 0) return renderTilePlacedMessage();
-
-    activeCorporations
-      .map(([name, { price }]) => {
-        const corp = this.#getCorporation(name);
-        corp.onclick = () => {
-          this.addToCart(name, price * 3, 3);
-
-          if (this.#portfolio.balance >= this.#cart.price) {
-            this.#confirmButton.removeAttribute("disabled");
-            this.#confirmButton.classList.remove("disable-btn");
-          }
-        };
-
-        return corp;
-      })
-      .forEach(corp => corp.classList.remove("non-selectable"));
-
-    getCorporations().classList.add("selectable");
-  }
-
-  addToCart(name, price, quantity) {
-    this.#cart = { name, price, quantity };
-    this.#generateCart();
+    this.#corporations = corporations;
   }
 
   #confirmPurchase() {
@@ -111,12 +79,28 @@ class Purchase {
     });
   }
 
-  skipPurchase() {
-    fetch("/game/end-turn", { method: "POST" }).then(() => {
-      const tileElements = getTileElements();
-      placeNewTile(tileElements);
-      setTimeout(() => removeHighlight(tileElements), transitionDelay);
-    });
+  #selectStocks() {
+    this.#corporations
+      .map(([name, { price }]) => {
+        const corp = document.getElementById(name);
+
+        corp.onclick = () => this.addToCart(name, price);
+        return corp;
+      })
+      .forEach(corp => corp.classList.remove("non-selectable"));
+
+    getCorporations().classList.add("selectable");
+  }
+
+  removeStock(index) {
+    this.#cart.splice(index, 1);
+    this.#renderCart();
+  }
+
+  addToCart(name, price) {
+    if (this.#cart.length === 3) return;
+    this.#cart.push({ name, price });
+    this.#renderCart();
   }
 
   #generateBuySkip() {
@@ -152,49 +136,61 @@ class Purchase {
     this.#displayPanel.append(stockBuyingPrompt);
   }
 
-  #generateCart() {
-    const stockCard = [
-      "div",
-      capitaliseFirstLetter(this.#cart.name),
-      { class: `${this.#cart.name} stock flex` },
-    ];
+  #generateStockCards() {
+    return this.#cart.map(({ name }, index) => {
+      const stockCard = generateComponent([
+        "div",
+        [
+          ["p", capitaliseFirstLetter(name)],
+          ["div", "x"],
+        ],
+        { class: `${name} stock` },
+      ]);
+
+      stockCard.lastChild.onclick = () => this.removeStock(index);
+      return stockCard;
+    });
+  }
+
+  #renderCart() {
+    const totalPrice = this.#cart.reduce((total, { price }) => {
+      return total + price;
+    }, 0);
 
     const cartElement = document.createElement("div");
-    cartElement.append(
-      generateComponent(stockCard),
-      generateComponent(stockCard),
-      generateComponent(stockCard)
-    );
+    cartElement.append(...this.#generateStockCards());
 
     cartElement.classList.add("selected-stocks");
     const stockBuyingPrompt = document.createElement("div");
 
     stockBuyingPrompt.classList.add("buying-prompt");
-    stockBuyingPrompt.append(...this.#generateConfirmCancel());
+    stockBuyingPrompt.append(...this.#generateConfirmCancel(totalPrice));
 
     this.#displayPanel.innerHTML = "";
-    this.#totalPrice.innerText = `Total: $${this.#cart.price}`;
     this.#displayPanel.append(cartElement, stockBuyingPrompt);
   }
 
-  #generateConfirmCancel() {
-    this.#totalPrice = generateComponent(["p", "Total: $0"]);
-
-    this.#confirmButton = generateComponent([
+  #generateConfirmCancel(totalPrice) {
+    const cannotPurchase = this.#portfolio.balance < totalPrice;
+    const totalPriceElement = generateComponent([
+      "p",
+      `Total price : $${totalPrice || 0}`,
+    ]);
+    const confirmButton = generateComponent([
       "button",
       "Confirm",
       { type: "button", "disabled": true, class: "disable-btn" },
     ]);
 
-    this.#confirmButton.onclick = () => {
-      if (this.#cart.quantity > 0) {
+    if (!cannotPurchase && this.#cart.length > 0) {
+      confirmButton.removeAttribute("disabled");
+      confirmButton.classList.remove("disable-btn");
+
+      confirmButton.onclick = () => {
         this.#confirmPurchase().then(refillTile);
         getCorporations().classList.remove("selectable");
-
-        // refillTile();
-        return;
-      }
-    };
+      };
+    }
 
     const skipButton = generateComponent([
       "button",
@@ -202,15 +198,12 @@ class Purchase {
       { type: "button", onclick: "refillTile()" },
     ]);
 
-    return [this.#totalPrice, this.#confirmButton, skipButton];
+    return [totalPriceElement, confirmButton, skipButton];
   }
 
   #renderStockSelection() {
     const stockBuyingPrompt = document.createElement("div");
-    const buyMsg = generateComponent([
-      "p",
-      "Select an active corporation to buy stocks",
-    ]);
+    const buyMsg = generateComponent(["p", "Select your stocks (Max : 3)"]);
     stockBuyingPrompt.classList.add("buying-prompt");
     stockBuyingPrompt.append(...this.#generateConfirmCancel());
 
@@ -219,11 +212,7 @@ class Purchase {
   }
 
   render() {
-    this.#activeCorporations = Object.entries(this.#corporations).filter(
-      ([, corp]) => corp.isActive && corp.stocks > 0
-    );
-
-    if (this.#activeCorporations.length === 0) {
+    if (this.#corporations.length === 0) {
       return renderTilePlacedMessage();
     }
 
@@ -231,14 +220,19 @@ class Purchase {
   }
 }
 
-const startPurchase = (gameStatus, displayPanel, getCorporation) => {
-  const { players, corporations, state } = gameStatus;
+const startPurchase = (gameStatus, displayPanel) => {
+  const { players, corporations, state, portfolio } = gameStatus;
   const self = players.find(({ you }) => you);
   const isInCorrectState = "buy-stocks" === state;
   const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
 
   if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
 
-  const purchase = new Purchase(gameStatus, displayPanel, getCorporation);
+  const purchase = new Purchase(
+    corporationsInMarket(corporations),
+    portfolio,
+    displayPanel
+  );
+
   purchase.render();
 };

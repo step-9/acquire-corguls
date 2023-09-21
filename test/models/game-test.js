@@ -332,35 +332,12 @@ describe("Game", () => {
       const corporations = createCorporations();
       const shuffle = x => x;
       const game = new Game([player1, player2], shuffle, corporations);
-      const transactionDetails = {
-        name: "phoenix",
-        quantity: 3,
-        price: 1000,
-      };
-
-      game.start();
-      game.placeTile("Biswa", { x: 0, y: 0 });
-      corporations["phoenix"].establish();
-      game.buyStocks(transactionDetails);
-
-      const { balance, stocks } = player1.portfolio();
-
-      assert.strictEqual(balance, 5000);
-      assert.strictEqual(stocks.phoenix, 3);
-      assert.strictEqual(corporations["phoenix"].stocks, 22);
-    });
-
-    it("should not add stocks to current player's portfolio when player does not have enough balance", () => {
-      const player1 = new Player("Biswa", 0, { phoenix: 0 });
-      const player2 = new Player("Honu", 0, { phoenix: 0 });
-      const corporations = createCorporations();
-      const shuffle = x => x;
-      const game = new Game([player1, player2], shuffle, corporations);
-      const transactionDetails = {
-        name: "phoenix",
-        quantity: 3,
-        price: 6001,
-      };
+      const transactionDetails = [
+        {
+          name: "phoenix",
+          price: 1000,
+        },
+      ];
 
       game.start();
       game.placeTile("Biswa", { x: 0, y: 0 });
@@ -370,8 +347,28 @@ describe("Game", () => {
       const { balance, stocks } = player1.portfolio();
 
       assert.strictEqual(balance, 6000);
-      assert.strictEqual(stocks.phoenix, 0);
-      assert.strictEqual(corporations["phoenix"].stocks, 25);
+      assert.strictEqual(stocks.phoenix, 1);
+      assert.strictEqual(corporations["phoenix"].stocks, 24);
+    });
+
+    it("should not add stocks to current player's portfolio when player does not have enough balance", () => {
+      const player1 = new Player("Biswa", -6000, { phoenix: 0 });
+      const player2 = new Player("Honu", 0, { phoenix: 0 });
+      const corporations = createCorporations();
+      const shuffle = x => x;
+      const game = new Game([player1, player2], shuffle, corporations);
+      const transactionDetails = [{ name: "phoenix" }];
+
+      game.start();
+      game.placeTile("Biswa", { x: 0, y: 0 });
+      game.establishCorporation({ name: "phoenix" });
+      game.buyStocks(transactionDetails);
+
+      const { balance, stocks } = player1.portfolio();
+
+      assert.strictEqual(balance, 0);
+      assert.strictEqual(stocks.phoenix, 1);
+      assert.strictEqual(corporations["phoenix"].stocks, 24);
     });
   });
 

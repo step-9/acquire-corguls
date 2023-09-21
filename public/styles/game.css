@@ -323,7 +323,8 @@
   height: 98%;
   display: flex;
   padding: 1em;
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex-wrap: nowrap;
   justify-content: space-evenly;
   align-items: center;
   row-gap: 1em;
@@ -528,4 +529,27 @@
   100% {
     filter: brightness(1);
   }
+}
+
+.selected-stocks .stock > p {
+  position: relative;
+  text-align: center;
+  top: 30%;
+}
+
+.selected-stocks .stock > div {
+  font-size: 0.8em;
+  position: relative;
+  bottom: 2em;
+  left: 5.2em;
+  height: 1em;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: var(--light-gray);
+  background-color: var(--dark-gray);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  cursor: pointer;
 }

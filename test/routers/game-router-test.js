@@ -47,6 +47,14 @@ const establishCorp = (app, username, corpName) => {
     .expect(200);
 };
 
+const buyStocks = (app, username, stocks) => {
+  return request(app)
+    .post("/game/buy-stocks")
+    .set("cookie", `username=${username}`)
+    .send(stocks)
+    .expect(200);
+};
+
 const getGameStatus = async (app, username) => {
   const result = await request(app)
     .get("/game/status")
@@ -630,7 +638,7 @@ describe("GameRouter", () => {
   });
 
   describe("POST /game/buy-stocks", () => {
-    it("should buy stocks of an active corporation", (_, done) => {
+    it("should buy stocks of an active corporation", async () => {
       const size = { lowerLimit: 2, upperLimit: 2 };
       const lobby = new Lobby(size);
       const username1 = "player1";
@@ -650,7 +658,7 @@ describe("GameRouter", () => {
           { position: { x: 0, y: 5 }, isPlaced: false },
         ],
         stocks: {
-          phoenix: 4,
+          phoenix: 2,
           quantum: 0,
           hydra: 0,
           fusion: 0,
@@ -658,111 +666,19 @@ describe("GameRouter", () => {
           sackson: 0,
           zeta: 0,
         },
-        balance: 5000,
+        balance: 5500,
       };
 
-      const gameStatus = {
-        setupTiles: [
-          ["player1", { position: { x: 1, y: 0 }, isPlaced: true }],
-          ["player2", { position: { x: 1, y: 1 }, isPlaced: true }],
-        ],
-        state: "tile-placed",
-        stateInfo: {},
-        placedTiles: [
-          {
-            belongsTo: "phoenix",
-            isPlaced: true,
-            position: {
-              x: 1,
-              y: 0,
-            },
-          },
-          {
-            belongsTo: "phoenix",
-            isPlaced: true,
-            position: {
-              x: 1,
-              y: 1,
-            },
-          },
-          {
-            belongsTo: "phoenix",
-            isPlaced: true,
-            position: {
-              x: 0,
-              y: 0,
-            },
-          },
-        ],
-        players: [
-          { username: username1, isTakingTurn: true, you: true },
-          { username: username2, isTakingTurn: false, you: false },
-        ],
-        portfolio,
-        corporations: {
-          ...corporations,
-          phoenix: {
-            stocks: 21,
-            size: 3,
-            isActive: true,
-            isSafe: false,
-            price: 500,
-            majority: 2000,
-            minority: 1000,
-          },
-        },
-      };
+      await joinPlayer(app, username1);
+      await joinPlayer(app, username2);
+      await startGame(app, username1);
+      await placeTile(app, username1, { x: 0, y: 0 });
+      await establishCorp(app, username1, "phoenix");
+      await buyStocks(app, username1, [{ name: "phoenix", price: 1000 }]);
 
-      request(app)
-        .post("/lobby/players")
-        .send({ username: username1 })
-        .expect(200)
-        .end(() => {
-          request(app)
-            .post("/lobby/players")
-            .send({ username: username2 })
-            .expect(200)
-            .end(() => {
-              request(app)
-                .post("/game/start")
-                .set("cookie", "username=player1")
-                .expect(200)
-                .end(() => {
-                  request(app)
-                    .post("/game/tile")
-                    .set("cookie", "username=player1")
-                    .send({ x: 0, y: 0 })
-                    .expect(200)
-                    .end(() => {
-                      request(app)
-                        .post("/game/establish")
-                        .send({ name: "phoenix" })
-                        .set("cookie", "username=player1")
-                        .expect(200)
-                        .end(() => {
-                          request(app)
-                            .post("/game/buy-stocks")
-                            .send({
-                              name: "phoenix",
-                              quantity: 3,
-                              price: 1000,
-                            })
-                            .set("cookie", "username=player1")
-                            .expect(200)
-                            .end(() => {
-                              request(app)
-                                .get("/game/status")
-                                .set("cookie", "username=player1")
-                                .end((err, res) => {
-                                  assert.deepStrictEqual(res.body, gameStatus);
-                                  done(err);
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
+      const status = await getGameStatus(app, username1);
+      assert.strictEqual(status.state, "tile-placed");
+      assert.deepStrictEqual(status.portfolio, portfolio);
     });
   });
 

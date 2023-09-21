@@ -36,9 +36,9 @@ const gameResult = (req, res) => {
 
 const buyStocks = (req, res) => {
   const { game } = req.app.context;
-  const { name, quantity, price } = req.body;
+  const stocks = req.body;
 
-  game.buyStocks({ name, quantity, price });
+  game.buyStocks(stocks);
   res.end();
 };
 

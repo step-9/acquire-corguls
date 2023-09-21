@@ -343,16 +343,18 @@ class Game {
     this.#state = GAME_STATES.placeTile;
   }
 
-  // eslint-disable-next-line complexity
-  buyStocks({ name, quantity, price }) {
+  buyStocks(stocks) {
     const player = this.#currentPlayer();
-    const corp = this.#corporations[name];
 
-    if (corp.isActive && corp.stocks >= quantity && player.balance >= price) {
-      corp.decrementStocks(quantity);
-      player.addExpense(price);
-      player.addStocks(name, quantity);
-    }
+    stocks.forEach(({ name }) => {
+      const corp = this.#corporations[name];
+      const { isActive, stocks, price } = corp.stats();
+      if (isActive && stocks >= 1 && player.balance >= price) {
+        corp.decrementStocks(1);
+        player.addExpense(price);
+        player.addStocks(name, 1);
+      }
+    });
 
     this.#state = GAME_STATES.tilePlaced;
   }
