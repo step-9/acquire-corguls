@@ -1,6 +1,7 @@
 import GameService from "/scripts/game-service.js";
 import GameGateway from "/scripts/game-gateway.js";
 import Balance from "/scripts/components/balance.js";
+import Stocks from "/scripts/components/stocks.js";
 
 let previousState;
 
@@ -34,6 +35,32 @@ const CORPORATIONS_IDS = {
   "zeta": "zeta",
 };
 
+const stockIDs = {
+  "phoenix": "phoenix-stock",
+  "quantum": "quantum-stock",
+  "hydra": "hydra-stock",
+  "fusion": "fusion-stock",
+  "america": "america-stock",
+  "sackson": "sackson-stock",
+  "zeta": "zeta-stock",
+};
+
+const getStockElements = () => {
+  const stockContainerEntries = Object.entries(stockIDs).map(([corp, id]) => {
+    const corpElement = document.getElementById(id);
+
+    return [
+      corp,
+      {
+        card: corpElement,
+        quantity: corpElement.querySelector(".quantity"),
+      },
+    ];
+  });
+
+  return Object.fromEntries(stockContainerEntries);
+};
+
 const getCorporation = id => document.getElementById(id);
 const getBoard = () => document.querySelectorAll(".space");
 const getInfoIcon = () => document.querySelector("#info-icon");
@@ -49,11 +76,6 @@ const getTileElements = () => {
 const getBalanceContainer = () => document.querySelector("#balance-container");
 
 const getCorporations = () => document.querySelector("#corporations");
-
-const displayAccountBalance = balance => {
-  const balanceContainer = document.querySelector("#balance-container");
-  balanceContainer.innerText = "$" + balance;
-};
 
 const placeNewTile = tileElements => {
   tileElements.forEach(tileElement => {
@@ -192,18 +214,8 @@ const renderCorporations = ({ corporations }) => {
 };
 
 const displayAccountStocks = stocks => {
-  const accountStocks = {
-    "phoenix": "phoenix-stock",
-    "quantum": "quantum-stock",
-    "hydra": "hydra-stock",
-    "fusion": "fusion-stock",
-    "america": "america-stock",
-    "sackson": "sackson-stock",
-    "zeta": "zeta-stock",
-  };
-
   Object.entries(stocks).forEach(([corporation, quantity]) => {
-    const stocks = document.getElementById(accountStocks[corporation]);
+    const stocks = document.getElementById(stockIDs[corporation]);
     stocks.classList.add(corporation);
     const [quantityElement] = [...stocks.children];
     quantityElement.innerText = quantity;
@@ -323,7 +335,7 @@ const displayPlayerProfile = (gameStatus, previousState) => {
   const { balance, stocks } = portfolio;
 
   // displayAccountBalance(balance);
-  displayAccountStocks(stocks);
+  // displayAccountStocks(stocks);
   displayAndSetupAccountTiles(gameStatus, previousState);
 };
 
@@ -561,6 +573,7 @@ const renderGame = () => {
 
 const flash = (element, time = 500) => {
   element.classList.add("flash");
+  console.log(element);
   setTimeout(() => {
     element.classList.remove("flash");
   }, time);
@@ -569,9 +582,13 @@ const flash = (element, time = 500) => {
 const createComponents = () => {
   const balanceContainer = getBalanceContainer();
   const amountElement = balanceContainer.querySelector(".amount");
+  const stockElements = getStockElements();
+  const flashBalance = () => flash(balanceContainer);
+  const flashStock = corp => flash(stockElements[corp].card);
 
   return {
-    balance: new Balance(amountElement, () => flash(balanceContainer)),
+    balance: new Balance(amountElement, flashBalance),
+    stocks: new Stocks(stockElements, flashStock),
   };
 };
 

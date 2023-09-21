@@ -12,5 +12,6 @@ export default class GameService {
   async render() {
     const gameStatus = await this.#gameGateway.getStatus();
     this.#components.balance.update(gameStatus.portfolio.balance);
+    this.#components.stocks.update(gameStatus.portfolio.stocks);
   }
 }
