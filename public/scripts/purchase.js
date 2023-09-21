@@ -1,5 +1,56 @@
+const getDisplayPanel = () => document.querySelector("#display-panel");
+const getCorporations = () => document.querySelector("#corporations");
+const getTileContainer = () => document.querySelector("#tile-container");
+const placeNewTile = tileElements => {
+  tileElements.forEach(tileElement => {
+    tileElement.classList.remove("used-tile");
+  });
+};
+
+const refillTile = () => {
+  const transitionDelay = 1000;
+  fetch("/game/end-turn", { method: "POST" }).then(() => {
+    const tileElements = getTileElements();
+    placeNewTile(tileElements);
+    setTimeout(() => removeHighlight(tileElements), transitionDelay);
+  });
+  // .then(highlightTile());
+};
+
+const removeHighlight = tileElements => {
+  tileElements.forEach(tileElement =>
+    tileElement.classList.remove("highlight")
+  );
+};
+
+const getTileElements = () => {
+  const tileContainer = getTileContainer();
+  return Array.from(tileContainer.children);
+};
+
 const capitaliseFirstLetter = text =>
   text.charAt(0).toUpperCase() + text.slice(1);
+
+const renderTilePlacedMessage = () => {
+  const refillTilePrompt = document.createElement("div");
+  refillTilePrompt.classList.add("refill-tile-prompt");
+  refillTilePrompt.append(...generateRefillTileBtn());
+  getDisplayPanel().append(refillTilePrompt);
+};
+
+const generateRefillTileBtn = () => {
+  const refillTileMessageElement = generateComponent(["p", "Refill your tile"]);
+  const endButton = generateComponent([
+    "button",
+    "Refill",
+    { type: "button", onclick: "refillTile()" },
+  ]);
+
+  return [refillTileMessageElement, endButton];
+};
+
+const isSamePlayer = (self, currentPlayer) =>
+  self.username === currentPlayer.username;
 
 class Purchase {
   #cart;

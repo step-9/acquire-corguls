@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/styles/players.css" />
     <script src="/scripts/utils.js"></script>
     <script src="/scripts/purchase.js"></script>
-    <script src="/scripts/game.js"></script>
+    <script src="/scripts/game.js" type="module"></script>
   </head>
 
   <body>
@@ -130,9 +130,9 @@
       </section>
       <section id="account">
         <header class="account-header">PORTFOLIO</header>
-        <section class="balance">
-          <header>BALANCE</header>
-          <div class="amount" id="balance-container"></div>
+        <section class="balance" id="balance-container">
+          <header class="label">BALANCE</header>
+          <div class="amount">0</div>
         </section>
 
         <section class="stocks">

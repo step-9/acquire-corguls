@@ -124,8 +124,12 @@
   margin-bottom: 0.5em;
 }
 
-.amount {
+#balance-container .amount {
   font-size: 2em;
+}
+
+#balance-container .amount::before {
+  content: "$";
 }
 
 #stocks-container {
@@ -513,4 +517,15 @@
   position: absolute;
   right: 44%;
   content: "🏆";
+}
+
+.flash {
+  filter: brightness(1.5);
+  animation: blink linear 0.5s forwards;
+}
+
+@keyframes blink {
+  100% {
+    filter: brightness(1);
+  }
 }

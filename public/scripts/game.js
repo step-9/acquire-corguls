@@ -1,3 +1,9 @@
+import GameService from "/scripts/game-service.js";
+import GameGateway from "/scripts/game-gateway.js";
+import Balance from "/scripts/components/balance.js";
+
+let previousState;
+
 const CORPORATIONS = [
   "phoenix",
   "quantum",
@@ -40,6 +46,8 @@ const getTileElements = () => {
   const tileContainer = getTileContainer();
   return Array.from(tileContainer.children);
 };
+const getBalanceContainer = () => document.querySelector("#balance-container");
+
 const getCorporations = () => document.querySelector("#corporations");
 
 const displayAccountBalance = balance => {
@@ -314,7 +322,7 @@ const displayPlayerProfile = (gameStatus, previousState) => {
   const { portfolio } = gameStatus;
   const { balance, stocks } = portfolio;
 
-  displayAccountBalance(balance);
+  // displayAccountBalance(balance);
   displayAccountStocks(stocks);
   displayAndSetupAccountTiles(gameStatus, previousState);
 };
@@ -528,36 +536,58 @@ const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
     .then(gameStatus => {
-      if (this.previousState === gameStatus.state) return;
+      if (previousState === gameStatus.state) return;
 
       if (gameStatus.state === "game-end") {
         notifyGameEnd();
         displayPlayerProfile(gameStatus);
-        this.previousState = gameStatus.state;
+        previousState = gameStatus.state;
         return;
       }
 
       renderPlayers(gameStatus);
-      displayPlayerProfile(gameStatus, this.previousState);
+      displayPlayerProfile(gameStatus, previousState);
       renderBoard(gameStatus);
       renderActivityMessage(gameStatus);
       setUpPlayerTilePlacing(gameStatus);
       setupCorporationSelection(gameStatus);
       startPurchase(gameStatus, getDisplayPanel(), getCorporation);
       renderCorporations(gameStatus);
-      this.previousState = gameStatus.state;
+      previousState = gameStatus.state;
     });
 
   setupInfoCard();
 };
 
+const flash = (element, time = 500) => {
+  element.classList.add("flash");
+  setTimeout(() => {
+    element.classList.remove("flash");
+  }, time);
+};
+
+const createComponents = () => {
+  const balanceContainer = getBalanceContainer();
+  const amountElement = balanceContainer.querySelector(".amount");
+
+  return {
+    balance: new Balance(amountElement, () => flash(balanceContainer)),
+  };
+};
+
 const keepPlayerProfileUpdated = () => {
   const interval = 1000;
-  const previousState = undefined;
-  const gameRenderer = renderGame.bind({ previousState });
+
+  const gameGateway = new GameGateway("/game");
+  const components = createComponents();
+  const gameService = new GameService(gameGateway, components);
+
   setupGame();
   setTimeout(() => {
-    setInterval(gameRenderer, interval);
+    setInterval(() => {
+      renderGame();
+      gameService.render();
+    }, interval);
   }, interval * 1);
 };
 
