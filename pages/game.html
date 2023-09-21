@@ -7,58 +7,18 @@
     <link rel="stylesheet" href="/styles/players.css" />
     <script src="/scripts/utils.js"></script>
     <script src="/scripts/purchase.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jdenticon@3.2.0/dist/jdenticon.min.js"
+      integrity="sha384-yBhgDqxM50qJV5JPdayci8wCfooqvhFYbIKhv0hTtLvfeeyJMJCscRfFNKIxt43M"
+      crossorigin="anonymous"
+    ></script>
     <script src="/scripts/game.js" type="module"></script>
   </head>
 
   <body>
     <div id="root">
-      <header id="game-header" class="flex">
+      <header id="game-header">
         <div id="game-title">ACQUIRE</div>
-        <div id="players" class="flex">
-          <div class="player" hidden>
-            <img
-              class="profile-pic"
-              src="https://source.boringavatars.com/beam/120/x"
-            />
-            <div class="name"></div>
-          </div>
-          <div class="player" hidden>
-            <img
-              class="profile-pic"
-              src="https://source.boringavatars.com/beam/120/a"
-            />
-            <div class="name"></div>
-          </div>
-          <div class="player" hidden>
-            <img
-              class="profile-pic"
-              src="https://source.boringavatars.com/beam/120/b"
-            />
-            <div class="name"></div>
-          </div>
-          <div class="player" hidden>
-            <img
-              class="profile-pic"
-              src="https://source.boringavatars.com/beam/120/c"
-            />
-            <div class="name"></div>
-          </div>
-          <div class="player" hidden>
-            <img
-              class="profile-pic"
-              src="https://source.boringavatars.com/beam/120/d"
-            />
-            <div class="name"></div>
-          </div>
-          <div class="player" hidden>
-            <img
-              class="profile-pic"
-              src="https://source.boringavatars.com/beam/120/e"
-            />
-            <div class="name"></div>
-          </div>
-        </div>
-        <div id="username"></div>
       </header>
       <section id="corporation-section">
         <header>
@@ -330,6 +290,32 @@
           <div class="space"><span>11</span><span>I</span></div>
           <div class="space"><span>12</span><span>I</span></div>
         </section>
+      </div>
+      <div id="players" class="flex">
+        <div class="player" hidden>
+          <svg class="avatar"></svg>
+          <div class="name"></div>
+        </div>
+        <div class="player" hidden>
+          <svg class="avatar"></svg>
+          <div class="name"></div>
+        </div>
+        <div class="player" hidden>
+          <svg class="avatar"></svg>
+          <div class="name"></div>
+        </div>
+        <div class="player" hidden>
+          <svg class="avatar"></svg>
+          <div class="name"></div>
+        </div>
+        <div class="player" hidden>
+          <svg class="avatar"></svg>
+          <div class="name"></div>
+        </div>
+        <div class="player" hidden>
+          <svg class="avatar"></svg>
+          <div class="name"></div>
+        </div>
       </div>
       <section id="activity-bar">
         <div id="display-panel"></div>

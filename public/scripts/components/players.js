@@ -14,7 +14,10 @@ export default class Players {
     this.#players.forEach((player, id) => {
       const { player: playerElement, name } = this.#playerElements[id];
       name.innerText = player.username;
+
       playerElement.removeAttribute("hidden");
+      playerElement.removeAttribute("hidden");
+
       if (player.you) playerElement.classList.add("self");
       if (player.isTakingTurn) playerElement.classList.add("active");
     });
@@ -38,7 +41,7 @@ export default class Players {
 
   update(players) {
     const currentPlayer = players.find(player => player.isTakingTurn);
-    if (this.#currentPlayer === currentPlayer) return;
+    if (this.#currentPlayer === currentPlayer.username) return;
     this.#previousPlayer = this.#currentPlayer;
     this.#currentPlayer = currentPlayer.username;
     this.#players = players;

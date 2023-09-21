@@ -68,6 +68,7 @@ const getPlayerElements = () => {
   return [...players.children].map(player => ({
     player,
     name: player.querySelector(".name"),
+    avatar: player.querySelector(".avatar"),
   }));
 };
 
