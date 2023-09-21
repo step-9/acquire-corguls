@@ -2,6 +2,7 @@ import GameService from "/scripts/game-service.js";
 import GameGateway from "/scripts/game-gateway.js";
 import Balance from "/scripts/components/balance.js";
 import Stocks from "/scripts/components/stocks.js";
+import Players from "/scripts/components/players.js";
 
 let previousState;
 
@@ -45,20 +46,29 @@ const stockIDs = {
   "zeta": "zeta-stock",
 };
 
+const getStockElement = ([corp, id]) => {
+  const corpElement = document.getElementById(id);
+
+  return [
+    corp,
+    {
+      card: corpElement,
+      quantity: corpElement.querySelector(".quantity"),
+    },
+  ];
+};
+
 const getStockElements = () => {
-  const stockContainerEntries = Object.entries(stockIDs).map(([corp, id]) => {
-    const corpElement = document.getElementById(id);
-
-    return [
-      corp,
-      {
-        card: corpElement,
-        quantity: corpElement.querySelector(".quantity"),
-      },
-    ];
-  });
-
+  const stockContainerEntries = Object.entries(stockIDs).map(getStockElement);
   return Object.fromEntries(stockContainerEntries);
+};
+
+const getPlayerElements = () => {
+  const players = document.querySelector("#players");
+  return [...players.children].map(player => ({
+    player,
+    name: player.querySelector(".name"),
+  }));
 };
 
 const getCorporation = id => document.getElementById(id);
@@ -213,15 +223,6 @@ const renderCorporations = ({ corporations }) => {
   });
 };
 
-const displayAccountStocks = stocks => {
-  Object.entries(stocks).forEach(([corporation, quantity]) => {
-    const stocks = document.getElementById(stockIDs[corporation]);
-    stocks.classList.add(corporation);
-    const [quantityElement] = [...stocks.children];
-    quantityElement.innerText = quantity;
-  });
-};
-
 const fillSpace = (position, corpClass) => {
   const board = getBoard();
   const tileId = position.x * 12 + position.y;
@@ -357,35 +358,6 @@ const renderBoard = ({ placedTiles, state }) => {
   animateTile(newTilePlaced.position, "new-tile");
 };
 
-const renderPlayers = ({ players }) => {
-  const playersDiv = getPlayersDiv();
-  const playerElements = players.map(({ isTakingTurn, username, you }) => {
-    const activeClass = isTakingTurn ? " active" : "";
-    const selfClass = you ? " self" : "";
-
-    return generateComponent([
-      "div",
-      [
-        [
-          "img",
-          "",
-          {
-            class: "profile-pic",
-            src: `https://source.boringavatars.com/beam/120/${username}`,
-          },
-        ],
-        ["div", username, { class: "name" }],
-      ],
-      {
-        class: `player flex ${activeClass} ${selfClass}`,
-      },
-    ]);
-  });
-
-  [...playersDiv.children].forEach(child => child.remove());
-  playersDiv.append(...playerElements);
-};
-
 const generateRefillTileBtn = () => {
   const refillTileMessageElement = generateComponent(["p", "Refill your tile"]);
   const endButton = generateComponent([
@@ -516,17 +488,20 @@ const setupCorporationSelection = ({ players, corporations, state }) => {
 };
 
 const setupGame = () => {
-  fetch("/game/status")
-    .then(res => res.json())
-    .then(gameStatus => {
-      renderPlayers(gameStatus);
-      displayPlayerProfile(gameStatus);
-      renderBoard(gameStatus);
-      displayInitialMessages(gameStatus);
-      renderCorporations(gameStatus);
-    });
-
   setupInfoCard();
+  const gameGateway = new GameGateway("/game");
+
+  return gameGateway.getStatus().then(gameStatus => {
+    displayPlayerProfile(gameStatus);
+    renderBoard(gameStatus);
+    displayInitialMessages(gameStatus);
+    renderCorporations(gameStatus);
+
+    const components = createComponents(gameStatus);
+    const gameService = new GameService(gameGateway, components);
+
+    return gameService;
+  });
 };
 
 const notifyGameEnd = () => {
@@ -557,7 +532,6 @@ const renderGame = () => {
         return;
       }
 
-      renderPlayers(gameStatus);
       displayPlayerProfile(gameStatus, previousState);
       renderBoard(gameStatus);
       renderActivityMessage(gameStatus);
@@ -573,39 +547,37 @@ const renderGame = () => {
 
 const flash = (element, time = 500) => {
   element.classList.add("flash");
-  console.log(element);
   setTimeout(() => {
     element.classList.remove("flash");
   }, time);
 };
 
-const createComponents = () => {
+const createComponents = ({ players, portfolio }) => {
   const balanceContainer = getBalanceContainer();
   const amountElement = balanceContainer.querySelector(".amount");
   const stockElements = getStockElements();
+  const playerElements = getPlayerElements();
   const flashBalance = () => flash(balanceContainer);
   const flashStock = corp => flash(stockElements[corp].card);
 
   return {
-    balance: new Balance(amountElement, flashBalance),
-    stocks: new Stocks(stockElements, flashStock),
+    balance: new Balance(amountElement, flashBalance, portfolio.balance),
+    stocks: new Stocks(stockElements, flashStock, portfolio.stocks),
+    players: new Players(playerElements, players),
   };
 };
 
 const keepPlayerProfileUpdated = () => {
   const interval = 1000;
 
-  const gameGateway = new GameGateway("/game");
-  const components = createComponents();
-  const gameService = new GameService(gameGateway, components);
-
-  setupGame();
-  setTimeout(() => {
-    setInterval(() => {
-      renderGame();
-      gameService.render();
-    }, interval);
-  }, interval * 1);
+  setupGame().then(gameService => {
+    setTimeout(() => {
+      setInterval(() => {
+        renderGame();
+        gameService.render();
+      }, interval);
+    }, interval * 1);
+  });
 };
 
 window.onload = keepPlayerProfileUpdated;

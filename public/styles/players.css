@@ -3,8 +3,13 @@
   gap: 1em;
   flex-grow: 1;
 }
+.player:not([hidden]) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.player .profile-pic {
+.player:not([hidden]) .profile-pic {
   z-index: 5;
   height: 55px;
   width: 55px;
@@ -13,7 +18,7 @@
   background-color: var(--gray);
 }
 
-.player .name {
+.player:not([hidden]) .name {
   position: relative;
   letter-spacing: 0.03em;
   left: -4px;
@@ -26,15 +31,15 @@
   background-color: var(--light-gray);
 }
 
-.player.active > * {
+.player:not([hidden]).active > * {
   outline: 3px solid rgb(233, 248, 255);
   box-shadow: 0 0 10px 6px rgb(22, 176, 228);
 }
 
-.player.self .name {
+.player:not([hidden]).self .name {
   font-weight: 500;
 }
 
-.player.self .name::after {
+.player:not([hidden]).self .name::after {
   content: " (you)";
 }

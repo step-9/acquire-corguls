@@ -7,6 +7,10 @@ const placeNewTile = tileElements => {
   });
 };
 
+const endMerge = () => {
+  fetch("/game/end-merge", { method: "POST" });
+};
+
 const refillTile = () => {
   const transitionDelay = 1000;
   fetch("/game/end-turn", { method: "POST" }).then(() => {

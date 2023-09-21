@@ -7,6 +7,7 @@ export default class Balance {
     this.#balance = balance;
     this.#element = element;
     this.#onRender = onRender;
+    this.#render();
   }
 
   #render() {
