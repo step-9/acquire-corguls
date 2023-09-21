@@ -3,7 +3,7 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 16em 1fr 16em;
-  grid-template-rows: 2.5em 1fr 3em 10em;
+  grid-template-rows: 2.5em 1fr 2.65em 10em;
 
   grid-template-areas:
     "game-header game-header game-header"
@@ -18,8 +18,8 @@
   align-items: center;
 }
 
-#corporation,
-#account {
+#corporations,
+#portfolio {
   text-align: center;
   padding: 0.5em 1em;
 }
@@ -38,17 +38,17 @@
   font-size: 0.8em;
 }
 
-#corporation-section {
-  grid-area: corporation;
+#corporation-section,
+#portfolio-section {
   background-color: #787878;
 }
 
-#account {
+#corporation-section {
+  grid-area: corporation;
+}
+
+#portfolio-section {
   grid-area: account;
-  background-color: #787878;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
 #activity-bar {
@@ -57,6 +57,7 @@
   justify-content: center;
   align-items: center;
   gap: 1em;
+  border-bottom: 0.5em solid #787878;
 }
 
 #game-board-container {
@@ -87,7 +88,7 @@
 }
 
 #corporation-section > header,
-.account-header {
+.portfolio-header {
   font-size: 1.2em;
   font-weight: 600;
   letter-spacing: 2px;
@@ -101,7 +102,7 @@
   background-color: var(--light-gray);
 }
 
-#account > .stocks {
+#portfolio .stocks {
   padding: 0.5em 0em 0.8em;
   border-radius: 5px;
   background-color: var(--light-gray);
@@ -218,21 +219,25 @@
   align-items: center;
 }
 
-#corporation-section > header {
+#corporation-section > header,
+#portfolio-section > header {
   display: flex;
   margin: 0.5em;
   height: 1em;
   justify-content: space-around;
 }
 
-#corporations {
+#corporations,
+#portfolio {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  padding-bottom: 0.5em;
 }
 
-#corporation-section {
+#corporation-section,
+#portfolio-section {
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -55,7 +55,7 @@
 .player:not([hidden]).self .name::after {
   width: fit-content;
   color: white;
-  content: "you";
+  content: "You";
   font-size: 0.6em;
   background-color: var(--dark-gray);
   margin: 0.2em;
