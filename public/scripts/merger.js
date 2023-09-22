@@ -10,8 +10,8 @@ const endMergerTurn = () => {
   fetch("/game/merger/end-turn", { method: "POST" });
 };
 
-const sellDefunctStocks = () => {
-  fetch("/game/merger/sell", { method: "POST" });
+const dealDefunctStocks = () => {
+  fetch("/game/merger/deal", { method: "POST" });
 };
 
 export const renderMerge = (acquirer, defunct) => {
@@ -24,7 +24,7 @@ export const renderMerge = (acquirer, defunct) => {
     generateMergeMsg(acquirer, defunct),
   ]);
 
-  sellAllBtn.onclick = sellDefunctStocks;
+  sellAllBtn.onclick = dealDefunctStocks;
   holdAllBtn.onclick = endMergerTurn;
 
   displayPanel.innerHTML = "";

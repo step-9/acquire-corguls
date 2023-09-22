@@ -2,6 +2,7 @@ const assert = require("assert");
 const { describe, it } = require("node:test");
 const Merger = require("../../src/models/merger");
 const { createCorporations } = require("../../src/models/corporation");
+const { Player } = require("../../src/models/player");
 
 describe("Merger", () => {
   describe("start", () => {
@@ -45,7 +46,6 @@ describe("Merger", () => {
 
   describe("end", () => {
     it("should end the merger round and defunct corporation should be merged to acquirer corporation", () => {
-      const players = ["a", "b"];
       const corporations = createCorporations();
       const connectedTiles = [
         { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "hydra" },
@@ -64,7 +64,7 @@ describe("Merger", () => {
         { position: { x: 0, y: 5 }, isPlaced: true, belongsTo: "zeta" },
       ];
 
-      const merger = new Merger(players, corporations, connectedTiles);
+      const merger = new Merger(2, corporations, connectedTiles);
 
       corporations.hydra.establish();
       corporations.hydra.increaseSize(2);
@@ -77,6 +77,37 @@ describe("Merger", () => {
       assert.ok(!corporations.hydra.isActive);
       assert.deepStrictEqual(corporations.hydra.size, 0);
       assert.deepStrictEqual(corporations.zeta.size, 6);
+    });
+  });
+
+  describe("sell", () => {
+    it("should end the merger round and defunct corporation should be merged to acquirer corporation", () => {
+      const corporations = createCorporations();
+      const player = new Player("Honu", 0, { "hydra": 5 });
+      const connectedTiles = [
+        { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "hydra" },
+        { position: { x: 0, y: 1 }, isPlaced: true, belongsTo: "hydra" },
+        { position: { x: 0, y: 2 }, isPlaced: true, belongsTo: "incorporated" },
+        { position: { x: 0, y: 3 }, isPlaced: true, belongsTo: "zeta" },
+        { position: { x: 0, y: 4 }, isPlaced: true, belongsTo: "zeta" },
+        { position: { x: 0, y: 5 }, isPlaced: true, belongsTo: "zeta" },
+      ];
+
+      const merger = new Merger(2, corporations, connectedTiles);
+
+      corporations.hydra.establish();
+      corporations.hydra.decrementStocks(5);
+      corporations.hydra.increaseSize(2);
+      corporations.zeta.establish();
+      corporations.zeta.increaseSize(3);
+      merger.start();
+      merger.sell(player, 5);
+
+      const { balance, stocks } = player.portfolio();
+
+      assert.strictEqual(balance, 1500);
+      assert.strictEqual(stocks.hydra, 0);
+      assert.strictEqual(corporations.hydra.stocks, 25);
     });
   });
 });

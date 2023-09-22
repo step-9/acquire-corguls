@@ -343,6 +343,11 @@ class Game {
     }
   }
 
+  dealDefunctStocks({ sell }) {
+    this.#merger.sell(this.#currentPlayer(), sell);
+    this.endMergerTurn();
+  }
+
   buyStocks(stocks) {
     const player = this.#currentPlayer();
 

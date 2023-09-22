@@ -7,6 +7,7 @@ const { createLobbyRouter } = require("../../src/routers/lobby-router");
 const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
 const gameEndData = require("../test-data/all-stable-coporations.json");
+const mergerRound = require("../test-data/merger-round.json");
 
 const joinPlayer = (app, username) => {
   return request(app)
@@ -73,6 +74,13 @@ const endMerge = (app, username) => {
 const endTurn = (app, username) => {
   return request(app)
     .post("/game/end-turn")
+    .set("cookie", `username=${username}`)
+    .expect(200);
+};
+
+const dealDefunctStocks = (app, username) => {
+  return request(app)
+    .post("/game/merger/deal")
     .set("cookie", `username=${username}`)
     .expect(200);
 };
@@ -1052,6 +1060,37 @@ describe("GameRouter", () => {
           stocks: 21,
         },
       ]);
+    });
+  });
+
+  describe("POST /game/merger/deal", () => {
+    it("should sell defunct stocks", async () => {
+      const size = { lowerLimit: 1, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const playerName = "player";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, playerName);
+      await startGame(app, playerName);
+      await loadGame(app, playerName, mergerRound);
+      await placeTile(app, playerName, { "x": 6, "y": 6 });
+
+      let status = await getGameStatus(app, playerName);
+      assert.strictEqual(status.state, "merge");
+
+      await dealDefunctStocks(app, playerName);
+
+      const {
+        portfolio: { stocks, balance },
+        corporations: { zeta },
+      } = await getGameStatus(app, playerName);
+
+      assert.deepStrictEqual(stocks.zeta, 0);
+      assert.deepStrictEqual(balance, 7800);
+      assert.deepStrictEqual(zeta.stocks, 25);
     });
   });
 });

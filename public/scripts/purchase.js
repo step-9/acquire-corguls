@@ -7,6 +7,42 @@ const placeNewTile = tileElements => {
   });
 };
 
+const generateRankTable = playerRanks => {
+  const rankTable = generateComponent(["div", "Ranks", { class: "ranks" }]);
+
+  const rankElements = playerRanks.map(({ name, balance }) =>
+    generateComponent([
+      "p",
+      [
+        ["span", `${name} :`],
+        ["span", `$${balance}`],
+      ],
+      { class: "flex" },
+    ])
+  );
+
+  rankTable.append(...rankElements);
+  return rankTable;
+};
+
+const sellBackStocks = (corporations, stocks) => {
+  return corporations.reduce((earning, { name, price }) => {
+    return earning + stocks[name] * price;
+  }, 0);
+};
+
+const rankPlayers = ({ players, corporations }) => {
+  const { name: corpName, price } = corporations;
+
+  return players
+    .map(({ stocks, balance, name }) => {
+      const sellBackEarning = sellBackStocks(corporations, stocks);
+      const finalBalance = balance + sellBackEarning;
+      return { name, balance: finalBalance };
+    })
+    .toSorted((a, b) => b.balance - a.balance);
+};
+
 const getGameResult = () => {
   fetch("/game/end-result")
     .then(res => res.json())
@@ -128,11 +164,7 @@ class Purchase {
 
   #generateBuySkip() {
     const buySkipButtons = document.createElement("div");
-    const buyButton = generateComponent([
-      "button",
-      "Buy Stocks",
-      { type: "button" },
-    ]);
+    const buyButton = generateComponent(["button", "Buy", { type: "button" }]);
 
     buyButton.onclick = () => {
       this.#selectStocks();

@@ -107,6 +107,14 @@ const endMergerTurn = (req, res) => {
   res.status(200).end();
 };
 
+const dealDefunctStocks = (req, res) => {
+  const { game } = req.app.context;
+
+  // Sell all stocks
+  game.dealDefunctStocks({ sell: 0 });
+  res.status(200).end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
@@ -117,6 +125,7 @@ const createGameRouter = () => {
   router.get("/status", serveGameStats);
   router.post("/tile", placeTile);
   router.post("/end-turn", endPlayerTurn);
+  router.post("/merger/deal", dealDefunctStocks);
   router.post("/merger/end-turn", endMergerTurn);
   router.get("/end-result", gameResult);
   router.post("/buy-stocks", buyStocks);

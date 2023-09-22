@@ -52,6 +52,16 @@ class Merger {
     if (this.#acquirer.stats().size > 10) this.#acquirer.markSafe();
   }
 
+  sell(player, quantity) {
+    const { stocks } = player.portfolio();
+    const { price } = this.#defunct.stats();
+
+    quantity = stocks[this.defunct];
+    player.sellStocks(this.defunct, quantity);
+    player.addIncome(quantity * price);
+    this.#defunct.incrementStocks(quantity);
+  }
+
   get acquirer() {
     return this.#acquirer.name;
   }
