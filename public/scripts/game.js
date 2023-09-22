@@ -482,7 +482,10 @@ const setupCorporationSelection = ({ players, corporations, state }) => {
     .map(([name]) => {
       const corp = getCorporation(name);
 
-      corp.onclick = () => establishCorporation({ name });
+      corp.onclick = () => {
+        establishCorporation({ name });
+        corporationsContainer.classList.remove("selectable");
+      };
       return corp;
     })
     .forEach(corp => corp.classList.remove("non-selectable"));

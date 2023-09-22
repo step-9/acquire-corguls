@@ -94,7 +94,7 @@ class Game {
 
     const connectedIncorporatedTiles = this.#connectedTiles.filter(
       ({ belongsTo }) => belongsTo === "incorporated"
-    );
+    ); 
 
     connectedIncorporatedTiles.forEach(tile => (tile.belongsTo = name));
     corporation.increaseSize(connectedIncorporatedTiles.length);

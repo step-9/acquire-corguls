@@ -227,6 +227,10 @@
   justify-content: space-around;
 }
 
+#corporations:not(.selectable) {
+  pointer-events: none;
+}
+
 #corporations,
 #portfolio {
   height: 100%;
