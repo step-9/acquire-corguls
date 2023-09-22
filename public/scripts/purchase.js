@@ -193,22 +193,28 @@ class Purchase {
     this.#displayPanel.append(cartElement, stockBuyingPrompt);
   }
 
-  // eslint-disable-next-line complexity
+  #priceElement(cannotPurchase, totalPrice) {
+    const priceMsg = `Total price : $${totalPrice || 0}`;
+    const balanceElement = generateComponent([
+      "p",
+      cannotPurchase ? `Not Enough Balance : $${totalPrice}` : priceMsg,
+    ]);
+
+    if (cannotPurchase) {
+      balanceElement.classList.add("low-balance");
+    }
+
+    return balanceElement;
+  }
+
   #generateConfirmCancel(totalPrice) {
     const cannotPurchase = this.#portfolio.balance < totalPrice;
-    const totalPriceElement = generateComponent([
-      "p",
-      `Total price : $${totalPrice || 0}`,
-    ]);
+    const balanceElement = this.#priceElement(cannotPurchase, totalPrice);
     const confirmButton = generateComponent([
       "button",
       "Confirm",
       { type: "button", "disabled": true, class: "disable-btn" },
     ]);
-
-    if (cannotPurchase) {
-      totalPriceElement.classList.add("low-balance");
-    }
 
     if (!cannotPurchase && this.#cart.length > 0) {
       confirmButton.removeAttribute("disabled");
@@ -226,7 +232,7 @@ class Purchase {
       { type: "button", onclick: "refillTile()" },
     ]);
 
-    return [totalPriceElement, confirmButton, skipButton];
+    return [balanceElement, confirmButton, skipButton];
   }
 
   #renderStockSelection() {

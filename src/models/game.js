@@ -1,4 +1,4 @@
-const { range, groupBy, sortBy } = require("lodash");
+const { range, groupBy } = require("lodash");
 const { Player } = require("./player");
 const { Corporation } = require("./corporation");
 const Merger = require("./merger");
