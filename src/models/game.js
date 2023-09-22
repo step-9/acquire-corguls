@@ -291,14 +291,14 @@ class Game {
     const activeCorporations = Object.entries(this.#corporations)
       .filter(([, { isActive }]) => isActive)
       .map(([name, corp]) => {
-        const { price, stocks, majority, minority } = corp.stats();
+        const { price, stocks, majorityPrice, minorityPrice } = corp.stats();
 
         return {
           name,
           price,
           stocks,
-          majority,
-          minority,
+          majorityPrice,
+          minorityPrice,
         };
       });
 

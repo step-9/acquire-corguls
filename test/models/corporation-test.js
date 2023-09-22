@@ -23,8 +23,8 @@ describe("Corporation", () => {
         price: 0,
         isActive: false,
         isSafe: false,
-        majority: 2000,
-        minority: 1000,
+        majorityPrice: 0,
+        minorityPrice: 0,
       };
 
       assert.deepStrictEqual(phoenix.stats(), stats);
@@ -39,8 +39,8 @@ describe("Corporation", () => {
         isActive: false,
         isSafe: false,
         price: 800,
-        majority: 2000,
-        minority: 1000,
+        majorityPrice: 8000,
+        minorityPrice: 4000,
       };
 
       assert.deepStrictEqual(phoenix.stats(), stats);
@@ -55,8 +55,8 @@ describe("Corporation", () => {
         isActive: false,
         isSafe: false,
         price: 900,
-        majority: 2000,
-        minority: 1000,
+        majorityPrice: 9000,
+        minorityPrice: 4500,
       };
 
       assert.deepStrictEqual(phoenix.stats(), stats);
@@ -71,8 +71,8 @@ describe("Corporation", () => {
         isActive: false,
         isSafe: false,
         price: 1000,
-        majority: 2000,
-        minority: 1000,
+        majorityPrice: 10000,
+        minorityPrice: 5000,
       };
 
       assert.deepStrictEqual(phoenix.stats(), stats);
@@ -87,8 +87,8 @@ describe("Corporation", () => {
         isActive: false,
         isSafe: false,
         price: 1100,
-        majority: 2000,
-        minority: 1000,
+        majorityPrice: 11000,
+        minorityPrice: 5500,
       };
 
       assert.deepStrictEqual(phoenix.stats(), stats);
@@ -103,8 +103,8 @@ describe("Corporation", () => {
         isActive: false,
         isSafe: false,
         price: 1200,
-        majority: 2000,
-        minority: 1000,
+        majorityPrice: 12000,
+        minorityPrice: 6000,
       };
 
       assert.deepStrictEqual(phoenix.stats(), stats);

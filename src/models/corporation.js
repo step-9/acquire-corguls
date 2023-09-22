@@ -62,13 +62,14 @@ class Corporation {
   }
 
   stats() {
+    const price = this.#price();
     return {
-      stocks: this.#stocks,
+      price,
       size: this.#size,
+      stocks: this.#stocks,
       isActive: this.#isActive,
-      price: this.#price(),
-      majority: 2000,
-      minority: 1000,
+      majorityPrice: price * 10,
+      minorityPrice: price * 5,
       isSafe: this.#isSafe,
     };
   }
