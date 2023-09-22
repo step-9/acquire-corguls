@@ -373,6 +373,25 @@ class Game {
     );
   }
 
+  findMajorityMinority(corpName) {
+    const getStocks = player => player.portfolio().stocks[corpName];
+    const [majority, minority] = Object.entries(
+      groupBy(this.#players, getStocks)
+    )
+      .map(([stock, players]) => ({
+        stock: parseInt(stock),
+        players: players,
+        playerNames: players.map(p => p.username),
+      }))
+      .sort((a, b) => b.stock - a.stock)
+      .slice(0, 2);
+
+    return {
+      majority,
+      minority: minority || { stock: 0, players: [], playerNames: [] },
+    };
+  }
+
   status(username) {
     return {
       state: this.#state,

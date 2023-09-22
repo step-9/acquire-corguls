@@ -395,6 +395,64 @@ describe("Game", () => {
     });
   });
 
+  describe("findMajorityMinority", () => {
+    it("should find list of majority and minority stock holders in order of their stocks count", () => {
+      const shuffle = x => x;
+      const p1 = new Player("Biswa", 0, { hydra: 9 });
+      const p3 = new Player("Qasim", 0, { hydra: 10 });
+      const p4 = new Player("Utsab", 0, { hydra: 10 });
+      const p2 = new Player("Bittu", 0, { hydra: 11 });
+      const corporations = createCorporations();
+      const game = new Game([p1, p2, p3, p4], shuffle, corporations);
+
+      game.start();
+
+      const { majority, minority } = game.findMajorityMinority("hydra");
+
+      assert.strictEqual(majority.stock, 11);
+      assert.strictEqual(minority.stock, 10);
+      assert.deepStrictEqual(majority.playerNames, ["Bittu"]);
+      assert.deepStrictEqual(minority.playerNames, ["Qasim", "Utsab"]);
+    });
+
+    it("should find the unique majority and minority stock holders when everyone have unequal num of stocks", () => {
+      const shuffle = x => x;
+      const p1 = new Player("Biswa", 0, { hydra: 9 });
+      const p3 = new Player("Qasim", 0, { hydra: 4 });
+      const p4 = new Player("Utsab", 0, { hydra: 8 });
+      const p2 = new Player("Bittu", 0, { hydra: 11 });
+      const corporations = createCorporations();
+      const game = new Game([p1, p2, p3, p4], shuffle, corporations);
+
+      game.start();
+
+      const { majority, minority } = game.findMajorityMinority("hydra");
+
+      assert.strictEqual(majority.stock, 11);
+      assert.strictEqual(minority.stock, 9);
+      assert.deepStrictEqual(majority.playerNames, ["Bittu"]);
+      assert.deepStrictEqual(minority.playerNames, ["Biswa"]);
+    });
+
+    it("should find zero minority when everyone has equal num of stocks", () => {
+      const shuffle = x => x;
+      const p1 = new Player("Biswa", 0, { hydra: 11 });
+      const p2 = new Player("Bittu", 0, { hydra: 11 });
+      const p3 = new Player("Qasim", 0, { hydra: 11 });
+      const corporations = createCorporations();
+      const game = new Game([p1, p2, p3], shuffle, corporations);
+
+      game.start();
+
+      const { majority, minority } = game.findMajorityMinority("hydra");
+
+      assert.strictEqual(majority.stock, 11);
+      assert.strictEqual(minority.stock, 0);
+      assert.deepStrictEqual(majority.playerNames, ["Biswa", "Bittu", "Qasim"]);
+      assert.deepStrictEqual(minority.playerNames, []);
+    });
+  });
+
   describe("endMerge", () => {
     it("should end the merge state", () => {
       const player1 = new Player("Biswa");
