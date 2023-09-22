@@ -11,6 +11,17 @@ const endMerge = () => {
   fetch("/game/end-merge", { method: "POST" });
 };
 
+const getGameResult = () => {
+  fetch("/game/end-result")
+    .then(res => res.json())
+    .then(result => {
+      const playerRanks = rankPlayers(result);
+      const displayPanel = getDisplayPanel();
+      displayPanel.innerHTML = "";
+      displayPanel.append(generateRankTable(playerRanks));
+    });
+};
+
 const refillTile = () => {
   const transitionDelay = 1000;
   fetch("/game/end-turn", { method: "POST" }).then(() => {

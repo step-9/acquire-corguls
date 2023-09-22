@@ -156,17 +156,6 @@ const generateRankTable = playerRanks => {
   return rankTable;
 };
 
-const getGameResult = () => {
-  fetch("/game/end-result")
-    .then(res => res.json())
-    .then(result => {
-      const playerRanks = rankPlayers(result);
-      const displayPanel = getDisplayPanel();
-      displayPanel.innerHTML = "";
-      displayPanel.append(generateRankTable(playerRanks));
-    });
-};
-
 const buyStocks = data => {
   fetch("/game/buy-stocks", {
     method: "POST",
