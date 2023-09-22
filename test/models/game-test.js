@@ -216,6 +216,8 @@ describe("Game", () => {
       game.establishCorporation({ name: "quantum" });
 
       game.placeTile("Biswa", { x: 0, y: 4 });
+      game.endMergerTurn();
+      game.endMergerTurn();
 
       const { placedTiles } = game.status("Biswa");
 
@@ -249,6 +251,8 @@ describe("Game", () => {
       game.establishCorporation({ name: "quantum" });
 
       game.placeTile("Biswa", { x: 0, y: 4 });
+      game.endMergerTurn();
+      game.endMergerTurn();
 
       assert.ok(corporations.phoenix.isSafe);
     });

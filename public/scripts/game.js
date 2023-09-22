@@ -3,6 +3,7 @@ import GameGateway from "/scripts/game-gateway.js";
 import Balance from "/scripts/components/balance.js";
 import Stocks from "/scripts/components/stocks.js";
 import Players from "/scripts/components/players.js";
+import { renderMerge } from "/scripts/merger.js";
 
 let previousState;
 
@@ -23,7 +24,7 @@ const MESSAGE_GENERATORS = {
   "establish-corporation": player => player + " is establishing a corporation",
   "buy-stocks": player => player + " is taking turn",
   "game-end": player => player + " calculating earning",
-  "merge": (_, { acquirer, defunct }) => `${acquirer} acquired ${defunct}`,
+  "merge": (_, { acquirer, defunct }) => `${acquirer} is acquiring ${defunct}`,
 };
 
 const CORPORATIONS_IDS = {
@@ -164,10 +165,6 @@ const buyStocks = data => {
       "content-type": "application/json",
     },
   });
-};
-
-const endMerge = () => {
-  fetch("/game/end-merge", { method: "POST" });
 };
 
 const createMessageElements = (name, position) => {
@@ -389,17 +386,7 @@ const displayMessage = gameStatus => {
     },
 
     "merge": ({ acquirer, defunct }) => {
-      displayPanel.innerHTML = "";
-      displayPanel.append(
-        generateComponent([
-          "div",
-          [
-            ["p", MESSAGE_GENERATORS.merge("", { acquirer, defunct })],
-            ["button", "OK", { onclick: "endMerge()" }],
-          ],
-          { class: "refill-tile-prompt" },
-        ])
-      );
+      renderMerge(acquirer, defunct);
     },
   };
 
@@ -516,7 +503,8 @@ const renderGame = () => {
   fetch("/game/status")
     .then(res => res.json())
     .then(gameStatus => {
-      if (previousState === gameStatus.state) return;
+      if (previousState === gameStatus.state && gameStatus.state !== "merge")
+        return;
 
       if (gameStatus.state === "game-end") {
         notifyGameEnd();

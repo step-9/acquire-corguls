@@ -1,20 +1,18 @@
 const { groupBy, sortBy } = require("lodash");
 
 class Merger {
-  #players;
+  #playersCount;
+  #defunct;
+  #acquirer;
+  #playerIndex;
   #corporations;
   #connectedTiles;
-  #acquirer;
-  #defunct;
-  #mergeMakerIndex;
-  #playerIndex;
 
-  constructor(players, corporations, connectedTiles, startIndex) {
-    this.#players = players;
+  constructor(playersCount, corporations, connectedTiles) {
+    this.#playerIndex = 0;
+    this.#playersCount = playersCount;
     this.#corporations = corporations;
     this.#connectedTiles = connectedTiles;
-    this.#mergeMakerIndex = startIndex;
-    this.#playerIndex = 0;
   }
 
   #findAcquirerAndDefunct() {
@@ -28,25 +26,30 @@ class Merger {
     );
     const [acquirer, defunct] = sortBy(corps, corp => corp.size).reverse();
 
-    this.#acquirer = acquirer;
     this.#defunct = defunct;
-  }
-
-  currentPlayer() {
-    return this.#players[this.#mergeMakerIndex % this.#players.length];
+    this.#acquirer = acquirer;
   }
 
   endTurn() {
-    this.#mergeMakerIndex++;
     this.#playerIndex++;
   }
 
   hasEnd() {
-    return this.#playerIndex === this.#players.length;
+    return this.#playerIndex === this.#playersCount;
   }
 
   start() {
     this.#findAcquirerAndDefunct();
+  }
+
+  end() {
+    this.#acquirer.acquire(this.#defunct);
+
+    this.#connectedTiles.forEach(
+      tile => (tile.belongsTo = this.#acquirer.name)
+    );
+
+    if (this.#acquirer.stats().size > 10) this.#acquirer.markSafe();
   }
 
   get acquirer() {

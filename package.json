@@ -6,7 +6,7 @@
   "scripts": {
     "setup": "./bin/setup.sh",
     "start": "node server.js",
-    "start-dev": "node puppet-test.js",
+    "start-dev": "node puppet.js",
     "dev": "node --watch server.js",
     "lint": "eslint .",
     "test": "node --test",

@@ -1,6 +1,7 @@
 const { range, groupBy, sortBy } = require("lodash");
 const { Player } = require("./player");
 const { Corporation } = require("./corporation");
+const Merger = require("./merger");
 const GAME_STATES = {
   setup: "setup",
   placeTile: "place-tile",
@@ -25,6 +26,7 @@ class Game {
   #connectedTiles;
   #handlers;
   #result;
+  #merger;
 
   constructor(players, shuffle, corporations) {
     this.#tiles = [];
@@ -69,10 +71,6 @@ class Game {
     this.#incorporatedTiles.push(tile);
   }
 
-  #getCorp(name) {
-    return this.#corporations[name];
-  }
-
   #findConnectedTiles({ x, y }, grid = []) {
     const tile = this.#placedTiles.find(
       ({ position }) => position.x === x && position.y === y
@@ -94,7 +92,7 @@ class Game {
 
     const connectedIncorporatedTiles = this.#connectedTiles.filter(
       ({ belongsTo }) => belongsTo === "incorporated"
-    ); 
+    );
 
     connectedIncorporatedTiles.forEach(tile => (tile.belongsTo = name));
     corporation.increaseSize(connectedIncorporatedTiles.length);
@@ -157,18 +155,6 @@ class Game {
     return this.#players[this.#turns % this.#players.length];
   }
 
-  #findAcquirerAndDefunct() {
-    const corporatedTiles = this.#connectedTiles.filter(
-      ({ belongsTo }) => belongsTo !== "incorporated"
-    );
-
-    const groupedTiles = groupBy(corporatedTiles, "belongsTo");
-    const corps = Object.keys(groupedTiles).map(name => this.#getCorp(name));
-    const [acquirer, defunct] = sortBy(corps, corp => corp.size).reverse();
-
-    return { acquirer, defunct };
-  }
-
   // TODO: Refactor it
   #setupHandlers() {
     const noActiveCorporation = () =>
@@ -206,16 +192,17 @@ class Game {
       {
         match: isMerging,
         handler: () => {
-          const { acquirer, defunct } = this.#findAcquirerAndDefunct();
-          acquirer.acquire(defunct);
-
-          this.#connectedTiles.forEach(
-            tile => (tile.belongsTo = acquirer.name)
+          this.#merger = new Merger(
+            this.#players.length,
+            this.#corporations,
+            this.#connectedTiles
           );
-
-          if (acquirer.stats().size > 10) acquirer.markSafe();
+          this.#merger.start();
           this.#state = GAME_STATES.merge;
-          this.#stateInfo = { acquirer: acquirer.name, defunct: defunct.name };
+          this.#stateInfo = {
+            acquirer: this.#merger.acquirer,
+            defunct: this.#merger.defunct,
+          };
         },
       },
       {
@@ -341,6 +328,19 @@ class Game {
     this.#turns++;
     this.#currentPlayer().startTurn();
     this.#state = GAME_STATES.placeTile;
+  }
+
+  endMergerTurn() {
+    this.#merger.endTurn();
+    this.#currentPlayer().endTurn();
+    this.#turns++;
+    this.#currentPlayer().startTurn();
+
+    if (this.#merger.hasEnd()) {
+      this.#merger.end();
+      this.#state = GAME_STATES.buyStocks;
+      return;
+    }
   }
 
   buyStocks(stocks) {

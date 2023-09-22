@@ -7,10 +7,6 @@ const placeNewTile = tileElements => {
   });
 };
 
-const endMerge = () => {
-  fetch("/game/end-merge", { method: "POST" });
-};
-
 const getGameResult = () => {
   fetch("/game/end-result")
     .then(res => res.json())
@@ -197,6 +193,7 @@ class Purchase {
     this.#displayPanel.append(cartElement, stockBuyingPrompt);
   }
 
+  // eslint-disable-next-line complexity
   #generateConfirmCancel(totalPrice) {
     const cannotPurchase = this.#portfolio.balance < totalPrice;
     const totalPriceElement = generateComponent([
@@ -208,6 +205,10 @@ class Purchase {
       "Confirm",
       { type: "button", "disabled": true, class: "disable-btn" },
     ]);
+
+    if (cannotPurchase) {
+      totalPriceElement.classList.add("low-balance");
+    }
 
     if (!cannotPurchase && this.#cart.length > 0) {
       confirmButton.removeAttribute("disabled");

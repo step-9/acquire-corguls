@@ -553,3 +553,7 @@
   align-items: flex-end;
   cursor: pointer;
 }
+
+.low-balance {
+  color: rgb(128, 1, 1);
+}

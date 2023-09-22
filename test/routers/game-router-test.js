@@ -77,6 +77,13 @@ const endTurn = (app, username) => {
     .expect(200);
 };
 
+const endMergerTurn = (app, username) => {
+  return request(app)
+    .post("/game/merger/end-turn")
+    .set("cookie", `username=${username}`)
+    .expect(200);
+};
+
 const gameResult = async (app, username) => {
   const result = await request(app)
     .get("/game/end-result")
@@ -1007,6 +1014,7 @@ describe("GameRouter", () => {
       await startGame(app, player);
       await loadGame(app, player, gameEndData);
       await placeTile(app, player, { "x": 6, "y": 6 });
+      await endMergerTurn(app, player);
       await endTurn(app, player);
 
       let status = await getGameStatus(app, player);

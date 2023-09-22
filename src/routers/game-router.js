@@ -101,6 +101,12 @@ const endMerge = (req, res) => {
   res.status(200).end();
 };
 
+const endMergerTurn = (req, res) => {
+  const { game } = req.app.context;
+  game.endMergerTurn();
+  res.status(200).end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
@@ -111,6 +117,7 @@ const createGameRouter = () => {
   router.get("/status", serveGameStats);
   router.post("/tile", placeTile);
   router.post("/end-turn", endPlayerTurn);
+  router.post("/merger/end-turn", endMergerTurn);
   router.get("/end-result", gameResult);
   router.post("/buy-stocks", buyStocks);
   router.post("/establish", establishCorporation);
