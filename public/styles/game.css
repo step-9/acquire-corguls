@@ -123,14 +123,6 @@
   justify-content: center;
 }
 
-.stock {
-  height: 70px;
-  width: 112px;
-  border-radius: 5px;
-  border: 1px solid black;
-  background-color: var(--gray);
-}
-
 .stock > .quantity {
   height: 1.5em;
   aspect-ratio: 1;
@@ -340,37 +332,37 @@
   cursor: pointer;
 }
 
-.phoenix {
+.space .phoenix {
   background-color: var(--phoenix-color);
   color: white;
 }
 
-.quantum {
+.space .quantum {
   background-color: var(--quantum-color);
   color: white;
 }
 
-.hydra {
+.space .hydra {
   background-color: var(--hydra-color);
   color: white;
 }
 
-.zeta {
+.space .zeta {
   background-color: var(--zeta-color);
   color: white;
 }
 
-.sackson {
+.space .sackson {
   background-color: var(--sackson-color);
   color: white;
 }
 
-.fusion {
+.space .fusion {
   background-color: var(--fusion-color);
   color: white;
 }
 
-.america {
+.space .america {
   background-color: var(--america-color);
   color: white;
 }
@@ -380,32 +372,41 @@
   bottom: 0.4em;
 }
 
-#phoenix-stock::after {
-  content: "Phoenix";
+.stock {
+  height: 70px;
+  aspect-ratio: 1.6;
+  border-radius: 5px;
+  background-color: var(--gray);
+  box-shadow: 0 0 10px var(--dark-gray);
+  background-size: contain;
 }
 
-#quantum-stock::after {
-  content: "Quantum";
+.stock.phoenix {
+  background-image: url(/images/cards/phoenix.png);
 }
 
-#hydra-stock::after {
-  content: "Hydra";
+.stock.quantum {
+  background-image: url(/images/cards/quantum.png);
 }
 
-#fusion-stock::after {
-  content: "Fusion";
+.stock.america {
+  background-image: url(/images/cards/america.png);
 }
 
-#america-stock::after {
-  content: "America";
+.stock.zeta {
+  background-image: url(/images/cards/zeta.png);
 }
 
-#zeta-stock::after {
-  content: "Zeta";
+.stock.hydra {
+  background-image: url(/images/cards/hydra.png);
 }
 
-#sackson-stock::after {
-  content: "Sackson";
+.stock.fusion {
+  background-image: url(/images/cards/fusion.png);
+}
+
+.stock.sackson {
+  background-image: url(/images/cards/sackson.png);
 }
 
 #corporations.selectable .corporation:not(.non-selectable) {
@@ -550,8 +551,8 @@
 }
 
 #bonus-table {
-  margin-left: 1em;
   gap: 1em;
+  padding: 0.5em;
   align-items: flex-start;
 }
 

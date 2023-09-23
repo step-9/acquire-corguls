@@ -116,10 +116,13 @@
 
 .stocks-purchased {
   display: flex;
-  gap: 0.1em;
+  flex-wrap: wrap;
+  gap: 0.2em;
+  justify-content: center;
 }
 
 .stocks-purchased .stock {
-  width: 1.5em;
-  height: 1em;
+  height: 1.2em;
+  aspect-ratio: 1.6;
+  border-radius: 2px;
 }

@@ -120,7 +120,7 @@ const setupHistory = () => {
   historyButton.onclick = () => {
     historyPane.classList.toggle("expanded");
     const isExpanded = historyPane.classList.contains("expanded");
-    historyButton.value = isExpanded ? "Close" : "History";
+    historyButton.value = isExpanded ? "Close" : "Previous Turn";
   };
 };
 
