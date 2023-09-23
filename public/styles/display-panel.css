@@ -1,5 +1,8 @@
-#activity-console {
+#activity-console,
+#history-pane {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 1em;
 }
 
@@ -68,4 +71,44 @@
 .merger {
   display: flex;
   align-items: center;
+}
+
+#display-panel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+#history-pane {
+  width: 0;
+  height: 100%;
+  background-color: var(--gray);
+  border-right: 1px solid #f3f5f6;
+  /* box-shadow: 2px 0 10px var(--gray); */
+  transition: all 1s ease;
+  overflow: hidden;
+}
+
+#history-pane.expanded {
+  width: 20em;
+  padding: 1em;
+}
+
+#history-pane.expanded * {
+  filter: brightness(99%);
+}
+
+#history-pane.expanded .card {
+  border: 1px solid var(--gray);
+  border: 1px solid white;
+}
+
+#history-button {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 20.5rem;
+  padding: 0 0.4em;
+  font-size: 0.7em;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid var(--mid-gray);
 }

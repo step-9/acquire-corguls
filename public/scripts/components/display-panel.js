@@ -29,15 +29,8 @@ export default class DisplayPanel {
     renderer(this.#gameStatus, activityConsole);
   }
 
-  #renderPreviousActivities() {
-    if (!this.#previousTurn) return;
-    // render history pane
-  }
-
-  #renderCardView() {
-    const { activityConsole } = this.#displayPanelElement;
-
-    const cards = this.#currentTurn.activities.map(({ id, data }) => {
+  #renderCardView(activities, container) {
+    const cards = activities.map(({ id, data }) => {
       const cardGenerator = data
         ? this.#cardGenerators.done[id]
         : this.#cardGenerators.pending[id];
@@ -45,14 +38,26 @@ export default class DisplayPanel {
       return cardGenerator(data);
     });
 
-    activityConsole.append(...cards);
+    container.innerHTML = "";
+    container.append(...cards);
+  }
+
+  #renderPreviousActivities() {
+    if (!this.#previousTurn) return;
+
+    this.#renderCardView(
+      this.#previousTurn.activities,
+      this.#displayPanelElement.historyPane
+    );
   }
 
   #renderCurrentActivities() {
-    this.#displayPanelElement.activityConsole.innerHTML = "";
     if (this.#currentTurn.player.you) return this.#renderActiveView();
 
-    this.#renderCardView();
+    this.#renderCardView(
+      this.#currentTurn.activities,
+      this.#displayPanelElement.activityConsole
+    );
   }
 
   #render() {

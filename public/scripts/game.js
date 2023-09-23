@@ -107,6 +107,23 @@ const getTileElements = () => {
   const tileContainer = getTileContainer();
   return Array.from(tileContainer.children);
 };
+
+const getHistoryPane = () => document.querySelector("#history-pane");
+const getHistoryButton = () => document.querySelector("#history-button");
+const getHistoryCloseButton = () =>
+  document.querySelector("#history-close-button");
+
+const setupHistory = () => {
+  const historyButton = getHistoryButton();
+  const historyPane = getHistoryPane();
+
+  historyButton.onclick = () => {
+    historyPane.classList.toggle("expanded");
+    const isExpanded = historyPane.classList.contains("expanded");
+    historyButton.value = isExpanded ? "Close" : "History";
+  };
+};
+
 const getBalanceContainer = () => document.querySelector("#balance-container");
 
 const getCorporations = () => document.querySelector("#corporations");
@@ -662,7 +679,7 @@ const CARD_GENERATORS = {
   [ACTIVITIES.buyStocks]: stocks => {
     return createCard(
       "purchased",
-      [["div", ["div", stocks.map(createStock)], { class: "tile" }]],
+      [["div", stocks.map(createStock), { class: "stocks-purchased" }]],
       "done"
     );
   },
@@ -735,6 +752,8 @@ const keepPlayerProfileUpdated = () => {
       }, interval);
     }, interval * 1);
   });
+
+  setupHistory();
 };
 
 window.onload = keepPlayerProfileUpdated;
