@@ -245,7 +245,7 @@ class Game {
       acquirer: this.#merger.acquirer,
       defunct: this.#merger.defunct,
       turns: this.#merger.getTurns(),
-      ...this.findMajorityMinority(this.#merger.defunct),
+      ...this.distributeMajorityMinority.stats,
     });
   }
 
@@ -458,6 +458,15 @@ class Game {
       majority.players.forEach(player => {
         player.addIncome(sharePrice);
       });
+
+      this.distributeMajorityMinority.stats = {
+        majority: {
+          bonus: sharePrice,
+          players: majority.playerNames,
+          stocks: majority.stock,
+        },
+        minority: { bonus: 0, players: [], stocks: minority.stock },
+      };
       return;
     }
 
@@ -466,6 +475,19 @@ class Game {
     minority.players.forEach(player => {
       player.addIncome(sharePrice);
     });
+
+    this.distributeMajorityMinority.stats = {
+      majority: {
+        bonus: majorityPrice,
+        players: majority.playerNames,
+        stocks: majority.stock,
+      },
+      minority: {
+        bonus: sharePrice,
+        players: minority.playerNames,
+        stocks: minority.stock,
+      },
+    };
   }
 
   status(username) {
