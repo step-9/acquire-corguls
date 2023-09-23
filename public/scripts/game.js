@@ -601,6 +601,33 @@ const createCorpIcon = corp => {
   return ["div", "", { class: `corp-icon ${corp}` }];
 };
 
+const createBonusTable = ({ majority, minority }) => {
+  const bonusTable = generateComponent([
+    "div",
+    [
+      [
+        "div",
+        [
+          ["h5", "Majority"],
+          ["h5", `$${majority.bonus}`],
+          ...majority.players.map(name => ["p", name]),
+        ],
+      ],
+      [
+        "div",
+        [
+          ["h5", "Minority"],
+          ["h5", `$${minority.bonus}`],
+          ...minority.players.map(name => ["p", name]),
+        ],
+      ],
+    ],
+    { class: "flex", id: "bonus-table" },
+  ]);
+
+  return bonusTable;
+};
+
 const PENDING_CARD_GENERATORS = {
   [ACTIVITIES.tilePlace]: () => {
     return createCard("TILE");
@@ -622,7 +649,7 @@ const PENDING_CARD_GENERATORS = {
 const CARD_GENERATORS = {
   [ACTIVITIES.tilePlace]: tile => {
     return createCard(
-      "tile",
+      "placed",
       [["div", getTile(tile.position), { class: "tile" }]],
       "done"
     );
@@ -640,8 +667,9 @@ const CARD_GENERATORS = {
     );
   },
 
-  [ACTIVITIES.merge]: ({ acquirer, defunct }) => {
-    return createCard(
+  [ACTIVITIES.merge]: ({ acquirer, defunct, majority, minority }) => {
+    const activityConsole = document.querySelector("#activity-console");
+    const mergingCard = createCard(
       "merging",
       [
         [
@@ -652,6 +680,11 @@ const CARD_GENERATORS = {
       ],
       "done"
     );
+
+    const bonusesCard = createBonusTable({ majority, minority });
+    activityConsole.append(bonusesCard);
+
+    return mergingCard;
   },
 };
 
