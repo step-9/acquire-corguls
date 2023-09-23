@@ -40,7 +40,6 @@ class TurnManager {
   }
 
   consolidateActivity(data) {
-    console.log(this.#currentActivity(), data);
     this.#currentActivity().data = data;
   }
 }

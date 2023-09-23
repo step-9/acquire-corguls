@@ -25,7 +25,7 @@ export default class DisplayPanel {
     const lastActivity = this.#currentTurn.activities.at(-1).id;
     const { activityConsole } = this.#displayPanelElement;
     const renderer = this.#activeViewRenderers[lastActivity];
-    console.log(lastActivity, renderer);
+
     renderer(this.#gameStatus, activityConsole);
   }
 
@@ -37,9 +37,11 @@ export default class DisplayPanel {
   #renderCardView() {
     const { activityConsole } = this.#displayPanelElement;
 
-    console.log(this.#currentTurn.activities);
     const cards = this.#currentTurn.activities.map(({ id, data }) => {
-      const cardGenerator = this.#cardGenerators[id];
+      const cardGenerator = data
+        ? this.#cardGenerators.done[id]
+        : this.#cardGenerators.pending[id];
+
       return cardGenerator(data);
     });
 
@@ -65,15 +67,12 @@ export default class DisplayPanel {
     const lastActivity = this.#currentTurn.activities.at(-1).id;
     const updatedLastActivity = currentTurn.activities.at(-1).id;
 
-    console.log({ lastActivity, updatedLastActivity });
-
     const hasActivitiesUpdated = lastActivity !== updatedLastActivity;
     const hasTurnChanged = currentPlayer !== updatedCurrentPlayer;
 
     // if activity not updated then return except activity is merge
 
     if (lastActivity !== "merge" && !hasActivitiesUpdated) return;
-    console.log("should render ");
 
     this.#gameStatus = gameStatus;
 

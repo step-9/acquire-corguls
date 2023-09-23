@@ -1,0 +1,29 @@
+#activity-console {
+  display: flex;
+  gap: 1em;
+}
+
+.card {
+  height: 4em;
+  width: 6.5em;
+  background-color: var(--gray);
+  border-radius: 5px;
+}
+
+.card .label {
+  font-size: 0.8em;
+  text-align: center;
+  background-color: var(--mid-gray);
+  color: var(--light-gray);
+  border-radius: 5px 5px 0 0;
+  text-transform: uppercase;
+}
+
+.card .body {
+  display: grid;
+  place-content: center;
+}
+
+.card .body .tile {
+  scale: 0.8;
+}

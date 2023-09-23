@@ -38,44 +38,8 @@ const ACTIVITIES = {
 const getTile = position => {
   const columnSpecification = position.y + 1;
   const rowSpecification = String.fromCharCode(position.x + 65);
-  console.log(columnSpecification, rowSpecification);
+
   return columnSpecification + rowSpecification;
-};
-
-const CARD_GENERATORS = {
-  [ACTIVITIES.tilePlace]: tile => {
-    const card = document.createElement("p");
-    card.innerText = tile
-      ? `Placed ${getTile(tile.position)}`
-      : "Placing tile...";
-
-    return card;
-  },
-
-  [ACTIVITIES.establish]: corporation => {
-    const card = document.createElement("p");
-
-    card.innerText = corporation
-      ? `Established ${corporation.name}`
-      : "Establishing corporation...";
-
-    return card;
-  },
-
-  [ACTIVITIES.buyStocks]: stocks => {
-    const card = document.createElement("p");
-
-    card.innerText = stocks
-      ? `Purchased ${JSON.stringify(stocks)}`
-      : "Purchasing stocks...";
-
-    return card;
-  },
-
-  [ACTIVITIES.merge]: ({ acquirer, defunct, turns }) => {
-    console.log(turns);
-    return `${acquirer} acquiring ${defunct}`;
-  },
 };
 
 const CORPORATIONS_IDS = {
@@ -618,6 +582,73 @@ const renderEstablishCorporationView = ({ corporations }, activityConsole) => {
     .forEach(corp => corp.classList.remove("non-selectable"));
 };
 
+const createStock = stock => {
+  return ["div", "", { class: stock }];
+};
+
+const createCard = (label, body = "", type = "pending") => {
+  return generateComponent([
+    "div",
+    [
+      ["div", label, { class: "label" }],
+      ["div", body, { class: "body" }],
+    ],
+    { class: `card ${type}` },
+  ]);
+};
+
+const PENDING_CARD_GENERATORS = {
+  [ACTIVITIES.tilePlace]: () => {
+    return createCard("TILE");
+  },
+
+  [ACTIVITIES.establish]: () => {
+    return createCard("FOUNDED");
+  },
+
+  [ACTIVITIES.buyStocks]: () => {
+    return createCard("PURCHASED");
+  },
+
+  [ACTIVITIES.merge]: ({ acquirer, defunct }) => {
+    return createCard("MERGING", `${acquirer} >> ${defunct}`);
+  },
+};
+
+const CARD_GENERATORS = {
+  [ACTIVITIES.tilePlace]: tile => {
+    return createCard(
+      "tile",
+      [["div", getTile(tile.position), { class: "tile" }]],
+      "done"
+    );
+  },
+
+  [ACTIVITIES.establish]: corporation => {
+    return createCard(
+      "founded",
+      [["div", "", { class: `corp-icon ${corporation.name}` }]],
+      "done"
+    );
+  },
+
+  [ACTIVITIES.buyStocks]: stocks => {
+    return createCard(
+      "purchased",
+      [["div", ["div", stocks.map(createStock)], { class: "tile" }]],
+      "done"
+    );
+  },
+
+  [ACTIVITIES.merge]: ({ acquirer, defunct }) => {
+    return createCard(
+      "merging",
+      [["div", `${acquirer} >> ${defunct}`, { class: "merger" }]],
+      "done"
+    );
+  },
+};
+
 const ACTIVE_VIEW_RENDERERS = {
   [ACTIVITIES.tilePlace]: renderTilePlaceView,
   [ACTIVITIES.buyStocks]: startPurchase,
@@ -634,9 +665,12 @@ const createComponents = gameStatus => {
   const flashBalance = () => flash(balanceContainer);
   const flashStock = corp => flash(stockElements[corp].card);
 
-  const renderers = ACTIVE_VIEW_RENDERERS;
-  const cardGenerators = CARD_GENERATORS;
   const displayPanelElement = getDisplayPanelElement();
+  const renderers = ACTIVE_VIEW_RENDERERS;
+  const cardGenerators = {
+    done: CARD_GENERATORS,
+    pending: PENDING_CARD_GENERATORS,
+  };
 
   return {
     balance: new Balance(amountElement, flashBalance, portfolio.balance),

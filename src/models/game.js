@@ -403,7 +403,7 @@ class Game {
     });
 
     this.#state = GAME_STATES.tilePlaced;
-    this.#turnManager.consolidateActivity(stocks);
+    this.#turnManager.consolidateActivity(stocks.map(({ name }) => name));
   }
 
   #getCorporationStats() {
