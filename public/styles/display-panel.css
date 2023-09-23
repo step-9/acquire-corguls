@@ -11,7 +11,7 @@
 }
 
 .card .label {
-  font-size: 0.8em;
+  font-size: 0.7em;
   text-align: center;
   background-color: var(--mid-gray);
   color: var(--light-gray);
@@ -26,4 +26,46 @@
 
 .card .body .tile {
   scale: 0.8;
+}
+
+.card .body .corp-icon {
+  height: 3em;
+  width: 3em;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: transparent;
+}
+
+.corp-icon.phoenix {
+  background-image: url(/images/phoenix.png);
+}
+
+.corp-icon.quantum {
+  background-image: url(/images/quantum.png);
+}
+
+.corp-icon.hydra {
+  background-image: url(/images/hydra.png);
+}
+
+.corp-icon.fusion {
+  background-image: url(/images/fusion.png);
+}
+
+.corp-icon.sackson {
+  background-image: url(/images/sackson.png);
+}
+
+.corp-icon.america {
+  background-image: url(/images/america.png);
+}
+
+.corp-icon.zeta {
+  background-image: url(/images/zeta.png);
+}
+
+.merger {
+  display: flex;
+  align-items: center;
 }

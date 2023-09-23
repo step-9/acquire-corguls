@@ -597,6 +597,10 @@ const createCard = (label, body = "", type = "pending") => {
   ]);
 };
 
+const createCorpIcon = corp => {
+  return ["div", "", { class: `corp-icon ${corp}` }];
+};
+
 const PENDING_CARD_GENERATORS = {
   [ACTIVITIES.tilePlace]: () => {
     return createCard("TILE");
@@ -625,11 +629,7 @@ const CARD_GENERATORS = {
   },
 
   [ACTIVITIES.establish]: corporation => {
-    return createCard(
-      "founded",
-      [["div", "", { class: `corp-icon ${corporation.name}` }]],
-      "done"
-    );
+    return createCard("founded", [createCorpIcon(corporation.name)], "done");
   },
 
   [ACTIVITIES.buyStocks]: stocks => {
@@ -643,7 +643,13 @@ const CARD_GENERATORS = {
   [ACTIVITIES.merge]: ({ acquirer, defunct }) => {
     return createCard(
       "merging",
-      [["div", `${acquirer} >> ${defunct}`, { class: "merger" }]],
+      [
+        [
+          "div",
+          [createCorpIcon(acquirer), ["p", ">>"], createCorpIcon(defunct)],
+          { class: "merger" },
+        ],
+      ],
       "done"
     );
   },
