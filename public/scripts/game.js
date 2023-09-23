@@ -4,6 +4,7 @@ import Balance from "/scripts/components/balance.js";
 import Stocks from "/scripts/components/stocks.js";
 import Players from "/scripts/components/players.js";
 import { renderMerge } from "/scripts/merger.js";
+import DisplayPanel from "/scripts/components/display-panel.js";
 
 let previousState;
 
@@ -25,6 +26,56 @@ const MESSAGE_GENERATORS = {
   "buy-stocks": player => player + " is taking turn",
   "game-end": player => player + " calculating earning",
   "merge": (_, { acquirer, defunct }) => `${acquirer} is acquiring ${defunct}`,
+};
+
+const ACTIVITIES = {
+  tilePlace: "tile-place",
+  establish: "establish",
+  buyStocks: "buy-stocks",
+  merge: "merge",
+};
+
+const getTile = position => {
+  const columnSpecification = position.y + 1;
+  const rowSpecification = String.fromCharCode(position.x + 65);
+  console.log(columnSpecification, rowSpecification);
+  return columnSpecification + rowSpecification;
+};
+
+const CARD_GENERATORS = {
+  [ACTIVITIES.tilePlace]: tile => {
+    const card = document.createElement("p");
+    card.innerText = tile
+      ? `Placed ${getTile(tile.position)}`
+      : "Placing tile...";
+
+    return card;
+  },
+
+  [ACTIVITIES.establish]: corporation => {
+    const card = document.createElement("p");
+
+    card.innerText = corporation
+      ? `Established ${corporation.name}`
+      : "Establishing corporation...";
+
+    return card;
+  },
+
+  [ACTIVITIES.buyStocks]: stocks => {
+    const card = document.createElement("p");
+
+    card.innerText = stocks
+      ? `Purchased ${JSON.stringify(stocks)}`
+      : "Purchasing stocks...";
+
+    return card;
+  },
+
+  [ACTIVITIES.merge]: ({ acquirer, defunct, turns }) => {
+    console.log(turns);
+    return `${acquirer} acquiring ${defunct}`;
+  },
 };
 
 const CORPORATIONS_IDS = {
@@ -59,6 +110,14 @@ const getStockElement = ([corp, id]) => {
   ];
 };
 
+const getDisplayPanelElement = () => {
+  const panel = document.querySelector("#display-panel");
+  const historyPane = panel.querySelector("#history-pane");
+  const activityConsole = panel.querySelector("#activity-console");
+
+  return { panel, historyPane, activityConsole };
+};
+
 const getStockElements = () => {
   const stockContainerEntries = Object.entries(stockIDs).map(getStockElement);
   return Object.fromEntries(stockContainerEntries);
@@ -78,7 +137,6 @@ const getBoard = () => document.querySelectorAll(".space");
 const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
-const getPlayersDiv = () => document.querySelector("#players");
 const getDisplayPanel = () => document.querySelector("#display-panel");
 const getTileContainer = () => document.querySelector("#tile-container");
 const getTileElements = () => {
@@ -474,8 +532,9 @@ const setupGame = () => {
   return gameGateway.getStatus().then(gameStatus => {
     displayPlayerProfile(gameStatus);
     renderBoard(gameStatus);
-    displayInitialMessages(gameStatus);
+    // displayInitialMessages(gameStatus);
     renderCorporations(gameStatus);
+    setupCorporationSelection(gameStatus);
 
     const components = createComponents(gameStatus);
     const gameService = new GameService(gameGateway, components);
@@ -515,10 +574,9 @@ const renderGame = () => {
 
       displayPlayerProfile(gameStatus, previousState);
       renderBoard(gameStatus);
-      renderActivityMessage(gameStatus);
-      setUpPlayerTilePlacing(gameStatus);
-      setupCorporationSelection(gameStatus);
-      startPurchase(gameStatus, getDisplayPanel());
+      // renderActivityMessage(gameStatus);
+      // setUpPlayerTilePlacing(gameStatus);
+      // startPurchase(gameStatus, getDisplayPanel());
       renderCorporations(gameStatus);
       previousState = gameStatus.state;
     });
@@ -533,7 +591,42 @@ const flash = (element, time = 500) => {
   }, time);
 };
 
-const createComponents = ({ players, portfolio }) => {
+const renderTilePlaceView = (_, activityConsole) => {
+  activityConsole.innerText = "Place a tile ...";
+  getTileContainer().classList.remove("disable-click");
+};
+
+const renderEstablishCorporationView = ({ corporations }, activityConsole) => {
+  activityConsole.innerText = "Select a corporation to establish...";
+  const corporationsContainer = getCorporations();
+  corporationsContainer.classList.add("selectable");
+
+  Object.entries(corporations)
+    .filter(([, corp]) => !corp.isActive)
+    .map(([name]) => {
+      const corp = getCorporation(name);
+
+      corp.onclick = () => {
+        establishCorporation({ name });
+        corporationsContainer.classList.remove("selectable");
+        [...corporationsContainer.children].forEach(c =>
+          c.classList.add("non-selectable")
+        );
+      };
+      return corp;
+    })
+    .forEach(corp => corp.classList.remove("non-selectable"));
+};
+
+const ACTIVE_VIEW_RENDERERS = {
+  [ACTIVITIES.tilePlace]: renderTilePlaceView,
+  [ACTIVITIES.buyStocks]: startPurchase,
+  [ACTIVITIES.establish]: renderEstablishCorporationView,
+  [ACTIVITIES.merge]: renderMerge,
+};
+
+const createComponents = gameStatus => {
+  const { players, portfolio } = gameStatus;
   const balanceContainer = getBalanceContainer();
   const amountElement = balanceContainer.querySelector(".amount");
   const stockElements = getStockElements();
@@ -541,10 +634,20 @@ const createComponents = ({ players, portfolio }) => {
   const flashBalance = () => flash(balanceContainer);
   const flashStock = corp => flash(stockElements[corp].card);
 
+  const renderers = ACTIVE_VIEW_RENDERERS;
+  const cardGenerators = CARD_GENERATORS;
+  const displayPanelElement = getDisplayPanelElement();
+
   return {
     balance: new Balance(amountElement, flashBalance, portfolio.balance),
     stocks: new Stocks(stockElements, flashStock, portfolio.stocks),
     players: new Players(playerElements, players),
+    displayPanel: new DisplayPanel(
+      displayPanelElement,
+      gameStatus,
+      renderers,
+      cardGenerators
+    ),
   };
 };
 

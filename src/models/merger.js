@@ -1,4 +1,5 @@
 const { groupBy, sortBy } = require("lodash");
+const { TurnManager, ACTIVITIES } = require("./turn-manager");
 
 class Merger {
   #playersCount;
@@ -7,12 +8,14 @@ class Merger {
   #playerIndex;
   #corporations;
   #connectedTiles;
+  #turnManager;
 
   constructor(playersCount, corporations, connectedTiles) {
     this.#playerIndex = 0;
     this.#playersCount = playersCount;
     this.#corporations = corporations;
     this.#connectedTiles = connectedTiles;
+    this.#turnManager = new TurnManager();
   }
 
   #findAcquirerAndDefunct() {
@@ -32,6 +35,8 @@ class Merger {
 
   endTurn() {
     this.#playerIndex++;
+    this.#turnManager.changeTurn();
+    this.#turnManager.initiateActivity(ACTIVITIES.deal);
   }
 
   hasEnd() {
@@ -39,6 +44,7 @@ class Merger {
   }
 
   start() {
+    this.#turnManager.initiateActivity(ACTIVITIES.deal);
     this.#findAcquirerAndDefunct();
   }
 
@@ -60,6 +66,7 @@ class Merger {
     player.sellStocks(this.defunct, quantity);
     player.addIncome(quantity * price);
     this.#defunct.incrementStocks(quantity);
+    this.#turnManager.consolidateActivity({ quantity });
   }
 
   get acquirer() {
@@ -68,6 +75,10 @@ class Merger {
 
   get defunct() {
     return this.#defunct.name;
+  }
+
+  getTurns() {
+    return this.#turnManager.getTurns();
   }
 }
 

@@ -51,15 +51,6 @@
   grid-area: account;
 }
 
-#activity-bar {
-  grid-area: activity-bar;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1em;
-  border-bottom: 0.5em solid #787878;
-}
-
 #game-board-container {
   display: flex;
   align-items: center;
@@ -328,10 +319,9 @@
   flex-wrap: nowrap;
   justify-content: space-evenly;
   align-items: center;
-  row-gap: 1em;
-  column-gap: 3em;
   font-size: 1.2em;
   background-color: var(--light-gray);
+  border-bottom: 0.5em solid #787878;
 }
 
 .message-pair-holder {
@@ -453,10 +443,12 @@
 
 .selected-stocks {
   display: flex;
+  justify-content: center;
   gap: 0.5em;
+  padding-bottom: 1em;
 }
 
-#display-panel:has(.selected-stocks) #display-panel {
+#display-panel:has(.selected-stocks) #activity-console {
   flex-direction: column;
 }
 

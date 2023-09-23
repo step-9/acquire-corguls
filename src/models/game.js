@@ -2,6 +2,7 @@ const { range, groupBy } = require("lodash");
 const { Player } = require("./player");
 const { Corporation } = require("./corporation");
 const Merger = require("./merger");
+const { TurnManager, ACTIVITIES } = require("./turn-manager");
 const GAME_STATES = {
   setup: "setup",
   placeTile: "place-tile",
@@ -22,11 +23,12 @@ class Game {
   #incorporatedTiles;
   #placedTiles;
   #setupTiles;
-  #turns;
+  #turnCount;
   #connectedTiles;
   #handlers;
   #result;
   #merger;
+  #turnManager;
 
   constructor(players, shuffle, corporations) {
     this.#tiles = [];
@@ -37,7 +39,8 @@ class Game {
     this.#shuffle = shuffle;
     this.#state = GAME_STATES.setup;
     this.#stateInfo = {};
-    this.#turns = 0;
+    this.#turnCount = 0;
+    this.#turnManager = new TurnManager();
   }
 
   #createTilesStack() {
@@ -102,6 +105,7 @@ class Game {
   #consolidateTile(position) {
     const tile = { position, isPlaced: true, belongsTo: "incorporated" };
 
+    this.#turnManager.consolidateActivity(tile);
     this.#placedTiles.push(tile);
     this.#addToIncorporatedTiles(tile);
     this.#connectedTiles = this.#findConnectedTiles(position);
@@ -112,6 +116,10 @@ class Game {
   }
 
   establishCorporation({ name }) {
+    // if (!this.#turnManager.isIn(ACTIVITIES.establish)) {
+    //   throw new Error("Invalid Move!");
+    // }
+
     const player = this.#currentPlayer();
     const corporation = this.#corporations[name];
 
@@ -122,10 +130,16 @@ class Game {
     corporation.decrementStocks(1);
 
     this.#state = GAME_STATES.buyStocks;
+    this.#turnManager.consolidateActivity({ name });
+    this.#turnManager.initiateActivity(ACTIVITIES.buyStocks);
   }
 
   // TODO: Remove username
   placeTile(username, position) {
+    // if (!this.#turnManager.isIn(ACTIVITIES.tilePlace)) {
+    //   throw new Error("Invalid Move!");
+    // }
+
     const player = this.#players.find(player => player.username === username);
     this.#consolidateTile(position);
     player.placeTile(position);
@@ -152,7 +166,7 @@ class Game {
   }
 
   #currentPlayer() {
-    return this.#players[this.#turns % this.#players.length];
+    return this.#players[this.#turnCount % this.#players.length];
   }
 
   // TODO: Refactor it
@@ -176,6 +190,7 @@ class Game {
         match: foundCorporation,
         handler: () => {
           this.#state = GAME_STATES.establishCorporation;
+          this.#turnManager.initiateActivity(ACTIVITIES.establish);
         },
       },
       {
@@ -187,6 +202,7 @@ class Game {
 
           this.#growCorporation(name);
           this.#state = GAME_STATES.buyStocks;
+          this.#turnManager.initiateActivity(ACTIVITIES.buyStocks);
         },
       },
       {
@@ -199,16 +215,20 @@ class Game {
           );
           this.#merger.start();
           this.#state = GAME_STATES.merge;
+          this.#turnManager.initiateActivity(ACTIVITIES.merge);
           this.#stateInfo = {
             acquirer: this.#merger.acquirer,
             defunct: this.#merger.defunct,
           };
+
+          this.#consolidateMergeActivity();
         },
       },
       {
         match: () => true,
         handler: () => {
           this.#state = GAME_STATES.buyStocks;
+          this.#turnManager.initiateActivity(ACTIVITIES.buyStocks);
         },
       },
     ];
@@ -216,6 +236,16 @@ class Game {
 
   endMerge() {
     this.#state = GAME_STATES.buyStocks;
+    this.#turnManager.initiateActivity(ACTIVITIES.buyStocks);
+  }
+
+  #consolidateMergeActivity() {
+    this.#turnManager.consolidateActivity({
+      acquirer: this.#merger.acquirer,
+      defunct: this.#merger.defunct,
+      turns: this.#merger.getTurns(),
+      ...this.findMajorityMinority(this.#merger.defunct),
+    });
   }
 
   setup() {
@@ -230,6 +260,7 @@ class Game {
     this.setup();
     this.#state = GAME_STATES.placeTile;
     this.#currentPlayer().startTurn();
+    this.#turnManager.initiateActivity(ACTIVITIES.tilePlace);
   }
 
   playerDetails(username) {
@@ -325,20 +356,25 @@ class Game {
 
     this.#refillTile();
     this.#currentPlayer().endTurn();
-    this.#turns++;
+    this.#turnCount++;
     this.#currentPlayer().startTurn();
+
     this.#state = GAME_STATES.placeTile;
+    this.#turnManager.changeTurn();
+    this.#turnManager.initiateActivity(ACTIVITIES.tilePlace);
   }
 
   endMergerTurn() {
     this.#merger.endTurn();
     this.#currentPlayer().endTurn();
-    this.#turns++;
+    this.#turnCount++;
     this.#currentPlayer().startTurn();
 
+    this.#consolidateMergeActivity();
     if (this.#merger.hasEnd()) {
       this.#merger.end();
       this.#state = GAME_STATES.buyStocks;
+      this.#turnManager.initiateActivity(ACTIVITIES.buyStocks);
       return;
     }
   }
@@ -349,6 +385,10 @@ class Game {
   }
 
   buyStocks(stocks) {
+    // if (!this.#turnManager.isIn(ACTIVITIES.buyStocks)) {
+    //   throw new Error("Invalid Move!");
+    // }
+
     const player = this.#currentPlayer();
 
     stocks.forEach(({ name }) => {
@@ -362,6 +402,7 @@ class Game {
     });
 
     this.#state = GAME_STATES.tilePlaced;
+    this.#turnManager.consolidateActivity(stocks);
   }
 
   #getCorporationStats() {
@@ -392,6 +433,17 @@ class Game {
     };
   }
 
+  #getTurns(username) {
+    const turns = this.#turnManager.getTurns();
+    const player = this.#currentPlayer();
+    turns.currentTurn.player = {
+      you: player.username === username,
+      username: player.username,
+    };
+
+    return turns;
+  }
+
   status(username) {
     return {
       state: this.#state,
@@ -400,6 +452,7 @@ class Game {
         player.username,
         tile,
       ]),
+      turns: this.#getTurns(username),
       players: this.#getPlayers(username),
       portfolio: this.playerDetails(username),
       corporations: this.#getCorporationStats(),
@@ -420,10 +473,11 @@ class Game {
     game.#players = players;
     game.#placedTiles = placedTiles;
     game.#setupTiles = setupTiles;
-    game.#turns = 0;
+    game.#turnCount = 0;
 
     players[0].startTurn();
     game.#setupHandlers();
+    game.#turnManager.initiateActivity(ACTIVITIES.tilePlace);
 
     return game;
   }

@@ -23,6 +23,7 @@ module.exports = {
     "no-unused-private-class-members": "error",
     "complexity": ["error", 4],
     "max-depth": ["error", 2],
+    // "no-shadow": "error",
   },
 
   "overrides": [

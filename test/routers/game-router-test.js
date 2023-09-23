@@ -238,6 +238,20 @@ describe("GameRouter", () => {
             belongsTo: "incorporated",
           },
         ],
+        turns: {
+          currentTurn: {
+            activities: [
+              {
+                id: "tile-place",
+              },
+            ],
+            player: {
+              username: "player",
+              you: true,
+            },
+          },
+          previousTurn: null,
+        },
         players: [{ username, isTakingTurn: true, you: true }],
         portfolio,
         corporations,
@@ -292,6 +306,31 @@ describe("GameRouter", () => {
           },
         ],
         players: [{ username, isTakingTurn: true, you: true }],
+        turns: {
+          currentTurn: {
+            activities: [
+              {
+                data: {
+                  belongsTo: "incorporated",
+                  isPlaced: true,
+                  position: {
+                    x: 0,
+                    y: 0,
+                  },
+                },
+                id: "tile-place",
+              },
+              {
+                id: "buy-stocks",
+              },
+            ],
+            player: {
+              username: "player",
+              you: true,
+            },
+          },
+          previousTurn: null,
+        },
         portfolio: {
           tiles: [
             { position: { x: 0, y: 0 }, isPlaced: true },
@@ -561,6 +600,37 @@ describe("GameRouter", () => {
             },
           ],
         ],
+        turns: {
+          currentTurn: {
+            activities: [
+              {
+                data: {
+                  belongsTo: "phoenix",
+                  isPlaced: true,
+                  position: {
+                    x: 0,
+                    y: 0,
+                  },
+                },
+                id: "tile-place",
+              },
+              {
+                data: {
+                  name: "phoenix",
+                },
+                id: "establish",
+              },
+              {
+                id: "buy-stocks",
+              },
+            ],
+            player: {
+              username: "player1",
+              you: true,
+            },
+          },
+          previousTurn: null,
+        },
         state: "buy-stocks",
         stateInfo: {},
         placedTiles: [
@@ -728,6 +798,20 @@ describe("GameRouter", () => {
             "you": true,
           },
         ],
+        turns: {
+          currentTurn: {
+            activities: [
+              {
+                id: "tile-place",
+              },
+            ],
+            player: {
+              username: "biswa",
+              you: true,
+            },
+          },
+          previousTurn: null,
+        },
         "portfolio": {
           "tiles": [
             {

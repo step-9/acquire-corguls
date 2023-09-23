@@ -90,7 +90,7 @@ const generateRefillTileBtn = () => {
   const endButton = generateComponent([
     "button",
     "Refill",
-    { type: "button", onclick: "refillTile()" },
+    { type: "button", onclick: "refillTile()" }, // add as listener
   ]);
 
   return [refillTileMessageElement, endButton];
@@ -146,7 +146,9 @@ class Purchase {
         };
         return corp;
       })
-      .forEach(corp => corp.classList.remove("non-selectable"));
+      .forEach(corp => {
+        corp.classList.remove("non-selectable");
+      });
 
     getCorporations().classList.add("selectable");
   }
@@ -176,6 +178,10 @@ class Purchase {
       "Skip",
       { type: "button", onclick: "refillTile()" },
     ]);
+
+    skipButton.onclick = () => {
+      refillTile();
+    };
 
     buySkipButtons.append(buyButton, skipButton);
 
@@ -240,6 +246,7 @@ class Purchase {
   }
 
   #generateConfirmCancel(totalPrice) {
+    const corporationsContainer = getCorporations();
     const cannotPurchase = this.#portfolio.balance < totalPrice;
     const balanceElement = this.#priceElement(cannotPurchase, totalPrice);
     const confirmButton = generateComponent([
@@ -254,15 +261,26 @@ class Purchase {
 
       confirmButton.onclick = () => {
         this.#confirmPurchase().then(refillTile);
-        getCorporations().classList.remove("selectable");
+        corporationsContainer.classList.remove("selectable");
+        [...corporationsContainer.children].forEach(c =>
+          c.classList.add("non-selectable")
+        );
       };
     }
 
     const skipButton = generateComponent([
       "button",
       "Skip",
-      { type: "button", onclick: "refillTile()" },
+      { type: "button" },
     ]);
+
+    skipButton.onclick = () => {
+      refillTile();
+      getCorporations().classList.remove("selectable");
+      [...corporationsContainer.children].forEach(c =>
+        c.classList.add("non-selectable")
+      );
+    };
 
     return [balanceElement, confirmButton, skipButton];
   }
@@ -278,26 +296,21 @@ class Purchase {
   }
 
   render() {
-    if (this.#corporations.length === 0) {
-      return renderTilePlacedMessage();
-    }
-
     this.#renderBuySkip();
   }
 }
 
-const startPurchase = (gameStatus, displayPanel) => {
-  const { players, corporations, state, portfolio } = gameStatus;
-  const self = players.find(({ you }) => you);
-  const isInCorrectState = "buy-stocks" === state;
-  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
+const startPurchase = ({ corporations, portfolio }, activityConsole) => {
+  // const self = players.find(({ you }) => you);
+  // const isInCorrectState = "buy-stocks" === state;
+  // const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
 
-  if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
+  // if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
 
   const purchase = new Purchase(
     corporationsInMarket(corporations),
     portfolio,
-    displayPanel
+    activityConsole
   );
 
   purchase.render();
