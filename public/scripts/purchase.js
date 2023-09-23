@@ -202,7 +202,7 @@ class Purchase {
       const stockCard = generateComponent([
         "div",
         [
-          ["p", capitaliseFirstLetter(name)],
+          ["p", capitaliseFirstLetter(name), { class: "blank" }],
           ["div", "x"],
         ],
         { class: `${name} stock` },

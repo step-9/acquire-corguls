@@ -1,5 +1,4 @@
-#activity-console,
-#history-pane {
+#activity-console {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,14 +83,17 @@
   height: 100%;
   background-color: var(--gray);
   border-right: 1px solid #f3f5f6;
-  /* box-shadow: 2px 0 10px var(--gray); */
   transition: all 1s ease;
   overflow: hidden;
 }
 
 #history-pane.expanded {
-  width: 20em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  width: 15em;
   padding: 1em;
+  overflow: scroll;
 }
 
 #history-pane.expanded * {
@@ -99,7 +101,6 @@
 }
 
 #history-pane.expanded .card {
-  border: 1px solid var(--gray);
   border: 1px solid white;
 }
 
