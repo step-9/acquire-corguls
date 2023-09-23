@@ -214,6 +214,7 @@ class Game {
             this.#connectedTiles
           );
           this.#merger.start();
+          this.distributeMajorityMinority(this.#merger.defunct);
           this.#state = GAME_STATES.merge;
           this.#turnManager.initiateActivity(ACTIVITIES.merge);
           this.#stateInfo = {
@@ -416,8 +417,9 @@ class Game {
 
   findMajorityMinority(corpName) {
     const getStocks = player => player.portfolio().stocks[corpName];
+    const stockHolders = this.#players.filter(getStocks);
     const [majority, minority] = Object.entries(
-      groupBy(this.#players, getStocks)
+      groupBy(stockHolders, getStocks)
     )
       .map(([stock, players]) => ({
         stock: parseInt(stock),
@@ -428,7 +430,7 @@ class Game {
       .slice(0, 2);
 
     return {
-      majority,
+      majority: majority || { stock: 0, players: [], playerNames: [] },
       minority: minority || { stock: 0, players: [], playerNames: [] },
     };
   }
@@ -450,7 +452,7 @@ class Game {
     const { majorityPrice, minorityPrice } = corp.stats();
     const { majority, minority } = this.findMajorityMinority(corpName);
 
-    if (majority.players.length > 1) {
+    if (majority.players.length > 1 || minority.players.length === 0) {
       const sharePrice =
         (majorityPrice + minorityPrice) / majority.players.length;
       majority.players.forEach(player => {

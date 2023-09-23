@@ -1173,7 +1173,7 @@ describe("GameRouter", () => {
       } = await getGameStatus(app, playerName);
 
       assert.deepStrictEqual(stocks.zeta, 0);
-      assert.deepStrictEqual(balance, 7800);
+      assert.deepStrictEqual(balance, 16800);
       assert.deepStrictEqual(zeta.stocks, 25);
     });
   });

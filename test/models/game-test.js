@@ -483,7 +483,7 @@ describe("Game", () => {
   });
 
   describe("distributeMajorityMinority", () => {
-    it("both to the majority stocks holders when there are more than one majority", () => {
+    it("both bonuses to the majority stocks holders when there are more than one majority", () => {
       const shuffle = x => x;
       const p1 = new Player("Biswa", 0, { hydra: 9 });
       const p3 = new Player("Qasim", 0, { hydra: 10 });
@@ -499,6 +499,24 @@ describe("Game", () => {
 
       assert.strictEqual(p2.portfolio().balance, 11250);
       assert.strictEqual(p4.portfolio().balance, 11250);
+    });
+
+    it("both bonuses to the majority stocks holders when there no minority", () => {
+      const shuffle = x => x;
+      const p1 = new Player("Biswa", 0, { hydra: 0 });
+      const p3 = new Player("Qasim", 0, { hydra: 0 });
+      const p4 = new Player("Utsab", 0, { hydra: 0 });
+      const p2 = new Player("Bittu", 0, { hydra: 11 });
+      const corporations = createCorporations();
+      const game = new Game([p1, p2, p3, p4], shuffle, corporations);
+
+      corporations.hydra.establish();
+      corporations.hydra.increaseSize(10);
+      game.start();
+      game.distributeMajorityMinority("hydra");
+
+      assert.strictEqual(p2.portfolio().balance, 16500);
+      assert.strictEqual(p4.portfolio().balance, 6000);
     });
 
     it("two distinct players when there are only one majority and minority", () => {
