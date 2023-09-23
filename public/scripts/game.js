@@ -599,8 +599,8 @@ const renderEstablishCorporationView = ({ corporations }, activityConsole) => {
     .forEach(corp => corp.classList.remove("non-selectable"));
 };
 
-const createStock = stock => {
-  return ["div", "", { class: stock }];
+const createStock = corp => {
+  return ["div", "", { class: `stock ${corp}` }];
 };
 
 const createCard = (label, body = "", type = "pending") => {

@@ -25,6 +25,7 @@
 .card .body {
   display: grid;
   place-content: center;
+  height: 80%;
 }
 
 .card .body .tile {
@@ -111,4 +112,14 @@
   border-radius: 10px;
   outline: none;
   border: 1px solid var(--mid-gray);
+}
+
+.stocks-purchased {
+  display: flex;
+  gap: 0.1em;
+}
+
+.stocks-purchased .stock {
+  width: 1.5em;
+  height: 1em;
 }
