@@ -481,4 +481,62 @@ describe("Game", () => {
       assert.strictEqual(game.status("Biswa").state, "buy-stocks");
     });
   });
+
+  describe("distributeMajorityMinority", () => {
+    it("both to the majority stocks holders when there are more than one majority", () => {
+      const shuffle = x => x;
+      const p1 = new Player("Biswa", 0, { hydra: 9 });
+      const p3 = new Player("Qasim", 0, { hydra: 10 });
+      const p4 = new Player("Utsab", 0, { hydra: 11 });
+      const p2 = new Player("Bittu", 0, { hydra: 11 });
+      const corporations = createCorporations();
+      const game = new Game([p1, p2, p3, p4], shuffle, corporations);
+
+      corporations.hydra.establish();
+      corporations.hydra.increaseSize(10);
+      game.start();
+      game.distributeMajorityMinority("hydra");
+
+      assert.strictEqual(p2.portfolio().balance, 11250);
+      assert.strictEqual(p4.portfolio().balance, 11250);
+    });
+
+    it("two distinct players when there are only one majority and minority", () => {
+      const shuffle = x => x;
+      const p1 = new Player("Biswa", 0, { hydra: 9 });
+      const p3 = new Player("Qasim", 0, { hydra: 10 });
+      const p4 = new Player("Utsab", 0, { hydra: 8 });
+      const p2 = new Player("Bittu", 0, { hydra: 11 });
+      const corporations = createCorporations();
+      const game = new Game([p1, p2, p3, p4], shuffle, corporations);
+
+      corporations.hydra.establish();
+      corporations.hydra.increaseSize(10);
+      game.start();
+      game.distributeMajorityMinority("hydra");
+
+      assert.strictEqual(p2.portfolio().balance, 13000);
+      assert.strictEqual(p3.portfolio().balance, 9500);
+    });
+
+    it("share minority bonus to all minority stocks holders", () => {
+      const shuffle = x => x;
+      const p1 = new Player("Biswa", 0, { hydra: 9 });
+      const p3 = new Player("Qasim", 0, { hydra: 10 });
+      const p4 = new Player("Utsab", 0, { hydra: 10 });
+      const p2 = new Player("Bittu", 0, { hydra: 11 });
+      const corporations = createCorporations();
+      const game = new Game([p1, p2, p3, p4], shuffle, corporations);
+
+      corporations.hydra.establish();
+      corporations.hydra.increaseSize(10);
+      game.start();
+      game.distributeMajorityMinority("hydra");
+
+      assert.strictEqual(p2.portfolio().balance, 13000);
+      assert.strictEqual(p3.portfolio().balance, 7750);
+      assert.strictEqual(p4.portfolio().balance, 7750);
+      assert.strictEqual(p1.portfolio().balance, 6000);
+    });
+  });
 });

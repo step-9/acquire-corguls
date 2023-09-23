@@ -444,6 +444,28 @@ class Game {
     return turns;
   }
 
+  distributeMajorityMinority(corpName) {
+    // TODO refactore
+    const corp = this.#corporations[corpName];
+    const { majorityPrice, minorityPrice } = corp.stats();
+    const { majority, minority } = this.findMajorityMinority(corpName);
+
+    if (majority.players.length > 1) {
+      const sharePrice =
+        (majorityPrice + minorityPrice) / majority.players.length;
+      majority.players.forEach(player => {
+        player.addIncome(sharePrice);
+      });
+      return;
+    }
+
+    majority.players[0].addIncome(majorityPrice);
+    const sharePrice = minorityPrice / minority.players.length;
+    minority.players.forEach(player => {
+      player.addIncome(sharePrice);
+    });
+  }
+
   status(username) {
     return {
       state: this.#state,
