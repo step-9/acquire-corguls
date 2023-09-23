@@ -685,7 +685,7 @@ const CARD_GENERATORS = {
   },
 
   [ACTIVITIES.merge]: ({ acquirer, defunct, majority, minority }) => {
-    const activityConsole = document.querySelector("#activity-console");
+    const mergeDiv = generateComponent(["div", "", { class: "flex" }]);
     const mergingCard = createCard(
       "merging",
       [
@@ -697,11 +697,10 @@ const CARD_GENERATORS = {
       ],
       "done"
     );
-
     const bonusesCard = createBonusTable({ majority, minority });
-    activityConsole.append(bonusesCard);
 
-    return mergingCard;
+    mergeDiv.append(mergingCard, bonusesCard);
+    return mergeDiv;
   },
 };
 
