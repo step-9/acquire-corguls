@@ -506,12 +506,6 @@
   column-gap: 0.5em;
 }
 
-.ranks > p:first-child::after {
-  position: absolute;
-  right: 44%;
-  content: "🏆";
-}
-
 .flash {
   filter: brightness(1.5);
   animation: blink linear 0.5s forwards;

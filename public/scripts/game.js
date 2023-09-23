@@ -525,7 +525,7 @@ const setupGame = () => {
 };
 
 const notifyGameEnd = () => {
-  const displayPanel = getDisplayPanel();
+  const activityConsole = document.querySelector("#activity-console");
   const gameEndElement = generateComponent([
     "div",
     [
@@ -535,8 +535,8 @@ const notifyGameEnd = () => {
     { class: "game-over flex" },
   ]);
 
-  displayPanel.innerHTML = "";
-  displayPanel.append(gameEndElement);
+  activityConsole.innerHTML = "";
+  activityConsole.append(gameEndElement);
 };
 
 const renderGame = () => {

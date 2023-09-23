@@ -1,3 +1,4 @@
+const activityConsole = () => document.querySelector("#activity-console");
 const getDisplayPanel = () => document.querySelector("#display-panel");
 const getCorporations = () => document.querySelector("#corporations");
 const getTileContainer = () => document.querySelector("#tile-container");
@@ -48,7 +49,7 @@ const getGameResult = () => {
     .then(res => res.json())
     .then(result => {
       const playerRanks = rankPlayers(result);
-      const displayPanel = getDisplayPanel();
+      const displayPanel = activityConsole();
       displayPanel.innerHTML = "";
       displayPanel.append(generateRankTable(playerRanks));
     });
@@ -82,7 +83,7 @@ const renderTilePlacedMessage = () => {
   const refillTilePrompt = document.createElement("div");
   refillTilePrompt.classList.add("refill-tile-prompt");
   refillTilePrompt.append(...generateRefillTileBtn());
-  getDisplayPanel().append(refillTilePrompt);
+  activityConsole().append(refillTilePrompt);
 };
 
 const generateRefillTileBtn = () => {
