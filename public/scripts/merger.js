@@ -13,10 +13,7 @@ export const renderMerge = (
   const acquirer = corporations[acquirerName];
   const defunctStocks = portfolio.stocks[defunctName];
 
-  const merger = new Merger(
-    { defunctStocks, acquirer },
-    activityConsole
-  );
+  const merger = new Merger({ defunctStocks, acquirer }, activityConsole);
   merger.render();
 };
 

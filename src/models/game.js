@@ -417,9 +417,7 @@ class Game {
   }
 
   dealDefunctStocks({ sell, trade }) {
-    const currentPlayer = this.#currentPlayer();
-    this.#merger.sell(currentPlayer, sell);
-    this.#merger.trade(currentPlayer, trade);
+    this.#merger.deal(this.#currentPlayer(), sell, trade);
     this.endMergerTurn();
   }
 

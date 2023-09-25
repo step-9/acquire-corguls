@@ -1,5 +1,4 @@
 const { groupBy, sortBy } = require("lodash");
-const { TurnManager, ACTIVITIES } = require("./turn-manager");
 
 class Merger {
   #playersCount;
@@ -8,14 +7,14 @@ class Merger {
   #playerIndex;
   #corporations;
   #connectedTiles;
-  #turnManager;
+  #rounds;
 
   constructor(playersCount, corporations, connectedTiles) {
+    this.#rounds = [];
     this.#playerIndex = 0;
     this.#playersCount = playersCount;
     this.#corporations = corporations;
     this.#connectedTiles = connectedTiles;
-    this.#turnManager = new TurnManager();
   }
 
   #findAcquirerAndDefunct() {
@@ -35,8 +34,6 @@ class Merger {
 
   endTurn() {
     this.#playerIndex++;
-    this.#turnManager.changeTurn();
-    this.#turnManager.initiateActivity(ACTIVITIES.deal);
   }
 
   hasEnd() {
@@ -44,7 +41,6 @@ class Merger {
   }
 
   start() {
-    this.#turnManager.initiateActivity(ACTIVITIES.deal);
     this.#findAcquirerAndDefunct();
   }
 
@@ -67,7 +63,6 @@ class Merger {
     player.sellStocks(this.defunct, quantity);
     player.addIncome(quantity * price);
     this.#defunct.incrementStocks(quantity);
-    this.#turnManager.consolidateActivity({ quantity });
   }
 
   trade(player, quantity) {
@@ -83,7 +78,16 @@ class Merger {
     player.addStocks(this.acquirer, tradedQuantity);
     this.#defunct.incrementStocks(quantity);
     this.#acquirer.decrementStocks(tradedQuantity);
-    this.#turnManager.consolidateActivity({ quantity });
+  }
+
+  deal(player, sellQuantity, tradeQuantity) {
+    this.sell(player, sellQuantity);
+    this.trade(player, tradeQuantity);
+    this.#rounds.push({
+      trade: tradeQuantity,
+      sell: sellQuantity,
+      player: player.username,
+    });
   }
 
   get acquirer() {
@@ -95,7 +99,7 @@ class Merger {
   }
 
   getTurns() {
-    return this.#turnManager.getTurns();
+    return this.#rounds;
   }
 }
 
