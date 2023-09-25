@@ -70,6 +70,22 @@ class Merger {
     this.#turnManager.consolidateActivity({ quantity });
   }
 
+  trade(player, quantity) {
+    const { stocks } = player.portfolio();
+    const totalQuantity = stocks[this.defunct];
+    const tradedQuantity = quantity / 2;
+
+    const cannotTrade =
+      quantity > totalQuantity || tradedQuantity > this.#acquirer.stocks;
+
+    if (cannotTrade) return;
+    player.sellStocks(this.defunct, quantity);
+    player.addStocks(this.acquirer, tradedQuantity);
+    this.#defunct.incrementStocks(quantity);
+    this.#acquirer.decrementStocks(tradedQuantity);
+    this.#turnManager.consolidateActivity({ quantity });
+  }
+
   get acquirer() {
     return this.#acquirer.name;
   }

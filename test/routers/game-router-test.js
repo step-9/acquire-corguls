@@ -1166,7 +1166,7 @@ describe("GameRouter", () => {
       let status = await getGameStatus(app, playerName);
       assert.strictEqual(status.state, "merge");
 
-      await dealDefunctStocks(app, playerName, { sell: 5 });
+      await dealDefunctStocks(app, playerName, { sell: 5, trade: 0 });
 
       const {
         portfolio: { stocks, balance },
@@ -1176,6 +1176,66 @@ describe("GameRouter", () => {
       assert.deepStrictEqual(stocks.zeta, 0);
       assert.deepStrictEqual(balance, 16800);
       assert.deepStrictEqual(zeta.stocks, 25);
+    });
+
+    it("should trade defunct stocks for 2:1", async () => {
+      const size = { lowerLimit: 1, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const playerName = "player";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, playerName);
+      await startGame(app, playerName);
+      await loadGame(app, playerName, mergerRound);
+      await placeTile(app, playerName, { "x": 6, "y": 6 });
+
+      let status = await getGameStatus(app, playerName);
+      assert.strictEqual(status.state, "merge");
+
+      await dealDefunctStocks(app, playerName, { sell: 0, trade: 4 });
+
+      const {
+        portfolio: { stocks, balance },
+        corporations: { zeta },
+      } = await getGameStatus(app, playerName);
+
+      assert.deepStrictEqual(stocks.zeta, 1);
+      assert.deepStrictEqual(stocks.quantum, 2);
+      assert.deepStrictEqual(balance, 13800);
+      assert.deepStrictEqual(zeta.stocks, 24);
+    });
+
+    it("should not trade when stocks of acquirer are not available", async () => {
+      const size = { lowerLimit: 1, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const playerName = "player";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, playerName);
+      await startGame(app, playerName);
+      await loadGame(app, playerName, mergerRound);
+      await placeTile(app, playerName, { "x": 6, "y": 6 });
+
+      let status = await getGameStatus(app, playerName);
+      assert.strictEqual(status.state, "merge");
+
+      await dealDefunctStocks(app, playerName, { sell: 0, trade: 6 });
+
+      const {
+        portfolio: { stocks, balance },
+        corporations: { zeta },
+      } = await getGameStatus(app, playerName);
+
+      assert.deepStrictEqual(stocks.zeta, 5);
+      assert.deepStrictEqual(stocks.quantum, 0);
+      assert.deepStrictEqual(balance, 13800);
+      assert.deepStrictEqual(zeta.stocks, 20);
     });
   });
 });

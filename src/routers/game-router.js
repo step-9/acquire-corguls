@@ -109,9 +109,9 @@ const endMergerTurn = (req, res) => {
 
 const dealDefunctStocks = (req, res) => {
   const { game } = req.app.context;
-  const { sell } = req.body;
+  const { sell, trade } = req.body;
 
-  game.dealDefunctStocks({ sell });
+  game.dealDefunctStocks({ sell, trade });
   res.status(200).end();
 };
 

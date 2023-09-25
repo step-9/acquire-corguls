@@ -380,8 +380,10 @@ class Game {
     }
   }
 
-  dealDefunctStocks({ sell }) {
-    this.#merger.sell(this.#currentPlayer(), sell);
+  dealDefunctStocks({ sell, trade }) {
+    const currentPlayer = this.#currentPlayer();
+    this.#merger.sell(currentPlayer, sell);
+    this.#merger.trade(currentPlayer, trade);
     this.endMergerTurn();
   }
 
@@ -447,7 +449,7 @@ class Game {
   }
 
   distributeMajorityMinority(corpName) {
-    // TODO refactore
+    // TODO refactor
     const corp = this.#corporations[corpName];
     const { majorityPrice, minorityPrice } = corp.stats();
     const { majority, minority } = this.findMajorityMinority(corpName);

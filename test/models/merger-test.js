@@ -139,4 +139,36 @@ describe("Merger", () => {
       assert.strictEqual(corporations.hydra.stocks, 20);
     });
   });
+
+  describe("trade", () => {
+    it("should trade stocks of defunct corporation for 2:1", () => {
+      const corporations = createCorporations();
+      const player = new Player("Honu", 0, { "hydra": 5, "zeta": 0 });
+      const connectedTiles = [
+        { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "hydra" },
+        { position: { x: 0, y: 1 }, isPlaced: true, belongsTo: "hydra" },
+        { position: { x: 0, y: 2 }, isPlaced: true, belongsTo: "incorporated" },
+        { position: { x: 0, y: 3 }, isPlaced: true, belongsTo: "zeta" },
+        { position: { x: 0, y: 4 }, isPlaced: true, belongsTo: "zeta" },
+        { position: { x: 0, y: 5 }, isPlaced: true, belongsTo: "zeta" },
+      ];
+
+      const merger = new Merger(2, corporations, connectedTiles);
+
+      corporations.hydra.establish();
+      corporations.hydra.decrementStocks(5);
+      corporations.hydra.increaseSize(2);
+      corporations.zeta.establish();
+      corporations.zeta.increaseSize(3);
+      merger.start();
+      merger.trade(player, 4);
+
+      const { balance, stocks } = player.portfolio();
+
+      assert.strictEqual(balance, 0);
+      assert.strictEqual(stocks.hydra, 1);
+      assert.strictEqual(stocks.zeta, 2);
+      assert.strictEqual(corporations.hydra.stocks, 24);
+    });
+  });
 });
