@@ -4,6 +4,7 @@ import Balance from "/scripts/components/balance.js";
 import Stocks from "/scripts/components/stocks.js";
 import Players from "/scripts/components/players.js";
 import { renderMerge } from "/scripts/merger.js";
+import { resolveMergeConflict } from "/scripts/merge-conflict.js";
 import DisplayPanel from "/scripts/components/display-panel.js";
 
 let previousState;
@@ -24,6 +25,7 @@ const ACTIVITIES = {
   establish: "establish",
   buyStocks: "buy-stocks",
   merge: "merge",
+  mergeConflict: "merge-conflict",
 };
 
 const getTile = position => {
@@ -440,6 +442,12 @@ const CARD_GENERATORS = {
     mergeDiv.append(mergingCard, bonusesCard);
     return mergeDiv;
   },
+
+  [ACTIVITIES.mergeConflict]: ({ acquirer, defunct, majority, minority }) => {
+    const mergeDiv = generateComponent(["div", "Merge Conflict"]);
+    return mergeDiv;
+  }
+   
 };
 
 const ACTIVE_VIEW_RENDERERS = {
@@ -447,6 +455,7 @@ const ACTIVE_VIEW_RENDERERS = {
   [ACTIVITIES.buyStocks]: startPurchase,
   [ACTIVITIES.establish]: renderEstablishCorporationView,
   [ACTIVITIES.merge]: renderMerge,
+  [ACTIVITIES.mergeConflict]: resolveMergeConflict,
 };
 
 const createComponents = gameStatus => {

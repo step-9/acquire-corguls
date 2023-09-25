@@ -1,4 +1,4 @@
-const { range, groupBy } = require("lodash");
+const { range, groupBy, sortBy } = require("lodash");
 const { Player } = require("./player");
 const { Corporation } = require("./corporation");
 const Merger = require("./merger");
@@ -11,6 +11,7 @@ const GAME_STATES = {
   buyStocks: "buy-stocks",
   gameEnd: "game-end",
   merge: "merge",
+  mergeConflict: "merge-conflict",
 };
 
 class Game {
@@ -111,6 +112,7 @@ class Game {
     this.#connectedTiles = this.#findConnectedTiles(position);
 
     const groupedTiles = groupBy(this.#connectedTiles, "belongsTo");
+
     const { handler } = this.#handlers.find(({ match }) => match(groupedTiles));
     handler(groupedTiles);
   }
@@ -169,6 +171,18 @@ class Game {
     return this.#players[this.#turnCount % this.#players.length];
   }
 
+  #findMergingCorporations() {
+    const corporatedTiles = this.#connectedTiles.filter(
+      ({ belongsTo }) => belongsTo !== "incorporated"
+    );
+
+    const groupedTiles = groupBy(corporatedTiles, "belongsTo");
+    const corps = Object.keys(groupedTiles).map(
+      name => this.#corporations[name]
+    );
+    return sortBy(corps, corp => corp.size).reverse();
+  }
+
   // TODO: Refactor it
   #setupHandlers() {
     const noActiveCorporation = () =>
@@ -184,6 +198,14 @@ class Game {
       groupedTiles.incorporated.length >= 1;
 
     const isMerging = groupedTiles => Object.keys(groupedTiles).length > 2;
+
+    const isEqualSizeCorp = (corp1, corp2) => corp1.size === corp2.size;
+    const isMergeOfEqualCorp = groupedTiles => {
+      const [corp1, corp2] = this.#findMergingCorporations();
+      // const isEqualSizeCorp = corp1.size === corp2.size;
+
+      return isMerging(groupedTiles) && isEqualSizeCorp(corp1, corp2);
+    };
 
     this.#handlers = [
       {
@@ -203,6 +225,20 @@ class Game {
           this.#growCorporation(name);
           this.#state = GAME_STATES.buyStocks;
           this.#turnManager.initiateActivity(ACTIVITIES.buyStocks);
+        },
+      },
+      {
+        match: isMergeOfEqualCorp,
+        handler: () => {
+          this.#state = GAME_STATES.mergeConflict;
+          const equalCorporations = this.#findMergingCorporations().map(
+            corp => corp.name
+          );
+
+          this.#turnManager.initiateActivity(ACTIVITIES.mergeConflict);
+          this.#stateInfo = { isMergeConflict: true, equalCorporations };
+
+          this.#turnManager.consolidateActivity(equalCorporations);
         },
       },
       {

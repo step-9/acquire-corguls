@@ -4,6 +4,7 @@ const ACTIVITIES = {
   buyStocks: "buy-stocks",
   deal: "deal",
   merge: "merge",
+  mergeConflict: "merge-conflict",
 };
 
 class TurnManager {

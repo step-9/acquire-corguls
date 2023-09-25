@@ -247,15 +247,46 @@ describe("Game", () => {
       game.placeTile("Bittu", { x: 0, y: 7 });
       game.placeTile("Bittu", { x: 0, y: 8 });
       game.placeTile("Bittu", { x: 0, y: 9 });
-      game.placeTile("Bittu", { x: 0, y: 10 });
+      // game.placeTile("Bittu", { x: 0, y: 10 });
       game.establishCorporation({ name: "quantum" });
 
       game.placeTile("Biswa", { x: 0, y: 4 });
+
       game.endMergerTurn();
       game.endMergerTurn();
 
       assert.ok(corporations.phoenix.isSafe);
     });
+  });
+
+  it("should be marge-conflict when two equal size corp are merging", () => {
+    const player1 = new Player("Biswa");
+    const player2 = new Player("Bittu");
+    const shuffle = x => x;
+    const corporations = createCorporations();
+    const game = new Game([player1, player2], shuffle, corporations);
+    game.start();
+
+    game.placeTile("Biswa", { x: 0, y: 0 });
+    game.placeTile("Biswa", { x: 0, y: 1 });
+    game.placeTile("Biswa", { x: 0, y: 2 });
+    game.placeTile("Biswa", { x: 0, y: 3 });
+    game.establishCorporation({ name: "phoenix" });
+
+    game.changeTurn();
+
+    game.placeTile("Biswa", { x: 0, y: 5 });
+    game.placeTile("Bittu", { x: 0, y: 6 });
+    game.placeTile("Bittu", { x: 0, y: 7 });
+    game.placeTile("Bittu", { x: 0, y: 8 });
+    game.placeTile("Bittu", { x: 0, y: 9 });
+    game.placeTile("Bittu", { x: 0, y: 10 });
+    game.establishCorporation({ name: "quantum" });
+
+    game.placeTile("Biswa", { x: 0, y: 4 });
+    const gameStatus = game.status("Biswa");
+
+    assert.strictEqual(gameStatus.state, "merge-conflict");
   });
 
   describe("placeTile", () => {
