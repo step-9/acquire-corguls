@@ -1,4 +1,3 @@
-const getDisplayPanel = () => document.querySelector("#display-panel");
 const generateMergeMsg = (acquirer, defunct) =>
   `${acquirer} is acquiring ${defunct}`;
 

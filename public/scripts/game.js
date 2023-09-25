@@ -19,15 +19,6 @@ const CORPORATIONS = [
   "incorporated",
 ];
 
-const MESSAGE_GENERATORS = {
-  "place-tile": player => player + "'s turn.",
-  "tile-placed": player => player + " placed a tile.",
-  "establish-corporation": player => player + " is establishing a corporation",
-  "buy-stocks": player => player + " is taking turn",
-  "game-end": player => player + " calculating earning",
-  "merge": (_, { acquirer, defunct }) => `${acquirer} is acquiring ${defunct}`,
-};
-
 const ACTIVITIES = {
   tilePlace: "tile-place",
   establish: "establish",
@@ -40,16 +31,6 @@ const getTile = position => {
   const rowSpecification = String.fromCharCode(position.x + 65);
 
   return columnSpecification + rowSpecification;
-};
-
-const CORPORATIONS_IDS = {
-  "phoenix": "phoenix",
-  "quantum": "quantum",
-  "hydra": "hydra",
-  "fusion": "fusion",
-  "america": "america",
-  "sackson": "sackson",
-  "zeta": "zeta",
 };
 
 const stockIDs = {
@@ -101,7 +82,6 @@ const getBoard = () => document.querySelectorAll(".space");
 const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
-const getDisplayPanel = () => document.querySelector("#display-panel");
 const getTileContainer = () => document.querySelector("#tile-container");
 const getTileElements = () => {
   const tileContainer = getTileContainer();
@@ -110,8 +90,6 @@ const getTileElements = () => {
 
 const getHistoryPane = () => document.querySelector("#history-pane");
 const getHistoryButton = () => document.querySelector("#history-button");
-const getHistoryCloseButton = () =>
-  document.querySelector("#history-close-button");
 
 const setupHistory = () => {
   const historyButton = getHistoryButton();
@@ -128,28 +106,6 @@ const getBalanceContainer = () => document.querySelector("#balance-container");
 
 const getCorporations = () => document.querySelector("#corporations");
 
-const placeNewTile = tileElements => {
-  tileElements.forEach(tileElement => {
-    tileElement.classList.remove("used-tile");
-  });
-};
-
-const removeHighlight = tileElements => {
-  tileElements.forEach(tileElement =>
-    tileElement.classList.remove("highlight")
-  );
-};
-
-const refillTile = () => {
-  const transitionDelay = 1000;
-  fetch("/game/end-turn", { method: "POST" }).then(() => {
-    const tileElements = getTileElements();
-    placeNewTile(tileElements);
-    setTimeout(() => removeHighlight(tileElements), transitionDelay);
-  });
-  // .then(highlightTile());
-};
-
 const establishCorporation = data => {
   fetch("/game/establish", {
     method: "POST",
@@ -158,83 +114,6 @@ const establishCorporation = data => {
       "content-type": "application/json",
     },
   });
-};
-
-const sellBackStocks = (corporations, stocks) => {
-  return corporations.reduce((earning, { name, price }) => {
-    return earning + stocks[name] * price;
-  }, 0);
-};
-
-const rankPlayers = ({ players, corporations }) => {
-  const { name: corpName, price } = corporations;
-
-  return players
-    .map(({ stocks, balance, name }) => {
-      const sellBackEarning = sellBackStocks(corporations, stocks);
-      const finalBalance = balance + sellBackEarning;
-      return { name, balance: finalBalance };
-    })
-    .toSorted((a, b) => b.balance - a.balance);
-};
-
-const generateRankTable = playerRanks => {
-  const rankTable = generateComponent(["div", "Ranks", { class: "ranks" }]);
-
-  const rankElements = playerRanks.map(({ name, balance }) =>
-    generateComponent([
-      "p",
-      [
-        ["span", `${name} :`],
-        ["span", `$${balance}`],
-      ],
-      { class: "flex" },
-    ])
-  );
-
-  rankTable.append(...rankElements);
-  return rankTable;
-};
-
-const buyStocks = data => {
-  fetch("/game/buy-stocks", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "content-type": "application/json",
-    },
-  });
-};
-
-const createMessageElements = (name, position) => {
-  const columnSpecification = position.y + 1;
-  const rowSpecification = String.fromCharCode(position.x + 65);
-  const tile = columnSpecification + rowSpecification;
-
-  return generateComponent(["div", `${name}: ${tile}`, { class: "messgae" }]);
-};
-
-const renderMessagePairHolder = messageElements => {
-  const messagePairHolder = document.createElement("div");
-  messagePairHolder.append(...messageElements);
-  messagePairHolder.classList.add("message-pair-holder");
-  getDisplayPanel().append(messagePairHolder);
-};
-
-const displayInitialMessages = ({ setupTiles }) => {
-  if (!setupTiles) return;
-
-  const messages = setupTiles.map(([name, { position }]) => {
-    const columnSpecification = position.y + 1;
-    const rowSpecification = String.fromCharCode(position.x + 65);
-    const tile = columnSpecification + rowSpecification;
-
-    const tileSetupMessageElement = document.createElement("div");
-    tileSetupMessageElement.innerText = `${tile} placed for ${name}.`;
-    return tileSetupMessageElement;
-  });
-
-  getDisplayPanel().append(...messages);
 };
 
 const renderCorporations = ({ corporations }) => {
@@ -255,11 +134,6 @@ const fillSpace = (position, corpClass) => {
   const tile = board[tileId];
   CORPORATIONS.forEach(corp => tile.classList.remove(corp));
   tile.classList.add(corpClass);
-};
-
-const displayResponse = ({ message }) => {
-  const displayPanel = getDisplayPanel();
-  displayPanel.innerText = message;
 };
 
 const disablePlayerTiles = () => {
@@ -299,35 +173,6 @@ const attachListener = (tileElement, tile) => {
 
 const addVisualAttribute = (tileElement, isPlaced) => {
   if (isPlaced) tileElement.classList.add("used-tile");
-};
-
-const isSameTile = (tile1, tile2) =>
-  tile1.position.x === tile2.position.x &&
-  tile1.position.y === tile2.position.y;
-
-const animateElement = (element, transactionType, delay = 1000) => {
-  element.classList.add(transactionType);
-  setTimeout(() => element.classList.remove(transactionType), delay);
-};
-
-// eslint-disable-next-line complexity
-const highlightTile = (tile, tileElement, previousState, gameStatus) => {
-  const tileToHighlight = gameStatus.portfolio.newTile || { position: {} };
-  const { state, players } = gameStatus;
-
-  const self = players.find(({ you }) => you);
-  const currentPlayerId = players.findIndex(({ isTakingTurn }) => isTakingTurn);
-  const currentPlayer = players[currentPlayerId];
-  // const previousPlayer = players[(currentPlayerId + 1) % players.length];
-
-  const isSamePlayer = currentPlayer.username === self.username;
-  const isValidState = previousState === "buy-stocks" && state === "place-tile";
-
-  const shouldHighLight =
-    isSameTile(tile, tileToHighlight) && isValidState && isSamePlayer;
-  if (shouldHighLight) {
-    animateElement(tileElement, "new-tile");
-  }
 };
 
 const displayAndSetupAccountTiles = (gameStatus, previousState) => {
@@ -384,97 +229,8 @@ const renderBoard = ({ placedTiles, state }) => {
   animateTile(newTilePlaced.position, "new-tile");
 };
 
-const generateRefillTileBtn = () => {
-  const refillTileMessageElement = generateComponent(["p", "Refill your tile"]);
-  const endButton = generateComponent([
-    "button",
-    "Refill",
-    { type: "button", onclick: "refillTile()" },
-  ]);
-
-  return [refillTileMessageElement, endButton];
-};
-
-const renderTilePlacedMessage = () => {
-  const refillTilePrompt = document.createElement("div");
-  refillTilePrompt.classList.add("refill-tile-prompt");
-  refillTilePrompt.append(...generateRefillTileBtn());
-  getDisplayPanel().append(refillTilePrompt);
-};
-
-const displayMessage = gameStatus => {
-  const { state, stateInfo } = gameStatus;
-  const displayPanel = getDisplayPanel();
-
-  const renderMessage = {
-    "place-tile": () => {
-      displayPanel.innerText = "Place a tile...";
-    },
-
-    "tile-placed": () => {
-      displayPanel.innerHTML = "";
-      renderTilePlacedMessage();
-    },
-
-    "establish-corporation": () => {
-      displayPanel.innerText = "Select a corporation to establish...";
-    },
-
-    "buy-stocks": () => {
-      displayPanel.innerHTML = "";
-    },
-
-    "merge": ({ acquirer, defunct }) => {
-      renderMerge(acquirer, defunct);
-    },
-  };
-
-  renderMessage[state](stateInfo);
-};
-
 const isSamePlayer = (self, currentPlayer) =>
   self.username === currentPlayer.username;
-
-const determineDisplayName = (self, currentPlayer) =>
-  isSamePlayer(self, currentPlayer) ? "You" : currentPlayer.username;
-
-const customizeActivityMessage = (self, currentPlayer, gameStatus) => {
-  const displayName = determineDisplayName(self, currentPlayer);
-
-  if (isSamePlayer(self, currentPlayer)) {
-    return displayMessage(gameStatus);
-  }
-
-  const message = MESSAGE_GENERATORS[gameStatus.state](
-    currentPlayer.username,
-    gameStatus.stateInfo
-  );
-
-  const displayPanel = getDisplayPanel();
-  displayPanel.innerText = message;
-};
-
-const renderActivityMessage = gameStatus => {
-  const { state, players } = gameStatus;
-
-  if (state === MESSAGE_GENERATORS.setup) return;
-  const self = players.find(({ you }) => you);
-  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
-  customizeActivityMessage(self, currentPlayer, gameStatus);
-};
-
-const setUpPlayerTilePlacing = ({ players, state }) => {
-  const self = players.find(({ you }) => you);
-  const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
-
-  const tileContainer = getTileContainer();
-
-  if (isSamePlayer(self, currentPlayer) && state === "place-tile") {
-    return tileContainer.classList.remove("disable-click");
-  }
-
-  tileContainer.classList.add("disable-click");
-};
 
 const setupCorporationSelection = ({ players, corporations, state }) => {
   const self = players.find(({ you }) => you);
