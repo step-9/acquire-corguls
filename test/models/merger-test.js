@@ -25,7 +25,7 @@ describe("Merger", () => {
   });
 
   describe("hasEnd", () => {
-    it("should give true, if all players have dealt with there defunt stocks", () => {
+    it("should give true, if all players have dealt with there defunct stocks", () => {
       const merger = new Merger(3, createCorporations(), []);
 
       merger.endTurn();
@@ -34,7 +34,7 @@ describe("Merger", () => {
       assert.ok(merger.hasEnd());
     });
 
-    it("should give false, if all players haven't dealt with there defunt stocks", () => {
+    it("should give false, if all players haven't dealt with there defunct stocks", () => {
       const players = ["a", "b", "c"];
       const merger = new Merger(players, createCorporations(), []);
 
@@ -81,7 +81,7 @@ describe("Merger", () => {
   });
 
   describe("sell", () => {
-    it("should end the merger round and defunct corporation should be merged to acquirer corporation", () => {
+    it("should sell a given quantity of defunct stocks", () => {
       const corporations = createCorporations();
       const player = new Player("Honu", 0, { "hydra": 5 });
       const connectedTiles = [
@@ -108,6 +108,35 @@ describe("Merger", () => {
       assert.strictEqual(balance, 1500);
       assert.strictEqual(stocks.hydra, 0);
       assert.strictEqual(corporations.hydra.stocks, 25);
+    });
+
+    it("should not sell any stocks if given quantity is greater than total defunct stocks", () => {
+      const corporations = createCorporations();
+      const player = new Player("Honu", 0, { "hydra": 5 });
+      const connectedTiles = [
+        { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "hydra" },
+        { position: { x: 0, y: 1 }, isPlaced: true, belongsTo: "hydra" },
+        { position: { x: 0, y: 2 }, isPlaced: true, belongsTo: "incorporated" },
+        { position: { x: 0, y: 3 }, isPlaced: true, belongsTo: "zeta" },
+        { position: { x: 0, y: 4 }, isPlaced: true, belongsTo: "zeta" },
+        { position: { x: 0, y: 5 }, isPlaced: true, belongsTo: "zeta" },
+      ];
+
+      const merger = new Merger(2, corporations, connectedTiles);
+
+      corporations.hydra.establish();
+      corporations.hydra.decrementStocks(5);
+      corporations.hydra.increaseSize(2);
+      corporations.zeta.establish();
+      corporations.zeta.increaseSize(3);
+      merger.start();
+      merger.sell(player, 7);
+
+      const { balance, stocks } = player.portfolio();
+
+      assert.strictEqual(balance, 0);
+      assert.strictEqual(stocks.hydra, 5);
+      assert.strictEqual(corporations.hydra.stocks, 20);
     });
   });
 });

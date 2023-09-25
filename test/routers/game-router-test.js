@@ -78,9 +78,10 @@ const endTurn = (app, username) => {
     .expect(200);
 };
 
-const dealDefunctStocks = (app, username) => {
+const dealDefunctStocks = (app, username, cart) => {
   return request(app)
     .post("/game/merger/deal")
+    .send(cart)
     .set("cookie", `username=${username}`)
     .expect(200);
 };
@@ -1165,7 +1166,7 @@ describe("GameRouter", () => {
       let status = await getGameStatus(app, playerName);
       assert.strictEqual(status.state, "merge");
 
-      await dealDefunctStocks(app, playerName);
+      await dealDefunctStocks(app, playerName, { sell: 5 });
 
       const {
         portfolio: { stocks, balance },

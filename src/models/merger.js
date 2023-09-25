@@ -61,8 +61,9 @@ class Merger {
   sell(player, quantity) {
     const { stocks } = player.portfolio();
     const { price } = this.#defunct.stats();
+    const totalQuantity = stocks[this.defunct];
 
-    quantity = stocks[this.defunct];
+    if (quantity > totalQuantity) return;
     player.sellStocks(this.defunct, quantity);
     player.addIncome(quantity * price);
     this.#defunct.incrementStocks(quantity);
