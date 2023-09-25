@@ -11,11 +11,10 @@ export const renderMerge = (
   const lastActivity = turns.currentTurn.activities.at(-1);
   const { acquirer: acquirerName, defunct: defunctName } = lastActivity.data;
   const acquirer = corporations[acquirerName];
-  const defunct = corporations[defunctName];
   const defunctStocks = portfolio.stocks[defunctName];
 
   const merger = new Merger(
-    { defunctStocks, acquirer, defunct },
+    { defunctStocks, acquirer },
     activityConsole
   );
   merger.render();
@@ -23,15 +22,13 @@ export const renderMerge = (
 
 class Merger {
   #cart;
-  // #defunct;
-  // #acquirer;
+  #acquirer;
   #defunctStocks;
   #activityConsole;
 
-  constructor({ defunctStocks, acquirer, defunct }, activityConsole) {
+  constructor({ defunctStocks, acquirer }, activityConsole) {
     this.#cart = { sell: 0, trade: 0 };
-    // this.#defunct = defunct;
-    // this.#acquirer = acquirer;
+    this.#acquirer = acquirer;
     this.#defunctStocks = defunctStocks;
     this.#activityConsole = activityConsole;
   }
@@ -55,7 +52,7 @@ class Merger {
   }
 
   #incrementSellCount() {
-    if (this.#cart.sell < this.#defunctStocks) this.#cart.sell += 1;
+    if (this.#getHeldStocks() > 0) this.#cart.sell += 1;
   }
 
   #decrementSellCount() {
@@ -66,6 +63,47 @@ class Merger {
     return createCard("Hold", [
       ["div", this.#getHeldStocks(), { class: "tile" }],
     ]);
+  }
+
+  #incrementTradeCount() {
+    const canTrade =
+      this.#getHeldStocks() >= 2 &&
+      this.#acquirer.stocks > this.#cart.trade / 2;
+
+    if (canTrade) {
+      this.#cart.trade += 2;
+    }
+  }
+
+  #decrementTradeCount() {
+    if (this.#cart.trade > 0) this.#cart.trade -= 2;
+  }
+
+  #createTradeBox() {
+    const tradeCard = createCard("trade (2:1)");
+    const addBtn = this.#createBtn("+");
+    const subBtn = this.#createBtn("-");
+    const tradeBox = generateComponent(["div", "", { class: "sell-box" }]);
+    const tradeCount = generateComponent([
+      "div",
+      `${this.#cart.trade} : ${this.#cart.trade / 2}`,
+      { class: "tile" },
+    ]);
+
+    addBtn.onclick = () => {
+      this.#incrementTradeCount();
+      this.render();
+    };
+
+    subBtn.onclick = () => {
+      this.#decrementTradeCount();
+      this.render();
+    };
+
+    tradeBox.append(subBtn, tradeCount, addBtn);
+    tradeCard.lastChild.append(tradeBox);
+
+    return tradeCard;
   }
 
   #createSellBox() {
@@ -102,7 +140,11 @@ class Merger {
       { class: "flex deal-options" },
     ]);
 
-    dealOptions.append(this.#createHoldBox(), this.#createSellBox());
+    dealOptions.append(
+      this.#createHoldBox(),
+      this.#createTradeBox(),
+      this.#createSellBox()
+    );
     return dealOptions;
   }
 
