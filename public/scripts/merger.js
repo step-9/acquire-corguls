@@ -109,9 +109,16 @@ class Merger {
   #createButtonSection() {
     const buttonSection = generateComponent(["div", "", { class: "flex" }]);
     const confirmBtn = generateComponent(["button", "Confirm"]);
-    const clearBtn = generateComponent(["button", "Clear"]);
+    const clearBtn = generateComponent(["button", "Reset"]);
 
-    confirmBtn.onclick = () => this.#confirmDeal();
+    confirmBtn.onclick = () => {
+      if (this.#cart.sell === 0 && this.#cart.trade === 0) {
+        endMergerTurn();
+        return;
+      }
+
+      this.#confirmDeal();
+    };
     clearBtn.onclick = () => {
       this.#cart = { sell: 0, trade: 0 };
       this.render();

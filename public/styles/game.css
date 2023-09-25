@@ -580,10 +580,10 @@
   gap: 1em;
 }
 
-.sell-box .stock-btn {
-  margin: 0 !important;
+#activity-console .sell-box .stock-btn {
+  margin: 0;
   height: 2em;
-  width: 2em !important;
+  width: 2em;
 }
 
 .deal-options .sell-box {
