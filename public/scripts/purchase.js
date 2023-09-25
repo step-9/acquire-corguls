@@ -76,7 +76,7 @@ const getTileElements = () => {
   return Array.from(tileContainer.children);
 };
 
-const capitaliseFirstLetter = text =>
+const capitalizeFirstLetter = text =>
   text.charAt(0).toUpperCase() + text.slice(1);
 
 const renderTilePlacedMessage = () => {
@@ -203,7 +203,7 @@ class Purchase {
       const stockCard = generateComponent([
         "div",
         [
-          ["p", capitaliseFirstLetter(name), { class: "blank" }],
+          ["p", capitalizeFirstLetter(name), { class: "blank" }],
           ["div", "x"],
         ],
         { class: `${name} stock` },

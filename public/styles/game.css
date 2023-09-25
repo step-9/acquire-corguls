@@ -570,3 +570,24 @@
 .blank {
   color: transparent;
 }
+
+.deal-defunct-stocks {
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.deal-options {
+  gap: 1em;
+}
+
+.sell-box .stock-btn {
+  margin: 0 !important;
+  height: 2em;
+  width: 2em !important;
+}
+
+.deal-options .sell-box {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}

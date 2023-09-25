@@ -262,24 +262,6 @@ const setupCorporationSelection = ({ players, corporations, state }) => {
     .forEach(corp => corp.classList.remove("non-selectable"));
 };
 
-const setupGame = () => {
-  setupInfoCard();
-  const gameGateway = new GameGateway("/game");
-
-  return gameGateway.getStatus().then(gameStatus => {
-    displayPlayerProfile(gameStatus);
-    renderBoard(gameStatus);
-    // displayInitialMessages(gameStatus);
-    renderCorporations(gameStatus);
-    setupCorporationSelection(gameStatus);
-
-    const components = createComponents(gameStatus);
-    const gameService = new GameService(gameGateway, components);
-
-    return gameService;
-  });
-};
-
 const notifyGameEnd = () => {
   const activityConsole = document.querySelector("#activity-console");
   const gameEndElement = generateComponent([
@@ -359,7 +341,7 @@ const createStock = corp => {
   return ["div", "", { class: `stock ${corp}` }];
 };
 
-const createCard = (label, body = "", type = "pending") => {
+export const createCard = (label, body = "", type = "pending") => {
   return generateComponent([
     "div",
     [
@@ -494,6 +476,24 @@ const createComponents = gameStatus => {
       cardGenerators
     ),
   };
+};
+
+const setupGame = () => {
+  setupInfoCard();
+  const gameGateway = new GameGateway("/game");
+
+  return gameGateway.getStatus().then(gameStatus => {
+    displayPlayerProfile(gameStatus);
+    renderBoard(gameStatus);
+    // displayInitialMessages(gameStatus);
+    renderCorporations(gameStatus);
+    setupCorporationSelection(gameStatus);
+
+    const components = createComponents(gameStatus);
+    const gameService = new GameService(gameGateway, components);
+
+    return gameService;
+  });
 };
 
 const keepPlayerProfileUpdated = () => {
