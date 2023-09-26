@@ -369,6 +369,9 @@ class Game {
     );
 
     activeCorporations.forEach(([name, corporation]) => {
+      this.distributeMajorityMinority(name);
+      this.#result.bonuses.push(this.distributeMajorityMinority.stats);
+
       this.#players.forEach(player => {
         const { stocks } = player.portfolio();
         const noOfStocks = stocks[name];
@@ -406,7 +409,7 @@ class Game {
       };
     });
 
-    this.#result = { players, corporations: activeCorporations };
+    this.#result = { players, corporations: activeCorporations, bonuses: [] };
   }
 
   changeTurn() {
@@ -521,7 +524,9 @@ class Game {
         player.addIncome(sharePrice);
       });
 
+      // Refactor
       this.distributeMajorityMinority.stats = {
+        corporation: corpName,
         majority: {
           bonus: majorityPrice,
           players: majority.playerNames,
@@ -543,6 +548,7 @@ class Game {
     });
 
     this.distributeMajorityMinority.stats = {
+      corporation: corpName,
       majority: {
         bonus: majorityPrice,
         players: majority.playerNames,
