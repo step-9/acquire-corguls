@@ -167,6 +167,11 @@ class Game {
     });
   }
 
+  currentPlayerName() {
+    const currentPlayer = this.#currentPlayer();
+    return currentPlayer.username;
+  }
+
   #currentPlayer() {
     return this.#players[this.#turnCount % this.#players.length];
   }

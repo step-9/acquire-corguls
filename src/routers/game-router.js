@@ -121,6 +121,14 @@ const resolveConflict = (req, res) => {
   res.status(200).end();
 };
 
+const validatePlayer = (req, res, next) => {
+  const { game } = req.app.context;
+  const { username } = req.cookies;
+  const currentPlayerName = game.currentPlayerName();
+  if (username === currentPlayerName) return next();
+  res.status(400).end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
@@ -130,13 +138,13 @@ const createGameRouter = () => {
   router.post("/start", verifyHost, verifyStart, startGame);
   router.get("/status", serveGameStats);
   router.post("/tile", placeTile);
-  router.post("/end-turn", endPlayerTurn);
-  router.post("/merger/deal", dealDefunctStocks);
+  router.post("/end-turn", validatePlayer, endPlayerTurn);
+  router.post("/merger/deal", validatePlayer, dealDefunctStocks);
   router.post("/merger/end-turn", endMergerTurn);
-  router.post("/merger/resolve-conflict", resolveConflict);
+  router.post("/merger/resolve-conflict", validatePlayer, resolveConflict);
   router.get("/end-result", gameResult);
-  router.post("/buy-stocks", buyStocks);
-  router.post("/establish", establishCorporation);
+  router.post("/buy-stocks", validatePlayer, buyStocks);
+  router.post("/establish", validatePlayer, establishCorporation);
   router.post("/end-merge", endMerge);
 
   return router;

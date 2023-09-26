@@ -101,6 +101,13 @@ const endMergerTurn = (app, username) => {
     .expect(200);
 };
 
+const badRequest = (app, username, url) => {
+  return request(app)
+    .post(url)
+    .set("cookie", `username=${username}`)
+    .expect(400);
+};
+
 const gameResult = async (app, username) => {
   const result = await request(app)
     .get("/game/end-result")
@@ -1279,6 +1286,26 @@ describe("GameRouter", () => {
       assert.deepStrictEqual(stocks.quantum, 0);
       assert.deepStrictEqual(balance, 13800);
       assert.deepStrictEqual(zeta.stocks, 20);
+    });
+  });
+
+  describe("POST /game/buy-stocks", () => {
+    it("should buy stocks of an active corporation", async () => {
+      const size = { lowerLimit: 2, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const username1 = "player1";
+      const username2 = "player2";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, username1);
+      await joinPlayer(app, username2);
+      await startGame(app, username1);
+      await placeTile(app, username1, { x: 0, y: 0 });
+      await endTurn(app, username1);
+      await badRequest(app, username1, "/game/end-turn");
     });
   });
 });
