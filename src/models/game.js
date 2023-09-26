@@ -523,11 +523,15 @@ class Game {
 
       this.distributeMajorityMinority.stats = {
         majority: {
-          bonus: sharePrice,
+          bonus: majorityPrice,
           players: majority.playerNames,
           stocks: majority.stock,
         },
-        minority: { bonus: 0, players: [], stocks: minority.stock },
+        minority: {
+          bonus: minorityPrice,
+          players: majority.playerNames,
+          stocks: minority.stock,
+        },
       };
       return;
     }
@@ -545,7 +549,7 @@ class Game {
         stocks: majority.stock,
       },
       minority: {
-        bonus: sharePrice,
+        bonus: minorityPrice,
         players: minority.playerNames,
         stocks: minority.stock,
       },
