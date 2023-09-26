@@ -358,6 +358,17 @@ const createCorpIcon = corp => {
   return ["div", "", { class: `corp-icon ${corp}` }];
 };
 
+const createDealIcon = (type, quantity) => {
+  return [
+    "div",
+    [
+      ["div", "", { class: `${type}-icon` }],
+      ["div", quantity],
+    ],
+    { class: `${type}-defunct-box` },
+  ];
+};
+
 const createBonusTable = ({ majority, minority }) => {
   const bonusTable = generateComponent([
     "div",
@@ -428,7 +439,7 @@ const CARD_GENERATORS = {
     );
   },
 
-  [ACTIVITIES.merge]: ({ acquirer, defunct, majority, minority }) => {
+  [ACTIVITIES.merge]: ({ acquirer, defunct, majority, minority, turns }) => {
     const mergeDiv = generateComponent(["div", "", { class: "flex" }]);
     const mergingCard = createCard(
       "merging",
@@ -442,8 +453,15 @@ const CARD_GENERATORS = {
       "done"
     );
     const bonusesCard = createBonusTable({ majority, minority });
+    const turnCards = turns.map(({ player, sell, trade }) =>
+      createCard(
+        `${player}'s deal`,
+        [createDealIcon("sell", sell), createDealIcon("trade", trade)],
+        "done player-deal"
+      )
+    );
 
-    mergeDiv.append(mergingCard, bonusesCard);
+    mergeDiv.append(mergingCard, bonusesCard, ...turnCards);
     return mergeDiv;
   },
 

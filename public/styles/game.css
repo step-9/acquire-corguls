@@ -591,3 +591,47 @@
   justify-content: space-around;
   align-items: center;
 }
+
+.player-deal {
+  scale: 0.9;
+}
+
+.player-deal .body {
+  display: flex !important;
+  gap: 0.5em;
+  justify-items: center;
+  align-items: center;
+}
+
+.sell-defunct-box div,
+.trade-defunct-box div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.sell-defunct-box,
+.trade-defunct-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.sell-defunct-box .sell-icon {
+  height: 1.5em;
+  width: 1.5em;
+  background-image: url(/images/sell-icon.png);
+  background-size: contain;
+}
+
+.trade-defunct-box .trade-icon {
+  height: 1.3em;
+  width: 1.3em;
+  background-image: url(/images/trade-icon.jpg);
+  background-size: contain;
+}
+
+#activity-console {
+  overflow-x: scroll;
+}
