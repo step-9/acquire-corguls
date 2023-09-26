@@ -137,10 +137,10 @@ const createGameRouter = () => {
   router.get("/", verifyStart, serveGamePage);
   router.post("/start", verifyHost, verifyStart, startGame);
   router.get("/status", serveGameStats);
-  router.post("/tile", placeTile);
+  router.post("/tile", validatePlayer, placeTile);
   router.post("/end-turn", validatePlayer, endPlayerTurn);
   router.post("/merger/deal", validatePlayer, dealDefunctStocks);
-  router.post("/merger/end-turn", endMergerTurn);
+  router.post("/merger/end-turn", validatePlayer, endMergerTurn);
   router.post("/merger/resolve-conflict", validatePlayer, resolveConflict);
   router.get("/end-result", gameResult);
   router.post("/buy-stocks", validatePlayer, buyStocks);
