@@ -363,7 +363,7 @@ class Game {
     return hasAcquired41Tiles || isEveryCorpStable;
   }
 
-  #sellBackStocks() {
+  #calculateEarnings() {
     const activeCorporations = Object.entries(this.#corporations).filter(
       ([, { isActive }]) => isActive
     );
@@ -382,22 +382,6 @@ class Game {
         corporation.incrementStocks(noOfStocks);
       });
     });
-  }
-
-  #saveGameResult() {
-    const activeCorporations = Object.entries(this.#corporations)
-      .filter(([, { isActive }]) => isActive)
-      .map(([name, corp]) => {
-        const { price, stocks, majorityPrice, minorityPrice } = corp.stats();
-
-        return {
-          name,
-          price,
-          stocks,
-          majorityPrice,
-          minorityPrice,
-        };
-      });
 
     const players = this.#players.map(player => {
       const { stocks, balance } = player.portfolio();
@@ -409,14 +393,14 @@ class Game {
       };
     });
 
-    this.#result = { players, corporations: activeCorporations, bonuses: [] };
+    this.#result.players = players;
   }
 
   changeTurn() {
     if (this.#isGameOver()) {
       this.#state = GAME_STATES.gameEnd;
-      this.#saveGameResult();
-      this.#sellBackStocks();
+      this.#result = { players: [], bonuses: [] };
+      this.#calculateEarnings();
       return;
     }
 

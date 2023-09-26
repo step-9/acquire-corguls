@@ -77,16 +77,8 @@ const sellBackStocks = (corporations, stocks) => {
   }, 0);
 };
 
-const rankPlayers = ({ players, corporations }) => {
-  const { name: corpName, price } = corporations;
-
-  return players
-    .map(({ stocks, balance, name }) => {
-      const sellBackEarning = sellBackStocks(corporations, stocks);
-      const finalBalance = balance + sellBackEarning;
-      return { name, balance: finalBalance };
-    })
-    .toSorted((a, b) => b.balance - a.balance);
+const rankPlayers = ({ players }) => {
+  return players.toSorted((a, b) => b.balance - a.balance);
 };
 
 const createBonusCard = ({ corporation, majority, minority }) => {

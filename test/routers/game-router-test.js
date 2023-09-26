@@ -1163,7 +1163,7 @@ describe("GameRouter", () => {
       let status = await getGameStatus(app, player);
       assert.strictEqual(status.state, "game-end");
 
-      const { players, corporations } = await gameResult(app, player);
+      const { players } = await gameResult(app, player);
       assert.deepStrictEqual(players, [
         {
           balance: 4800,
@@ -1177,22 +1177,6 @@ describe("GameRouter", () => {
             sackson: 0,
             zeta: 0,
           },
-        },
-      ]);
-      assert.deepStrictEqual(corporations, [
-        {
-          majorityPrice: 9000,
-          minorityPrice: 4500,
-          name: "quantum",
-          price: 900,
-          stocks: 21,
-        },
-        {
-          majorityPrice: 8000,
-          minorityPrice: 4000,
-          name: "fusion",
-          price: 800,
-          stocks: 21,
         },
       ]);
     });
