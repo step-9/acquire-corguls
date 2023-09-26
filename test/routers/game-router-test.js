@@ -71,6 +71,14 @@ const endMerge = (app, username) => {
     .expect(200);
 };
 
+const resolveConflict = (app, username, body) => {
+  return request(app)
+    .post("/game/merger/resolve-conflict")
+    .set("cookie", `username=${username}`)
+    .send(body)
+    .expect(200);
+};
+
 const endTurn = (app, username) => {
   return request(app)
     .post("/game/end-turn")
@@ -1086,6 +1094,41 @@ describe("GameRouter", () => {
 
       let status = await getGameStatus(app, player);
       assert.strictEqual(status.state, "merge");
+
+      await endMerge(app, player);
+      status = await getGameStatus(app, player);
+      chai.expect(status.state).to.not.equal("merge");
+    });
+  });
+
+  describe("POST /game/resolve-conflict", () => {
+    it("should resolve merge conflict by merge maker", async () => {
+      const size = { lowerLimit: 1, upperLimit: 2 };
+      const lobby = new Lobby(size);
+      const player = "player";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, player);
+      await startGame(app, player);
+      await placeTile(app, player, { x: 0, y: 5 });
+      await establishCorp(app, player, "phoenix");
+
+      await placeTile(app, player, { x: 0, y: 2 });
+      await placeTile(app, player, { x: 0, y: 3 });
+      await establishCorp(app, player, "quantum");
+
+      await placeTile(app, player, { x: 0, y: 4 });
+
+      let status = await getGameStatus(app, player);
+      assert.strictEqual(status.state, "merge-conflict");
+
+      await resolveConflict(app, player, {
+        acquirer: "phoenix",
+        defunct: "quantum",
+      });
 
       await endMerge(app, player);
       status = await getGameStatus(app, player);

@@ -17,7 +17,7 @@ describe("Merger", () => {
       ];
 
       const merger = new Merger(2, createCorporations(), connectedTiles);
-      merger.start();
+      merger.start("zeta", "hydra");
 
       assert.strictEqual(merger.acquirer, "zeta");
       assert.strictEqual(merger.defunct, "hydra");
@@ -27,7 +27,6 @@ describe("Merger", () => {
   describe("hasEnd", () => {
     it("should give true, if all players have dealt with there defunct stocks", () => {
       const merger = new Merger(3, createCorporations(), []);
-
       merger.endTurn();
       merger.endTurn();
       merger.endTurn();
@@ -70,7 +69,7 @@ describe("Merger", () => {
       corporations.hydra.increaseSize(2);
       corporations.zeta.establish();
       corporations.zeta.increaseSize(3);
-      merger.start();
+      merger.start("zeta", "hydra");
       merger.end();
 
       assert.deepStrictEqual(connectedTiles, acquiredTiles);
@@ -100,7 +99,7 @@ describe("Merger", () => {
       corporations.hydra.increaseSize(2);
       corporations.zeta.establish();
       corporations.zeta.increaseSize(3);
-      merger.start();
+      merger.start("zeta", "hydra");
       merger.sell(player, 5);
 
       const { balance, stocks } = player.portfolio();
@@ -129,7 +128,7 @@ describe("Merger", () => {
       corporations.hydra.increaseSize(2);
       corporations.zeta.establish();
       corporations.zeta.increaseSize(3);
-      merger.start();
+      merger.start("zyta", "hydra");
       merger.sell(player, 7);
 
       const { balance, stocks } = player.portfolio();
@@ -160,7 +159,7 @@ describe("Merger", () => {
       corporations.hydra.increaseSize(2);
       corporations.zeta.establish();
       corporations.zeta.increaseSize(3);
-      merger.start();
+      merger.start("zeta", "hydra");
       merger.trade(player, 4);
 
       const { balance, stocks } = player.portfolio();

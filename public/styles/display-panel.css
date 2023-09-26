@@ -127,3 +127,13 @@
   aspect-ratio: 1.6;
   border-radius: 2px;
 }
+
+.conflict {
+  height: 4em;
+  width: 4em;
+  
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: transparent;
+}

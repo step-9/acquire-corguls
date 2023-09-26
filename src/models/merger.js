@@ -1,5 +1,3 @@
-const { groupBy, sortBy } = require("lodash");
-
 class Merger {
   #playersCount;
   #defunct;
@@ -17,21 +15,6 @@ class Merger {
     this.#connectedTiles = connectedTiles;
   }
 
-  #findAcquirerAndDefunct() {
-    const corporatedTiles = this.#connectedTiles.filter(
-      ({ belongsTo }) => belongsTo !== "incorporated"
-    );
-
-    const groupedTiles = groupBy(corporatedTiles, "belongsTo");
-    const corps = Object.keys(groupedTiles).map(
-      name => this.#corporations[name]
-    );
-    const [acquirer, defunct] = sortBy(corps, corp => corp.size).reverse();
-
-    this.#defunct = defunct;
-    this.#acquirer = acquirer;
-  }
-
   endTurn() {
     this.#playerIndex++;
   }
@@ -40,8 +23,10 @@ class Merger {
     return this.#playerIndex === this.#playersCount;
   }
 
-  start() {
-    this.#findAcquirerAndDefunct();
+  start(acquire, defunct) {
+    console.log(">>>>>", acquire);
+    this.#acquirer = this.#corporations[acquire];
+    this.#defunct = this.#corporations[defunct];
   }
 
   end() {

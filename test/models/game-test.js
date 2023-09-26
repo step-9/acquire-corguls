@@ -289,6 +289,45 @@ describe("Game", () => {
     assert.strictEqual(gameStatus.state, "merge-conflict");
   });
 
+  it("should be resolve merge-conflict", () => {
+    const player1 = new Player("Biswa");
+    const player2 = new Player("Bittu");
+    const shuffle = x => x;
+    const corporations = createCorporations();
+    const game = new Game([player1, player2], shuffle, corporations);
+    game.start();
+
+    game.placeTile("Biswa", { x: 0, y: 0 });
+    game.placeTile("Biswa", { x: 0, y: 1 });
+    game.placeTile("Biswa", { x: 0, y: 2 });
+    game.placeTile("Biswa", { x: 0, y: 3 });
+    game.establishCorporation({ name: "phoenix" });
+
+    game.changeTurn();
+
+    game.placeTile("Biswa", { x: 0, y: 5 });
+    game.placeTile("Bittu", { x: 0, y: 6 });
+    game.placeTile("Bittu", { x: 0, y: 7 });
+    game.placeTile("Bittu", { x: 0, y: 8 });
+    game.placeTile("Bittu", { x: 0, y: 9 });
+    game.placeTile("Bittu", { x: 0, y: 10 });
+    game.establishCorporation({ name: "quantum" });
+
+    game.placeTile("Biswa", { x: 0, y: 4 });
+    const gameStatus = game.status("Biswa");
+
+    assert.strictEqual(gameStatus.state, "merge-conflict");
+    game.mergeTwoCorporation({ acquirer: "quantum", defunct: "phoenix" });
+    const { acquirer, defunct } = game
+      .status("Biswa")
+      .turns.currentTurn.activities.at(-1).data;
+
+    assert.deepStrictEqual(
+      { acquirer, defunct },
+      { acquirer: "quantum", defunct: "phoenix" }
+    );
+  });
+
   describe("placeTile", () => {
     it("should remove a tile from the tile stack", () => {
       const player1 = new Player("Biswa");

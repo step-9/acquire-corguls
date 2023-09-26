@@ -171,6 +171,25 @@ class Game {
     return this.#players[this.#turnCount % this.#players.length];
   }
 
+  mergeTwoCorporation({ acquirer, defunct }) {
+    this.#merger = new Merger(
+      this.#players.length,
+      this.#corporations,
+      this.#connectedTiles
+    );
+    // change
+    this.#merger.start(acquirer, defunct);
+    this.distributeMajorityMinority(this.#merger.defunct);
+    this.#state = GAME_STATES.merge;
+    this.#turnManager.initiateActivity(ACTIVITIES.merge);
+    this.#stateInfo = {
+      acquirer: this.#merger.acquirer,
+      defunct: this.#merger.defunct,
+    };
+
+    this.#consolidateMergeActivity();
+  }
+
   #findMergingCorporations() {
     const corporatedTiles = this.#connectedTiles.filter(
       ({ belongsTo }) => belongsTo !== "incorporated"
@@ -249,7 +268,9 @@ class Game {
             this.#corporations,
             this.#connectedTiles
           );
-          this.#merger.start();
+
+          const [corp1, corp2] = this.#findMergingCorporations();
+          this.#merger.start(corp1.name, corp2.name);
           this.distributeMajorityMinority(this.#merger.defunct);
           this.#state = GAME_STATES.merge;
           this.#turnManager.initiateActivity(ACTIVITIES.merge);

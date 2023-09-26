@@ -401,6 +401,10 @@ const PENDING_CARD_GENERATORS = {
   [ACTIVITIES.merge]: ({ acquirer, defunct }) => {
     return createCard("MERGING", `${acquirer} >> ${defunct}`);
   },
+
+  // [ACTIVITIES.mergeConflict]: equalCorporations => {
+  //   return createCard("MERGING", `${acquirer} = ${defunct}`);
+  // },
 };
 
 const CARD_GENERATORS = {
@@ -443,11 +447,26 @@ const CARD_GENERATORS = {
     return mergeDiv;
   },
 
-  [ACTIVITIES.mergeConflict]: ({ acquirer, defunct, majority, minority }) => {
-    const mergeDiv = generateComponent(["div", "Merge Conflict"]);
-    return mergeDiv;
-  }
-   
+  [ACTIVITIES.mergeConflict]: equalCorporations => {
+    const mergeDiv = generateComponent(["div", "", { class: "flex" }]);
+    const mergingCard = createCard(
+      "merge conflict",
+      [
+        [
+          "div",
+          [
+            createCorpIcon(equalCorporations[0]),
+            ["p", "="],
+            createCorpIcon(equalCorporations[1]),
+          ],
+          { class: "merger" },
+        ],
+      ],
+      "done"
+    );
+
+    return mergingCard;
+  },
 };
 
 const ACTIVE_VIEW_RENDERERS = {
