@@ -390,7 +390,7 @@ const createBonusTable = ({ majority, minority }) => {
         ],
       ],
     ],
-    { class: "flex", id: "bonus-table" },
+    { class: "flex bonus-table" },
   ]);
 
   return bonusTable;

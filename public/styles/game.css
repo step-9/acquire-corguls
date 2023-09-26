@@ -239,14 +239,15 @@
   cursor: pointer;
 }
 
-#info-card {
+#info-card,
+.bonuses-section {
   height: 100%;
   width: 100%;
   z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #00000080;
+  background-color: rgba(0, 0, 0, 0.8);
   position: absolute;
   top: 0;
   left: 0;
@@ -256,16 +257,14 @@
   display: none;
 }
 
-#info-close-btn {
+#info-close-btn,
+.bonus-close-btn {
   background-color: transparent;
   font-size: 2em;
   position: absolute;
   top: 15%;
   right: 30%;
   color: white;
-}
-
-#info-close-btn:hover {
   cursor: pointer;
 }
 
@@ -545,20 +544,21 @@
   color: rgb(157, 16, 0);
 }
 
-#bonus-table {
+.bonus-table {
+  display: flex;
   gap: 1em;
   padding: 0.5em;
   align-items: flex-start;
 }
 
-#bonus-table > div {
+.bonus-table > div {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.2em;
 }
 
-#bonus-table > div > p {
+.bonus-table > div p {
   font-size: 0.8em;
   width: 5em;
   text-align: center;
@@ -635,4 +635,49 @@
 
 #activity-console {
   overflow-x: scroll;
+}
+
+#activity-console .bonuses-btn {
+  font-size: 0.8em;
+}
+
+.bonus-wrapper {
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 70%;
+  width: 55%;
+  gap: 1em;
+  background-color: var(--light-gray);
+}
+
+.bonus-card {
+  user-select: none;
+  width: fit-content;
+  border-radius: 5px;
+}
+
+.bonus-card-header {
+  display: flex;
+  justify-content: center;
+  padding: 0.5em;
+  color: var(--light-gray);
+  background-color: var(--mid-gray);
+  border-radius: 5px 5px 0 0;
+  font-weight: 500;
+  letter-spacing: 3px;
+}
+
+.bonus-card-body {
+  display: flex;
+  height: 11em;
+  justify-content: space-between;
+  padding: 0.5em;
+  border-radius: 0 0 5px 5px;
+  background-color: var(--gray);
+}
+
+.bonus-close-btn {
+  top: 11%;
+  right: 20%;
 }

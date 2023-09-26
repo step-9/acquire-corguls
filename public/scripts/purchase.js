@@ -8,6 +8,31 @@ const placeNewTile = tileElements => {
   });
 };
 
+const createBonusTable = (majority, minority) => {
+  return [
+    "div",
+    [
+      [
+        "div",
+        [
+          ["h5", "Majority"],
+          ["h5", `$${majority.bonus}`],
+          ...majority.players.map(name => ["p", name]),
+        ],
+      ],
+      [
+        "div",
+        [
+          ["h5", "Minority"],
+          ["h5", `$${minority.bonus}`],
+          ...minority.players.map(name => ["p", name]),
+        ],
+      ],
+    ],
+    { class: "bonus-table" },
+  ];
+};
+
 const createRankCard = (player, rank) => {
   const rankBody = [
     [
@@ -25,7 +50,7 @@ const createRankCard = (player, rank) => {
       ],
     ],
   ];
-  
+
   return generateComponent([
     "div",
     [
@@ -64,6 +89,64 @@ const rankPlayers = ({ players, corporations }) => {
     .toSorted((a, b) => b.balance - a.balance);
 };
 
+const createBonusCard = ({ corporation, majority, minority }) => {
+  const bonusCard = generateComponent(["div", "", { class: "bonus-card" }]);
+
+  const bonusCardHeader = generateComponent([
+    "div",
+    corporation.toUpperCase(),
+    { class: "label bonus-card-header" },
+  ]);
+
+  const bonusCardBody = generateComponent([
+    "div",
+    [createBonusTable(majority, minority)],
+    { class: "bonus-card-body" },
+  ]);
+
+  bonusCard.append(bonusCardHeader, bonusCardBody);
+
+  return bonusCard;
+};
+
+const renderBonuses = bonuses => {
+  const bonusWrapper = generateComponent([
+    "div",
+    "",
+    { class: "flex bonus-wrapper" },
+  ]);
+
+  const closeBtn = generateComponent([
+    "div",
+    "×",
+    { class: "bonus-close-btn" },
+  ]);
+
+  const bonusCards = bonuses.map(createBonusCard);
+  const bonusesSection = generateComponent([
+    "div",
+    "",
+    { class: "bonuses-section" },
+  ]);
+
+  closeBtn.onclick = () => bonusesSection.remove();
+  bonusWrapper.append(closeBtn, ...bonusCards);
+  bonusesSection.append(bonusWrapper);
+  document.body.append(bonusesSection);
+};
+
+const createBonusesButton = ({ bonuses }) => {
+  const bonusesBtn = generateComponent([
+    "button",
+    "Bonuses",
+    { class: "bonuses-btn" },
+  ]);
+
+  bonusesBtn.onclick = () => renderBonuses(bonuses);
+
+  return bonusesBtn;
+};
+
 const getGameResult = () => {
   fetch("/game/end-result")
     .then(res => res.json())
@@ -71,7 +154,10 @@ const getGameResult = () => {
       const playerRanks = rankPlayers(result);
       const activityConsole = getActivityConsole();
       activityConsole.innerHTML = "";
-      activityConsole.append(generateRankTable(playerRanks));
+      activityConsole.append(
+        generateRankTable(playerRanks),
+        createBonusesButton(result)
+      );
     });
 };
 
