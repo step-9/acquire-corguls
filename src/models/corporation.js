@@ -43,7 +43,8 @@ class Corporation {
     this.#isActive = true;
   }
 
-  increaseSize(delta) {
+  increaseSize(delta, isMergeConflict = false) {
+    if (isMergeConflict) return;
     this.#size += delta;
   }
 
@@ -56,8 +57,10 @@ class Corporation {
     this.#isActive = false;
   }
 
-  acquire(defunct) {
-    this.increaseSize(defunct.#size + 1);
+  acquire(defunct, isMultipleMerge = false) {
+    const delta = isMultipleMerge ? defunct.#size : defunct.#size + 1;
+    this.increaseSize(delta);
+
     defunct.#collapse();
   }
 

@@ -2,8 +2,10 @@ const assert = require("assert");
 const { it, describe } = require("node:test");
 const { reverse } = require("lodash");
 const { Player } = require("../../src/models/player");
-const { Game } = require("../../src/models/game");
+const { Game, loadGame } = require("../../src/models/game");
 const { createCorporations } = require("../../src/models/corporation");
+const multipleMerge = require("../test-data/merging-three.json");
+const multipleMergeTwoAcquirer = require("../test-data/merging-three-two-equal-acquirer.json");
 
 describe("Game", () => {
   // TODO: extract constants
@@ -625,6 +627,27 @@ describe("Game", () => {
       assert.strictEqual(p3.portfolio().balance, 7750);
       assert.strictEqual(p4.portfolio().balance, 7750);
       assert.strictEqual(p1.portfolio().balance, 6000);
+    });
+
+    it("should start multiple merge", () => {
+      const game = loadGame(multipleMerge);
+      game.placeTile("Bittu", { x: 4, y: 6 });
+
+      assert.deepStrictEqual(game.status("Bittu").state, "merge");
+      [1, 2, 3, 4, 5, 6].forEach(() => game.endMergerTurn());
+      assert.deepStrictEqual(game.status("Bittu").state, "buy-stocks");
+    });
+
+    it("should auto merge when two acquirer are there", () => {
+      const game = loadGame(multipleMergeTwoAcquirer);
+      game.placeTile("Bittu", { x: 4, y: 6 });
+
+      assert.deepStrictEqual(game.status("Bittu").state, "merge");
+      [1, 2, 3, 4, 5, 6].forEach(() => game.endMergerTurn());
+
+      const { phoenix } = game.status("Bittu").corporations;
+      assert.deepStrictEqual(game.status("Bittu").state, "buy-stocks");
+      assert.deepStrictEqual(phoenix.size, 12);
     });
   });
 });

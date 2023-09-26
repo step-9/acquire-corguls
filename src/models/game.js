@@ -12,6 +12,8 @@ const GAME_STATES = {
   gameEnd: "game-end",
   merge: "merge",
   mergeConflict: "merge-conflict",
+  multipleAcquirer: "multiple-acquirer",
+  multipleDefunct: "multiple-defunct",
 };
 
 class Game {
@@ -99,7 +101,10 @@ class Game {
     );
 
     connectedIncorporatedTiles.forEach(tile => (tile.belongsTo = name));
-    corporation.increaseSize(connectedIncorporatedTiles.length);
+    const isMerging = this.#state === GAME_STATES.merge;
+
+    //TODO: Refactor
+    corporation.increaseSize(connectedIncorporatedTiles.length, isMerging);
     if (corporation.stats().size > 10) corporation.markSafe();
   };
 
@@ -176,11 +181,12 @@ class Game {
     return this.#players[this.#turnCount % this.#players.length];
   }
 
-  mergeTwoCorporation({ acquirer, defunct }) {
+  mergeTwoCorporation({ acquirer, defunct }, multipleMerge = false) {
     this.#merger = new Merger(
       this.#players.length,
       this.#corporations,
-      this.#connectedTiles
+      this.#connectedTiles,
+      multipleMerge
     );
     // change
     this.#merger.start(acquirer, defunct);
@@ -207,6 +213,72 @@ class Game {
     return sortBy(corps, corp => corp.size).reverse();
   }
 
+  #mergeConflictOfTwoEqualCorpHandler() {
+    this.#state = GAME_STATES.mergeConflict;
+    const equalCorporations = this.#findMergingCorporations().map(
+      corp => corp.name
+    );
+
+    this.#turnManager.initiateActivity(ACTIVITIES.mergeConflict);
+    this.#stateInfo = { isMergeConflict: true, equalCorporations };
+
+    this.#turnManager.consolidateActivity(equalCorporations);
+  }
+
+  #findPotentialDefunct(mergingCorporations, acquirerSize) {
+    const otherThanAcquirers = mergingCorporations.filter(
+      corporation => corporation.size !== acquirerSize
+    );
+
+    const defunctSize = otherThanAcquirers[0].size;
+
+    return otherThanAcquirers.filter(
+      corporation => corporation.size === defunctSize
+    );
+  }
+
+  #handleMultipleMerging() {
+    const mergingCorporations = this.#findMergingCorporations();
+    const acquirerSize = mergingCorporations[0].size;
+
+    const potentialAcquirers = mergingCorporations.filter(
+      corporation => corporation.size === acquirerSize
+    );
+
+    if (potentialAcquirers.length > 1) {
+      const [acquirer, defunct] = potentialAcquirers;
+      this.mergeTwoCorporation(
+        {
+          acquirer: acquirer.name,
+          defunct: defunct.name,
+        },
+        true
+      );
+      return;
+    }
+
+    const potentialDefunct = this.#findPotentialDefunct(
+      mergingCorporations,
+      acquirerSize
+    );
+    // if (potentialDefunct.length > 1) {
+    //   // this.#state = GAME_STATES.multipleDefunct;
+
+    //   return;
+    // }
+
+    const [acquirer] = potentialAcquirers;
+    const [defunct] = potentialDefunct;
+
+    this.mergeTwoCorporation(
+      {
+        acquirer: acquirer.name,
+        defunct: defunct.name,
+      },
+      true
+    );
+  }
+
   // TODO: Refactor it
   #setupHandlers() {
     const noActiveCorporation = () =>
@@ -221,15 +293,18 @@ class Game {
       Object.keys(groupedTiles).length === 2 &&
       groupedTiles.incorporated.length >= 1;
 
-    const isMerging = groupedTiles => Object.keys(groupedTiles).length > 2;
+    const isMergingOfTwo = groupedTiles =>
+      Object.keys(groupedTiles).length === 3;
 
     const isEqualSizeCorp = (corp1, corp2) => corp1.size === corp2.size;
-    const isMergeOfEqualCorp = groupedTiles => {
-      const [corp1, corp2] = this.#findMergingCorporations();
-      // const isEqualSizeCorp = corp1.size === corp2.size;
 
-      return isMerging(groupedTiles) && isEqualSizeCorp(corp1, corp2);
+    const isMergeOfTwoEqualCorp = groupedTiles => {
+      const [corp1, corp2] = this.#findMergingCorporations();
+      return isMergingOfTwo(groupedTiles) && isEqualSizeCorp(corp1, corp2);
     };
+
+    const isMultipleMerge = groupedTiles =>
+      Object.keys(groupedTiles).length > 3;
 
     this.#handlers = [
       {
@@ -252,39 +327,23 @@ class Game {
         },
       },
       {
-        match: isMergeOfEqualCorp,
+        match: isMultipleMerge,
         handler: () => {
-          this.#state = GAME_STATES.mergeConflict;
-          const equalCorporations = this.#findMergingCorporations().map(
-            corp => corp.name
-          );
-
-          this.#turnManager.initiateActivity(ACTIVITIES.mergeConflict);
-          this.#stateInfo = { isMergeConflict: true, equalCorporations };
-
-          this.#turnManager.consolidateActivity(equalCorporations);
+          this.#handleMultipleMerging();
         },
       },
       {
-        match: isMerging,
+        match: isMergeOfTwoEqualCorp,
         handler: () => {
-          this.#merger = new Merger(
-            this.#players.length,
-            this.#corporations,
-            this.#connectedTiles
-          );
-
+          this.#mergeConflictOfTwoEqualCorpHandler();
+        },
+      },
+      {
+        match: isMergingOfTwo,
+        handler: () => {
           const [corp1, corp2] = this.#findMergingCorporations();
-          this.#merger.start(corp1.name, corp2.name);
-          this.distributeMajorityMinority(this.#merger.defunct);
-          this.#state = GAME_STATES.merge;
-          this.#turnManager.initiateActivity(ACTIVITIES.merge);
-          this.#stateInfo = {
-            acquirer: this.#merger.acquirer,
-            defunct: this.#merger.defunct,
-          };
-
-          this.#consolidateMergeActivity();
+          const [acquirer, defunct] = [corp1.name, corp2.name];
+          this.mergeTwoCorporation({ acquirer, defunct });
         },
       },
       {
@@ -421,11 +480,16 @@ class Game {
     this.#currentPlayer().startTurn();
 
     this.#consolidateMergeActivity();
+
+    // reconsolidate 
     if (this.#merger.hasEnd()) {
       this.#merger.end();
-      this.#state = GAME_STATES.buyStocks;
-      this.#turnManager.initiateActivity(ACTIVITIES.buyStocks);
-      return;
+      const groupedTiles = groupBy(this.#connectedTiles, "belongsTo");
+
+      const { handler } = this.#handlers.find(({ match }) =>
+        match(groupedTiles)
+      );
+      handler(groupedTiles);
     }
   }
 

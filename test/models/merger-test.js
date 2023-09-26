@@ -49,7 +49,7 @@ describe("Merger", () => {
       const connectedTiles = [
         { position: { x: 0, y: 0 }, isPlaced: true, belongsTo: "hydra" },
         { position: { x: 0, y: 1 }, isPlaced: true, belongsTo: "hydra" },
-        { position: { x: 0, y: 2 }, isPlaced: true, belongsTo: "incorporated" },
+        { position: { x: 0, y: 2 }, isPlaced: true, belongsTo: "zeta" },
         { position: { x: 0, y: 3 }, isPlaced: true, belongsTo: "zeta" },
         { position: { x: 0, y: 4 }, isPlaced: true, belongsTo: "zeta" },
         { position: { x: 0, y: 5 }, isPlaced: true, belongsTo: "zeta" },
