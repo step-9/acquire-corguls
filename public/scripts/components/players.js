@@ -12,9 +12,10 @@ export default class Players {
 
   #renderAll() {
     this.#players.forEach((player, id) => {
-      const { player: playerElement, name } = this.#playerElements[id];
+      const { player: playerElement, name, avatar } = this.#playerElements[id];
       name.innerText = player.username;
-
+      avatar.setAttribute("username", player.username);
+      
       playerElement.removeAttribute("hidden");
       playerElement.removeAttribute("hidden");
 
