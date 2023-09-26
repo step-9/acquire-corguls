@@ -7,11 +7,11 @@
   --gray: #aaa7a7;
   --phoenix-color: #724dc5;
   --quantum-color: #4299a0;
-  --fusion-color: #47792f;
-  --hydra-color: #b85233;
-  --america-color: #2f73c2;
-  --sackson-color: #b42745;
-  --zeta-color: #bc7c11;
+  --fusion-color: #50963c;
+  --hydra-color: #fa9632;
+  --america-color: #3c78c8;
+  --sackson-color: #c85a5a;
+  --zeta-color: #fad26e;
   --border-radius: 5px;
   --active-player: #04c900;
 }
@@ -34,7 +34,8 @@ input {
 }
 
 .highlight {
-  box-shadow: 0.1em 0.1em 0.4em rgb(253, 234, 234);
+  box-shadow: 0.1em 0.1em 0.4em rgb(237, 147, 147);
+  border: 2px solid royalblue;
 }
 
 .hide {

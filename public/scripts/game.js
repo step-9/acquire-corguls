@@ -177,16 +177,44 @@ const addVisualAttribute = (tileElement, isPlaced) => {
   if (isPlaced) tileElement.classList.add("used-tile");
 };
 
-const displayAndSetupAccountTiles = (gameStatus, previousState) => {
+const getBoardTile = position => {
+  const board = getBoard();
+  const tileId = position.x * 12 + position.y;
+  return board[tileId];
+};
+
+const highlightTile = tile => {
+  const onBoardTile = getBoardTile(tile.position);
+  onBoardTile.classList.add("highlight");
+};
+
+const removeHighlight = tile => {
+  const onBoardTile = getBoardTile(tile.position);
+  onBoardTile.classList.remove("highlight");
+};
+
+const setUpHoverEventForTiles = tiles => {
+  const tileContainer = getTileContainer();
+
+  tileContainer.onmouseover = () => {
+    tiles.forEach(highlightTile);
+  };
+
+  tileContainer.onmouseleave = () => {
+    tiles.forEach(removeHighlight);
+  };
+};
+
+const displayAndSetupAccountTiles = gameStatus => {
   const tileElements = getTileElements();
   const { tiles } = gameStatus.portfolio;
+  setUpHoverEventForTiles(tiles);
 
   tiles.forEach((tile, tileID) => {
     const tileElement = tileElements[tileID];
     displayTile(tileElement, tile.position);
     addVisualAttribute(tileElement, tile.isPlaced);
     attachListener(tileElement, tile);
-    // highlightTile(tile, tileElement, previousState, gameStatus);
   });
 };
 
@@ -204,13 +232,8 @@ const setupInfoCard = () => {
   };
 };
 
-const displayPlayerProfile = (gameStatus, previousState) => {
-  const { portfolio } = gameStatus;
-  const { balance, stocks } = portfolio;
-
-  // displayAccountBalance(balance);
-  // displayAccountStocks(stocks);
-  displayAndSetupAccountTiles(gameStatus, previousState);
+const displayPlayerProfile = gameStatus => {
+  displayAndSetupAccountTiles(gameStatus);
 };
 
 const animateTile = (position, transitionType, duration = 1000) => {
