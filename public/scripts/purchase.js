@@ -1,4 +1,4 @@
-const activityConsole = () => document.querySelector("#activity-console");
+const getActivityConsole = () => document.querySelector("#activity-console");
 const getDisplayPanel = () => document.querySelector("#display-panel");
 const getCorporations = () => document.querySelector("#corporations");
 const getTileContainer = () => document.querySelector("#tile-container");
@@ -8,21 +8,41 @@ const placeNewTile = tileElements => {
   });
 };
 
-const generateRankTable = playerRanks => {
-  const rankTable = generateComponent(["div", "Ranks", { class: "ranks" }]);
-
-  const rankElements = playerRanks.map(({ name, balance }) =>
-    generateComponent([
+const createRankCard = (player, rank) => {
+  const rankBody = [
+    [
       "p",
       [
-        ["span", `${name} :`],
-        ["span", `$${balance}`],
+        ["span", "Name:"],
+        ["span", player.name],
       ],
-      { class: "flex" },
-    ])
+    ],
+    [
+      "p",
+      [
+        ["span", "Balance:"],
+        ["span", `$${player.balance}`],
+      ],
+    ],
+  ];
+  
+  return generateComponent([
+    "div",
+    [
+      ["div", `Rank ${rank}`, { class: "label" }],
+      ["div", rankBody, { class: "body" }],
+    ],
+    { class: "card done rank" },
+  ]);
+};
+
+const generateRankTable = playerRanks => {
+  const rankTable = generateComponent(["div", "", { class: "ranks" }]);
+  const rankCards = playerRanks.map((player, rank) =>
+    createRankCard(player, rank + 1)
   );
 
-  rankTable.append(...rankElements);
+  rankTable.append(...rankCards);
   return rankTable;
 };
 
@@ -49,9 +69,9 @@ const getGameResult = () => {
     .then(res => res.json())
     .then(result => {
       const playerRanks = rankPlayers(result);
-      const displayPanel = activityConsole();
-      displayPanel.innerHTML = "";
-      displayPanel.append(generateRankTable(playerRanks));
+      const activityConsole = getActivityConsole();
+      activityConsole.innerHTML = "";
+      activityConsole.append(generateRankTable(playerRanks));
     });
 };
 
@@ -83,7 +103,7 @@ const renderTilePlacedMessage = () => {
   const refillTilePrompt = document.createElement("div");
   refillTilePrompt.classList.add("refill-tile-prompt");
   refillTilePrompt.append(...generateRefillTileBtn());
-  activityConsole().append(refillTilePrompt);
+  getActivityConsole().append(refillTilePrompt);
 };
 
 const generateRefillTileBtn = () => {
@@ -302,12 +322,6 @@ class Purchase {
 }
 
 const startPurchase = ({ corporations, portfolio }, activityConsole) => {
-  // const self = players.find(({ you }) => you);
-  // const isInCorrectState = "buy-stocks" === state;
-  // const currentPlayer = players.find(({ isTakingTurn }) => isTakingTurn);
-
-  // if (!(isSamePlayer(self, currentPlayer) && isInCorrectState)) return;
-
   const purchase = new Purchase(
     corporationsInMarket(corporations),
     portfolio,

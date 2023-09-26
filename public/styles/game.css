@@ -494,13 +494,14 @@
 
 .ranks {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 0.3em;
 }
 
-.ranks > p {
+.ranks p {
+  font-size: 0.7em;
+  font-weight: 600;
   display: flex;
   justify-content: space-between;
   column-gap: 0.5em;
