@@ -1,4 +1,5 @@
 #activity-console {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,9 +132,18 @@
 .conflict {
   height: 4em;
   width: 4em;
-  
+
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
   background-color: transparent;
+}
+
+.scale-mouse-pointer {
+  transition: all 500ms;
+}
+
+.scale-mouse-pointer:hover {
+  cursor: pointer;
+  scale: 1.1;
 }

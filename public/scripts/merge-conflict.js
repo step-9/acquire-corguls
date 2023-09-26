@@ -34,6 +34,8 @@ export const resolveMergeConflict = ({ turns }, activityConsole) => {
 
   corp1.onclick = () => determineDefunctCorp(mergingCorp1, mergingCorp2);
   corp2.onclick = () => determineDefunctCorp(mergingCorp2, mergingCorp1);
+  corp1.classList.add("scale-mouse-pointer");
+  corp2.classList.add("scale-mouse-pointer");
 
   activityConsole.innerHTML = "";
   activityConsole.append(selectionMsg, corp1, corp2);
