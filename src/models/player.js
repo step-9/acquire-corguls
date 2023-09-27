@@ -55,7 +55,7 @@ class Player {
   #replaceWithUsedTile() {
     for (let tileID = 0; tileID < this.#tiles.length; tileID++) {
       const tile = this.#tiles[tileID];
-      if (tile.isPlaced) {
+      if (tile && tile.isPlaced) {
         this.#tiles[tileID] = this.#newTile;
       }
     }
@@ -68,7 +68,8 @@ class Player {
 
   placeTile(position) {
     const targetTile = this.#tiles.find(
-      tile => tile.position.x === position.x && tile.position.y === position.y
+      tile =>
+        tile && tile.position.x === position.x && tile.position.y === position.y
     );
 
     targetTile.isPlaced = true;

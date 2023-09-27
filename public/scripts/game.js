@@ -173,7 +173,7 @@ const attachListener = (tileElement, tile) => {
   };
 };
 
-const addVisualAttribute = (tileElement, { isPlaced, exchange }) => {
+const addVisualAttribute = (tileElement, { isPlaced }) => {
   tileElement.classList.remove("unplayable-tile");
   if (isPlaced) tileElement.classList.add("used-tile");
 };
@@ -207,12 +207,19 @@ const setUpHoverEventForTiles = tiles => {
 };
 
 const displayAndSetupAccountTiles = gameStatus => {
-  const tileElements = getTileElements();
   const { tiles } = gameStatus.portfolio;
-  setUpHoverEventForTiles(tiles);
+  const tileElements = getTileElements();
+  setUpHoverEventForTiles(tiles.filter(tile => tile));
 
   tiles.forEach((tile, tileID) => {
     const tileElement = tileElements[tileID];
+    if (!tile) {
+      tileElement.innerText = "";
+      tileElement.classList.add("used-tile");
+      tileElement.classList.remove("unplayable-tile");
+      return;
+    }
+
     displayTile(tileElement, tile.position);
     addVisualAttribute(tileElement, tile);
     attachListener(tileElement, tile);

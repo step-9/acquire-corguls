@@ -98,6 +98,7 @@ class Game {
       const { tiles } = player.portfolio();
 
       tiles.forEach(tile => {
+        if (!tile) return;
         this.#placedTiles.push(tile);
 
         const connectedTiles = this.#findConnectedTiles(tile.position);
@@ -430,7 +431,7 @@ class Game {
 
     const { tiles } = currentPlayer.portfolio();
     const exchangedTiles = tiles.map(tile => {
-      if (tile.exchange === "yes") return this.#pickTile();
+      if (tile && tile.exchange === "yes") return this.#pickTile();
       return tile;
     });
 

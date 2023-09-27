@@ -36,13 +36,7 @@
       "username": "Debu",
       "portfolio": {
         "tiles": [
-          {
-            "position": {
-              "x": 0,
-              "y": 0
-            },
-            "isPlaced": false
-          },
+          null,
           {
             "position": {
               "x": 2,
@@ -57,7 +51,7 @@
             },
             "isPlaced": false
           },
-          { "position": { "x": 7, "y": 9 }, "isPlaced": false},
+          { "position": { "x": 7, "y": 9 }, "isPlaced": false },
           {
             "position": {
               "x": 0,
@@ -163,7 +157,7 @@
             },
             "isPlaced": false
           },
-    { "position": { "x": 8, "y": 11 }, "isPlaced": false },
+          { "position": { "x": 8, "y": 11 }, "isPlaced": false },
 
           {
             "position": {
@@ -238,7 +232,7 @@
       "name": "zeta",
       "basePrice": 100,
       "stocks": 21,
-      "size":10,
+      "size": 10,
       "isActive": true,
       "isSafe": false
     },
@@ -252,58 +246,174 @@
     }
   },
   "placedTiles": [
-    { "position": { "x": 6, "y": 3 }, "isPlaced": true, "belongsTo": "quantum" },
+    {
+      "position": { "x": 6, "y": 3 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
     { "position": { "x": 7, "y": 7 }, "isPlaced": true, "belongsTo": "zeta" },
-    { "position": { "x": 8, "y": 1 }, "isPlaced": true, "belongsTo": "quantum" },
+    {
+      "position": { "x": 8, "y": 1 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
     { "position": { "x": 1, "y": 6 }, "isPlaced": true, "belongsTo": "fusion" },
     { "position": { "x": 2, "y": 8 }, "isPlaced": true, "belongsTo": "fusion" },
     { "position": { "x": 1, "y": 7 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 2, "y": 1 }, "isPlaced": true, "belongsTo": "incorporated" },
+    {
+      "position": { "x": 2, "y": 1 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
     { "position": { "x": 6, "y": 8 }, "isPlaced": true, "belongsTo": "zeta" },
-    { "position": { "x": 7, "y": 3 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 3, "y": 10 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 5, "y": 11 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 7, "y": 1 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 4, "y": 10 }, "isPlaced": true, "belongsTo": "fusion" },
+    {
+      "position": { "x": 7, "y": 3 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 3, "y": 10 },
+      "isPlaced": true,
+      "belongsTo": "fusion"
+    },
+    {
+      "position": { "x": 5, "y": 11 },
+      "isPlaced": true,
+      "belongsTo": "fusion"
+    },
+    {
+      "position": { "x": 7, "y": 1 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 4, "y": 10 },
+      "isPlaced": true,
+      "belongsTo": "fusion"
+    },
     { "position": { "x": 1, "y": 8 }, "isPlaced": true, "belongsTo": "fusion" },
     { "position": { "x": 3, "y": 9 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 4, "y": 11 }, "isPlaced": true, "belongsTo": "fusion" },
+    {
+      "position": { "x": 4, "y": 11 },
+      "isPlaced": true,
+      "belongsTo": "fusion"
+    },
     { "position": { "x": 3, "y": 8 }, "isPlaced": true, "belongsTo": "fusion" },
     { "position": { "x": 0, "y": 6 }, "isPlaced": true, "belongsTo": "fusion" },
     { "position": { "x": 3, "y": 7 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 6, "y": 2 }, "isPlaced": true, "belongsTo": "quantum" },
+    {
+      "position": { "x": 6, "y": 2 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
     { "position": { "x": 8, "y": 6 }, "isPlaced": true, "belongsTo": "zeta" },
     { "position": { "x": 7, "y": 6 }, "isPlaced": true, "belongsTo": "zeta" },
     { "position": { "x": 0, "y": 7 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 6, "y": 1 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 4, "y": 3 }, "isPlaced": true, "belongsTo": "america" },
+    {
+      "position": { "x": 6, "y": 1 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 4, "y": 3 },
+      "isPlaced": true,
+      "belongsTo": "america"
+    },
     { "position": { "x": 2, "y": 6 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 6, "y": 5 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 7, "y": 10 }, "isPlaced": true, "belongsTo": "incorporated" },
-    { "position": { "x": 6, "y": 4 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 8, "y": 3 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 1, "y": 0 }, "isPlaced": true, "belongsTo": "incorporated" },
+    {
+      "position": { "x": 6, "y": 5 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 7, "y": 10 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
+    {
+      "position": { "x": 6, "y": 4 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 8, "y": 3 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 1, "y": 0 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
     { "position": { "x": 8, "y": 5 }, "isPlaced": true, "belongsTo": "zeta" },
-    { "position": { "x": 7, "y": 2 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 1, "y": 3 }, "isPlaced": true, "belongsTo": "incorporated" },
-    { "position": { "x": 3, "y": 0 }, "isPlaced": true, "belongsTo": "incorporated" },
-    { "position": { "x": 8, "y": 0 }, "isPlaced": true, "belongsTo": "quantum" },
+    {
+      "position": { "x": 7, "y": 2 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 1, "y": 3 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
+    {
+      "position": { "x": 3, "y": 0 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
+    {
+      "position": { "x": 8, "y": 0 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
     { "position": { "x": 6, "y": 7 }, "isPlaced": true, "belongsTo": "zeta" },
     { "position": { "x": 4, "y": 8 }, "isPlaced": true, "belongsTo": "fusion" },
     { "position": { "x": 4, "y": 9 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 8, "y": 2 }, "isPlaced": true, "belongsTo": "quantum" },
-    { "position": { "x": 3, "y": 2 }, "isPlaced": true, "belongsTo": "incorporated" },
-    { "position": { "x": 0, "y": 11 }, "isPlaced": true, "belongsTo": "incorporated" },
+    {
+      "position": { "x": 8, "y": 2 },
+      "isPlaced": true,
+      "belongsTo": "quantum"
+    },
+    {
+      "position": { "x": 3, "y": 2 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
+    {
+      "position": { "x": 0, "y": 11 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
     { "position": { "x": 2, "y": 9 }, "isPlaced": true, "belongsTo": "fusion" },
     { "position": { "x": 7, "y": 8 }, "isPlaced": true, "belongsTo": "zeta" },
-    { "position": { "x": 3, "y": 11 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 2, "y": 11 }, "isPlaced": true, "belongsTo": "fusion" },
-    { "position": { "x": 4, "y": 5 }, "isPlaced": true, "belongsTo": "america" },
+    {
+      "position": { "x": 3, "y": 11 },
+      "isPlaced": true,
+      "belongsTo": "fusion"
+    },
+    {
+      "position": { "x": 2, "y": 11 },
+      "isPlaced": true,
+      "belongsTo": "fusion"
+    },
+    {
+      "position": { "x": 4, "y": 5 },
+      "isPlaced": true,
+      "belongsTo": "america"
+    },
     { "position": { "x": 8, "y": 7 }, "isPlaced": true, "belongsTo": "zeta" },
     { "position": { "x": 8, "y": 8 }, "isPlaced": true, "belongsTo": "zeta" },
-    {"position": {"x": 4,"y": 4},"isPlaced": true,"belongsTo": "america"},
-    {"position": {"x": 4,"y": 1},"isPlaced": true, "belongsTo": "incorporated"},
-    {"position": {"x": 8,"y": 9},"isPlaced": true,"belongsTo": "zeta"}
+    {
+      "position": { "x": 4, "y": 4 },
+      "isPlaced": true,
+      "belongsTo": "america"
+    },
+    {
+      "position": { "x": 4, "y": 1 },
+      "isPlaced": true,
+      "belongsTo": "incorporated"
+    },
+    { "position": { "x": 8, "y": 9 }, "isPlaced": true, "belongsTo": "zeta" }
   ],
   "tiles": [
     { "position": { "x": 0, "y": 9 }, "isPlaced": false },
