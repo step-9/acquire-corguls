@@ -240,7 +240,7 @@
 }
 
 #info-card,
-.bonuses-section {
+.result-page {
   height: 100%;
   width: 100%;
   z-index: 100;
@@ -491,19 +491,27 @@
   }
 }
 
-.ranks {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.3em;
+.line,
+.ranks .headers {
+  display: grid;
+  gap: 1em;
+  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
 }
 
-.ranks p {
-  font-size: 0.7em;
-  font-weight: 600;
+.ranks .rows {
   display: flex;
-  justify-content: space-between;
-  column-gap: 0.5em;
+  flex-direction: column;
+  width: fit-content !important;
+}
+
+.ranks .headers {
+  font-weight: 600;
+}
+
+.ranks {
+  width: fit-content !important;
+  height: fit-content !important;
 }
 
 .flash {
@@ -641,12 +649,13 @@
   font-size: 0.8em;
 }
 
-.bonus-wrapper {
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+.result-wrapper {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  height: 70%;
-  width: 55%;
+  max-width: 57%;
+  padding: 2em;
+  border-radius: 5px;
   gap: 1em;
   background-color: var(--light-gray);
 }
@@ -657,7 +666,8 @@
   border-radius: 5px;
 }
 
-.bonus-card-header {
+.bonus-card-header,
+.rank-card-header {
   display: flex;
   justify-content: center;
   padding: 0.5em;
@@ -668,7 +678,8 @@
   letter-spacing: 3px;
 }
 
-.bonus-card-body {
+.bonus-card-body,
+.rank-card-body {
   display: flex;
   height: 11em;
   justify-content: space-between;
@@ -677,9 +688,15 @@
   background-color: var(--gray);
 }
 
+.rank-card-body {
+  padding: 0.5em 1em;
+  justify-content: flex-start;
+  gap: 0.3em;
+}
+
 .bonus-close-btn {
   top: 11%;
-  right: 20%;
+  right: 19%;
 }
 
 .unplayable-tile {
@@ -692,4 +709,17 @@
     var(--mid-gray) 20px
   );
   cursor: auto;
+}
+
+.bonus-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding-top: 1em;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.result-wrapper h1 {
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid rgb(0, 0, 0);
 }

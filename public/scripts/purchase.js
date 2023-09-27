@@ -33,51 +33,51 @@ const createBonusTable = (majority, minority) => {
   ];
 };
 
-const createRankCard = (player, rank) => {
-  const rankBody = [
-    [
-      "p",
-      [
-        ["span", "Name:"],
-        ["span", player.name],
-      ],
-    ],
-    [
-      "p",
-      [
-        ["span", "Balance:"],
-        ["span", `$${player.balance}`],
-      ],
-    ],
-  ];
-
+const createRankElement = (player, rank) => {
   return generateComponent([
     "div",
     [
-      ["div", `Rank ${rank}`, { class: "label" }],
-      ["div", rankBody, { class: "body" }],
+      ["p", rank],
+      ["p", player.name],
+      ["p", `$${player.balance}`],
     ],
-    { class: "card done rank" },
+    { class: "line" },
   ]);
 };
 
 const generateRankTable = playerRanks => {
-  const rankTable = generateComponent(["div", "", { class: "ranks" }]);
+  const rankTable = generateComponent([
+    "div",
+    [
+      ["div", "Leader Board", { class: "label rank-card-header" }],
+      [
+        "div",
+        [
+          [
+            "div",
+            [
+              ["p", "Rank"],
+              ["p", "Name"],
+              ["p", "Balance"],
+            ],
+            { class: "headers" },
+          ],
+        ],
+        { class: "rank-card-body rows" },
+      ],
+    ],
+    { class: "ranks" },
+  ]);
+
   const rankCards = playerRanks.map((player, rank) =>
-    createRankCard(player, rank + 1)
+    createRankElement(player, rank + 1)
   );
 
-  rankTable.append(...rankCards);
+  rankTable.querySelector(".rows").append(...rankCards);
   return rankTable;
 };
 
-const sellBackStocks = (corporations, stocks) => {
-  return corporations.reduce((earning, { name, price }) => {
-    return earning + stocks[name] * price;
-  }, 0);
-};
-
-const rankPlayers = ({ players }) => {
+const rankPlayers = players => {
   return players.toSorted((a, b) => b.balance - a.balance);
 };
 
@@ -101,13 +101,23 @@ const createBonusCard = ({ corporation, majority, minority }) => {
   return bonusCard;
 };
 
-const renderBonuses = bonuses => {
-  const bonusWrapper = generateComponent([
+const renderGameResult = ({ players, bonuses }) => {
+  const playerRanks = rankPlayers(players);
+  const resultWrapper = generateComponent([
+    "div",
+    [["h1", "Game Over !!"]],
+    { class: "flex result-wrapper" },
+  ]);
+  const resultSection = generateComponent([
     "div",
     "",
-    { class: "flex bonus-wrapper" },
+    { class: "result-section" },
   ]);
-
+  const bonusSection = generateComponent([
+    "div",
+    "",
+    { class: "bonus-section" },
+  ]);
   const closeBtn = generateComponent([
     "div",
     "×",
@@ -115,42 +125,20 @@ const renderBonuses = bonuses => {
   ]);
 
   const bonusCards = bonuses.map(createBonusCard);
-  const bonusesSection = generateComponent([
-    "div",
-    "",
-    { class: "bonuses-section" },
-  ]);
+  const resultPage = generateComponent(["div", "", { class: "result-page" }]);
+  resultSection.append(generateRankTable(playerRanks));
+  bonusSection.append(...bonusCards);
 
-  closeBtn.onclick = () => bonusesSection.remove();
-  bonusWrapper.append(closeBtn, ...bonusCards);
-  bonusesSection.append(bonusWrapper);
-  document.body.append(bonusesSection);
-};
-
-const createBonusesButton = ({ bonuses }) => {
-  const bonusesBtn = generateComponent([
-    "button",
-    "Bonuses",
-    { class: "bonuses-btn" },
-  ]);
-
-  bonusesBtn.onclick = () => renderBonuses(bonuses);
-
-  return bonusesBtn;
+  closeBtn.onclick = () => resultPage.remove();
+  resultWrapper.append(closeBtn, resultSection, bonusSection);
+  resultPage.append(resultWrapper);
+  document.body.append(resultPage);
 };
 
 const getGameResult = () => {
   fetch("/game/end-result")
     .then(res => res.json())
-    .then(result => {
-      const playerRanks = rankPlayers(result);
-      const activityConsole = getActivityConsole();
-      activityConsole.innerHTML = "";
-      activityConsole.append(
-        generateRankTable(playerRanks),
-        createBonusesButton(result)
-      );
-    });
+    .then(renderGameResult);
 };
 
 const refillTile = () => {

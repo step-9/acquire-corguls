@@ -312,6 +312,7 @@ const notifyGameEnd = () => {
     { class: "game-over flex" },
   ]);
 
+  getGameResult();
   activityConsole.innerHTML = "";
   activityConsole.append(gameEndElement);
 };
