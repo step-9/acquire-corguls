@@ -12,7 +12,7 @@ const GAME_STATES = {
   gameEnd: "game-end",
   merge: "merge",
   mergeConflict: "merge-conflict",
-  multipleAcquirer: "multiple-acquirer",
+  acquirerSelection: "acquirer-selection",
   multipleDefunct: "multiple-defunct",
 };
 
@@ -129,8 +129,10 @@ class Game {
     connectedIncorporatedTiles.forEach(tile => (tile.belongsTo = name));
     const isMerging = this.#state === GAME_STATES.merge;
 
+    if (!isMerging) {
+      corporation.increaseSize(connectedIncorporatedTiles.length);
+    }
     //TODO: Refactor
-    corporation.increaseSize(connectedIncorporatedTiles.length, isMerging);
     if (corporation.stats().size > 10) {
       corporation.markSafe();
       this.#markUnplayableTiles();
@@ -226,6 +228,17 @@ class Game {
     this.#consolidateMergeActivity();
   }
 
+  selectAcquirer(acquirerName) {
+    const mergingCorporations = this.#findMergingCorporations();
+    const potentialDefunct = mergingCorporations.filter(
+      corp => corp.name !== acquirerName
+    );
+
+    // automatic defunct selection
+    const [defunct] = potentialDefunct;
+    this.mergeTwoCorporation({ acquirer: acquirerName, defunct: defunct.name });
+  }
+
   #findMergingCorporations() {
     const corporatedTiles = this.#connectedTiles.filter(
       ({ belongsTo }) => belongsTo !== "incorporated"
@@ -238,7 +251,7 @@ class Game {
     return sortBy(corps, corp => corp.size).reverse();
   }
 
-  #mergeConflictOfTwoEqualCorpHandler() {
+  #mergeOfTwoEqualCorpHandler() {
     this.#state = GAME_STATES.mergeConflict;
     const equalCorporations = this.#findMergingCorporations().map(
       corp => corp.name
@@ -271,14 +284,11 @@ class Game {
     );
 
     if (potentialAcquirers.length > 1) {
-      const [acquirer, defunct] = potentialAcquirers;
-      this.mergeTwoCorporation(
-        {
-          acquirer: acquirer.name,
-          defunct: defunct.name,
-        },
-        true
-      );
+      this.#state = GAME_STATES.acquirerSelection;
+      const acquirerNames = potentialAcquirers.map(corp => corp.name);
+      this.#turnManager.initiateActivity(ACTIVITIES.acquirerSelection);
+      this.#turnManager.consolidateActivity(acquirerNames);
+
       return;
     }
 
@@ -287,7 +297,7 @@ class Game {
       acquirerSize
     );
     // if (potentialDefunct.length > 1) {
-    //   // this.#state = GAME_STATES.multipleDefunct;
+    //   // this.#state = GAME_STATES.multipleDefunct;x
 
     //   return;
     // }
@@ -360,7 +370,7 @@ class Game {
       {
         match: isMergeOfTwoEqualCorp,
         handler: () => {
-          this.#mergeConflictOfTwoEqualCorpHandler();
+          this.#mergeOfTwoEqualCorpHandler();
         },
       },
       {
@@ -681,8 +691,9 @@ class Game {
 }
 
 const loadGame = gameData => {
+  const data = JSON.parse(JSON.stringify(gameData));
   return Game.fromJSON({
-    ...gameData,
+    ...data,
     players: gameData.players.map(player => Player.fromJSON(player)),
     corporations: Object.fromEntries(
       Object.entries(gameData.corporations).map(([name, data]) => [

@@ -639,16 +639,46 @@ describe("Game", () => {
       assert.deepStrictEqual(game.status("Bittu").state, "buy-stocks");
     });
 
-    it("should auto merge when two acquirer are there", () => {
+    it("should lead the game state to acquirer selection", () => {
       const game = loadGame(multipleMergeTwoAcquirer);
       game.placeTile("Bittu", { x: 4, y: 6 });
 
-      assert.deepStrictEqual(game.status("Bittu").state, "merge");
-      [1, 2, 3, 4, 5, 6].forEach(() => game.endMergerTurn());
+      assert.deepStrictEqual(game.status("Bittu").state, "acquirer-selection");
+    });
 
+    it("should select acquirer when there is a tie among acquire", () => {
+      const game = loadGame(multipleMergeTwoAcquirer);
+      game.placeTile("Bittu", { x: 4, y: 6 });
+
+      assert.strictEqual(game.status("Bittu").state, "acquirer-selection");
+      game.selectAcquirer("phoenix");
+      assert.strictEqual(game.status("Bittu").state, "merge");
+    });
+
+    it("should merge acquirer and defunct after acquirer is selected", () => {
+      const game = loadGame(multipleMergeTwoAcquirer);
+      game.placeTile("Bittu", { x: 4, y: 6 });
+
+      assert.strictEqual(game.status("Bittu").state, "acquirer-selection");
+      game.selectAcquirer("phoenix");
+      assert.strictEqual(game.status("Bittu").state, "merge");
+      [1, 2, 3].forEach(() => game.endMergerTurn());
       const { phoenix } = game.status("Bittu").corporations;
-      assert.deepStrictEqual(game.status("Bittu").state, "buy-stocks");
-      assert.deepStrictEqual(phoenix.size, 12);
+      assert.strictEqual(game.status("Bittu").state, "merge");
+      assert.strictEqual(phoenix.size, 9);
+    });
+
+    it("should merge multiple corporation", () => {
+      const game = loadGame(multipleMergeTwoAcquirer);
+      game.placeTile("Bittu", { x: 4, y: 6 });
+
+      assert.strictEqual(game.status("Bittu").state, "acquirer-selection");
+      game.selectAcquirer("phoenix");
+      assert.strictEqual(game.status("Bittu").state, "merge");
+      [1, 2, 3, 4, 5, 6].forEach(() => game.endMergerTurn());
+      const { phoenix } = game.status("Bittu").corporations;
+      assert.strictEqual(game.status("Bittu").state, "buy-stocks");
+      assert.strictEqual(phoenix.size, 13);
     });
   });
 

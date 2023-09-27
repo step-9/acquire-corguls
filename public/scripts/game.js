@@ -6,6 +6,7 @@ import Players from "/scripts/components/players.js";
 import { renderMerge } from "/scripts/merger.js";
 import { resolveMergeConflict } from "/scripts/merge-conflict.js";
 import DisplayPanel from "/scripts/components/display-panel.js";
+import { selectAcquirer } from "/scripts/multiple-acquirer.js";
 
 let previousState;
 
@@ -26,6 +27,7 @@ const ACTIVITIES = {
   buyStocks: "buy-stocks",
   merge: "merge",
   mergeConflict: "merge-conflict",
+  acquirerSelection: "acquirer-selection",
 };
 
 const getTile = position => {
@@ -445,7 +447,9 @@ const PENDING_CARD_GENERATORS = {
   },
 
   [ACTIVITIES.merge]: ({ acquirer, defunct }) => {
-    return createCard("MERGING", `${acquirer} >> ${defunct}`);
+    return createCard("MERGING");
+
+    // return createCard("MERGING", `${acquirer} >> ${defunct}`);
   },
 
   // [ACTIVITIES.mergeConflict]: equalCorporations => {
@@ -472,6 +476,23 @@ const CARD_GENERATORS = {
       [["div", stocks.map(createStock), { class: "stocks-purchased" }]],
       "done"
     );
+  },
+
+  [ACTIVITIES.acquirerSelection]: acquirers => {
+    const mergeDiv = generateComponent(["div", "", { class: "flex" }]);
+    const mergingCard = createCard(
+      "MERGER TIE",
+      [
+        [
+          "div",
+          [createCorpIcon(acquirers[0]), createCorpIcon(acquirers[1])],
+          { class: "merger" },
+        ],
+      ],
+      "done"
+    );
+
+    return mergingCard;
   },
 
   [ACTIVITIES.merge]: ({ acquirer, defunct, majority, minority, turns }) => {
@@ -528,6 +549,7 @@ const ACTIVE_VIEW_RENDERERS = {
   [ACTIVITIES.establish]: renderEstablishCorporationView,
   [ACTIVITIES.merge]: renderMerge,
   [ACTIVITIES.mergeConflict]: resolveMergeConflict,
+  [ACTIVITIES.acquirerSelection]: selectAcquirer,
 };
 
 const createComponents = gameStatus => {

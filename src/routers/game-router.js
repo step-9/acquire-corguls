@@ -129,6 +129,13 @@ const validatePlayer = (req, res, next) => {
   res.status(400).end();
 };
 
+const selectAcquirer = (req, res) => {
+  const { game } = req.app.context;
+  const {acquirer} = req.body;
+  game.selectAcquirer(acquirer);
+  res.status(200).end();
+};
+
 const createGameRouter = () => {
   const router = new express.Router();
 
@@ -141,7 +148,10 @@ const createGameRouter = () => {
   router.post("/end-turn", validatePlayer, endPlayerTurn);
   router.post("/merger/deal", validatePlayer, dealDefunctStocks);
   router.post("/merger/end-turn", validatePlayer, endMergerTurn);
-  router.post("/merger/resolve-conflict", validatePlayer, resolveConflict);
+  router.post("/merger/resolve-conflict", validatePlayer, resolveConflict); // {acquirer, defunct}
+
+  router.post("/merger/resolve-acquirer", validatePlayer, selectAcquirer); // {acquirer}
+
   router.get("/end-result", gameResult);
   router.post("/buy-stocks", validatePlayer, buyStocks);
   router.post("/establish", validatePlayer, establishCorporation);

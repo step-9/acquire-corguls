@@ -43,8 +43,7 @@ class Corporation {
     this.#isActive = true;
   }
 
-  increaseSize(delta, isMergeConflict = false) {
-    if (isMergeConflict) return;
+  increaseSize(delta) {
     this.#size += delta;
   }
 

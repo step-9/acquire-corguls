@@ -8,6 +8,7 @@ const { createGameRouter } = require("../../src/routers/game-router");
 const Lobby = require("../../src/models/lobby");
 const gameEndData = require("../test-data/all-stable-coporations.json");
 const mergerRound = require("../test-data/merger-round.json");
+const multipleMergeTwoAcquirer = require("../test-data/merging-three-two-equal-acquirer.json");
 
 const joinPlayer = (app, username) => {
   return request(app)
@@ -115,6 +116,14 @@ const gameResult = async (app, username) => {
     .expect(200);
 
   return result.body;
+};
+
+const selectAcquirer = async (app, username, acquirer) => {
+  return request(app)
+    .post("/game/merger/resolve-acquirer")
+    .set("cookie", `username=${username}`)
+    .send({ acquirer })
+    .expect(200);
 };
 
 describe("GameRouter", () => {
@@ -1290,6 +1299,34 @@ describe("GameRouter", () => {
       await placeTile(app, username1, { x: 0, y: 0 });
       await endTurn(app, username1);
       await badRequest(app, username1, "/game/end-turn");
+    });
+  });
+
+  describe("POST /game/resolve-acquirer", () => {
+    it("should select acquirer from multiple acquirer", async () => {
+      const size = { lowerLimit: 3, upperLimit: 6 };
+      const lobby = new Lobby(size);
+      const player1 = "Bittu";
+      const player2 = "Debu";
+      const player3 = "Swagato";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, player1);
+      await joinPlayer(app, player2);
+      await joinPlayer(app, player3);
+      await loadGame(app, player1, multipleMergeTwoAcquirer);
+
+      await placeTile(app, player1, { x: 4, y: 6 });
+
+      const { state } = await getGameStatus(app, player1);
+      assert.strictEqual(state, "acquirer-selection");
+
+      await selectAcquirer(app, player1, "phoenix");
+      const { state: mergeState } = await getGameStatus(app, player1);
+      assert.strictEqual(mergeState, "merge");
     });
   });
 });
