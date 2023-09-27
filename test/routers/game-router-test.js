@@ -9,6 +9,7 @@ const Lobby = require("../../src/models/lobby");
 const gameEndData = require("../test-data/all-stable-coporations.json");
 const mergerRound = require("../test-data/merger-round.json");
 const multipleMergeTwoAcquirer = require("../test-data/merging-three-two-equal-acquirer.json");
+const multipleMergeThreeAllEqual = require("../test-data/merging-three-all-equal.json");
 
 const joinPlayer = (app, username) => {
   return request(app)
@@ -123,6 +124,14 @@ const selectAcquirer = async (app, username, acquirer) => {
     .post("/game/merger/resolve-acquirer")
     .set("cookie", `username=${username}`)
     .send({ acquirer })
+    .expect(200);
+};
+
+const selectDefunct = async (app, username, defunct) => {
+  return request(app)
+    .post("/game/merger/confirm-defunct")
+    .set("cookie", `username=${username}`)
+    .send({ defunct })
     .expect(200);
 };
 
@@ -1302,7 +1311,7 @@ describe("GameRouter", () => {
     });
   });
 
-  describe("POST /game/resolve-acquirer", () => {
+  describe("POST /game/merge/resolve-acquirer", () => {
     it("should select acquirer from multiple acquirer", async () => {
       const size = { lowerLimit: 3, upperLimit: 6 };
       const lobby = new Lobby(size);
@@ -1325,6 +1334,38 @@ describe("GameRouter", () => {
       assert.strictEqual(state, "acquirer-selection");
 
       await selectAcquirer(app, player1, "phoenix");
+      const { state: mergeState } = await getGameStatus(app, player1);
+      assert.strictEqual(mergeState, "merge");
+    });
+  });
+
+  describe("POST /game/merge/confirm-defunct", () => {
+    it("should select defunct from defunct acquirer", async () => {
+      const size = { lowerLimit: 3, upperLimit: 6 };
+      const lobby = new Lobby(size);
+      const player1 = "Bittu";
+      const player2 = "Debu";
+      const player3 = "Swagato";
+      const lobbyRouter = createLobbyRouter();
+      const gameRouter = createGameRouter();
+      const shuffle = x => x;
+      const app = createApp(lobbyRouter, gameRouter, { lobby, shuffle });
+
+      await joinPlayer(app, player1);
+      await joinPlayer(app, player2);
+      await joinPlayer(app, player3);
+      await loadGame(app, player1, multipleMergeThreeAllEqual);
+
+      await placeTile(app, player1, { x: 4, y: 6 });
+
+      const { state: acquirerSelection } = await getGameStatus(app, player1);
+      assert.strictEqual(acquirerSelection, "acquirer-selection");
+      await selectAcquirer(app, player1, "phoenix");
+
+      const { state: defunctSelection } = await getGameStatus(app, player1);
+      assert.strictEqual(defunctSelection, "defunct-selection");
+      await selectDefunct(app, player1, "quantum");
+
       const { state: mergeState } = await getGameStatus(app, player1);
       assert.strictEqual(mergeState, "merge");
     });

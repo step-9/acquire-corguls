@@ -7,6 +7,7 @@ import { renderMerge } from "/scripts/merger.js";
 import { resolveMergeConflict } from "/scripts/merge-conflict.js";
 import DisplayPanel from "/scripts/components/display-panel.js";
 import { selectAcquirer } from "/scripts/multiple-acquirer.js";
+import { selectDefunct } from "/scripts/multiple-defunct.js";
 
 let previousState;
 
@@ -28,6 +29,7 @@ const ACTIVITIES = {
   merge: "merge",
   mergeConflict: "merge-conflict",
   acquirerSelection: "acquirer-selection",
+  defunctSelection: "defunct-selection",
 };
 
 const getTile = position => {
@@ -458,6 +460,18 @@ const PENDING_CARD_GENERATORS = {
   // },
 };
 
+const createMergerTieCard = (corporations, label) => {
+  const corpIcons = corporations.map(corpName => createCorpIcon(corpName));
+
+  const mergingCard = createCard(
+    label,
+    [["div", corpIcons, { class: "merger" }]],
+    "done"
+  );
+
+  return mergingCard;
+};
+
 const CARD_GENERATORS = {
   [ACTIVITIES.tilePlace]: tile => {
     return createCard(
@@ -479,22 +493,11 @@ const CARD_GENERATORS = {
     );
   },
 
-  [ACTIVITIES.acquirerSelection]: acquirers => {
-    const mergeDiv = generateComponent(["div", "", { class: "flex" }]);
-    const mergingCard = createCard(
-      "MERGER TIE",
-      [
-        [
-          "div",
-          [createCorpIcon(acquirers[0]), createCorpIcon(acquirers[1])],
-          { class: "merger" },
-        ],
-      ],
-      "done"
-    );
+  [ACTIVITIES.acquirerSelection]: potentialAcquirers =>
+    createMergerTieCard(potentialAcquirers, "acquirer tie"),
 
-    return mergingCard;
-  },
+  [ACTIVITIES.defunctSelection]: potentialDefunct =>
+    createMergerTieCard(potentialDefunct, "defunct tie"),
 
   [ACTIVITIES.merge]: ({ acquirer, defunct, majority, minority, turns }) => {
     const mergeDiv = generateComponent(["div", "", { class: "flex" }]);
@@ -551,6 +554,7 @@ const ACTIVE_VIEW_RENDERERS = {
   [ACTIVITIES.merge]: renderMerge,
   [ACTIVITIES.mergeConflict]: resolveMergeConflict,
   [ACTIVITIES.acquirerSelection]: selectAcquirer,
+  [ACTIVITIES.defunctSelection]: selectDefunct,
 };
 
 const createComponents = gameStatus => {

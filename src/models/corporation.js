@@ -59,7 +59,6 @@ class Corporation {
   acquire(defunct, isMultipleMerge = false) {
     const delta = isMultipleMerge ? defunct.#size : defunct.#size + 1;
     this.increaseSize(delta);
-
     defunct.#collapse();
   }
 

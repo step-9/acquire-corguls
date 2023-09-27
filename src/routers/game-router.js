@@ -131,8 +131,15 @@ const validatePlayer = (req, res, next) => {
 
 const selectAcquirer = (req, res) => {
   const { game } = req.app.context;
-  const {acquirer} = req.body;
+  const { acquirer } = req.body;
   game.selectAcquirer(acquirer);
+  res.status(200).end();
+};
+
+const confirmDefunct = (req, res) => {
+  const { game } = req.app.context;
+  const { defunct } = req.body;
+  game.confirmDefunct(defunct);
   res.status(200).end();
 };
 
@@ -151,6 +158,7 @@ const createGameRouter = () => {
   router.post("/merger/resolve-conflict", validatePlayer, resolveConflict); // {acquirer, defunct}
 
   router.post("/merger/resolve-acquirer", validatePlayer, selectAcquirer); // {acquirer}
+  router.post("/merger/confirm-defunct", validatePlayer, confirmDefunct); // {defunct}
 
   router.get("/end-result", gameResult);
   router.post("/buy-stocks", validatePlayer, buyStocks);

@@ -1,25 +1,14 @@
 import { createCard } from "/scripts/game.js";
 
-const confirmAcquirer = acquirer => {
-  fetch("/game/merger/resolve-acquirer", {
-    method: "POST",
-    body: JSON.stringify({ acquirer }),
-    headers: {
-      "content-type": "application/json",
-    },
-  });
-};
-
 const createCorpIcon = corp => {
   return ["div", "", { class: `corp-icon ${corp} conflict` }];
 };
 
-export const selectAcquirer = ({ turns }, activityConsole) => {
+export const resolveTie = (turns, activityConsole, tieHeading, confirm) => {
   const lastActivity = turns.currentTurn.activities.at(-1);
   const potentialAcquirers = lastActivity.data;
-
   const cardContainer = generateComponent(["div", "", { class: "flex" }]);
-  const selectionMsg = generateComponent(["p", "select acquirer"]);
+  const selectionMsg = generateComponent(["p", tieHeading]);
 
   const acquirerCards = potentialAcquirers.map(name => {
     const card = createCard(
@@ -28,7 +17,7 @@ export const selectAcquirer = ({ turns }, activityConsole) => {
       "done"
     );
 
-    card.onclick = () => confirmAcquirer(name);
+    card.onclick = () => confirm(name);
     card.classList.add("scale-mouse-pointer");
     return card;
   });

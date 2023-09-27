@@ -18,7 +18,7 @@ export const resolveMergeConflict = ({ turns }, activityConsole) => {
   const lastActivity = turns.currentTurn.activities.at(-1);
   const [mergingCorp1, mergingCorp2] = lastActivity.data;
 
-  const selectionMsg = generateComponent(["div", "select acquirer"]);
+  const selectionMsg = generateComponent(["div", "Select acquirer"]);
   const corp1 = createCard(
     `${mergingCorp1}`,
     [["div", [createCorpIcon(mergingCorp1)], { class: "merger" }]],

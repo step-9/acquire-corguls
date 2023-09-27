@@ -6,6 +6,7 @@ const ACTIVITIES = {
   merge: "merge",
   mergeConflict: "merge-conflict",
   acquirerSelection: "acquirer-selection",
+  defunctSelection: "defunct-selection",
 };
 
 class TurnManager {

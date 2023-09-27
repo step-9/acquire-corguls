@@ -14,6 +14,7 @@ const GAME_STATES = {
   mergeConflict: "merge-conflict",
   acquirerSelection: "acquirer-selection",
   multipleDefunct: "multiple-defunct",
+  defunctSelection: "defunct-selection",
 };
 
 class Game {
@@ -228,15 +229,41 @@ class Game {
     this.#consolidateMergeActivity();
   }
 
+  #handleMultipleDefunct(potentialDefunct) {
+    this.#state = GAME_STATES.defunctSelection;
+    const defunctNames = potentialDefunct.map(corp => corp.name);
+
+    this.#turnManager.initiateActivity(ACTIVITIES.defunctSelection);
+    this.#turnManager.consolidateActivity(defunctNames);
+  }
+
   selectAcquirer(acquirerName) {
+    this.#stateInfo.acquirer = acquirerName;
     const mergingCorporations = this.#findMergingCorporations();
-    const potentialDefunct = mergingCorporations.filter(
+
+    const otherThanAcquirer = mergingCorporations.filter(
       corp => corp.name !== acquirerName
     );
 
-    // automatic defunct selection
+    const defunctSize = otherThanAcquirer[0].size;
+    const potentialDefunct = otherThanAcquirer.filter(
+      corp => corp.size === defunctSize
+    );
+
+    if (potentialDefunct.length > 1) {
+      return this.#handleMultipleDefunct(potentialDefunct);
+    }
+
     const [defunct] = potentialDefunct;
-    this.mergeTwoCorporation({ acquirer: acquirerName, defunct: defunct.name });
+    this.mergeTwoCorporation(
+      { acquirer: acquirerName, defunct: defunct.name },
+      true
+    );
+  }
+
+  confirmDefunct(defunct) {
+    const { acquirer } = this.#stateInfo;
+    this.mergeTwoCorporation({ acquirer, defunct }, true);
   }
 
   #findMergingCorporations() {
@@ -263,10 +290,10 @@ class Game {
     this.#turnManager.consolidateActivity(equalCorporations);
   }
 
-  #findPotentialDefunct(mergingCorporations, acquirerSize) {
-    const otherThanAcquirers = mergingCorporations.filter(
-      corporation => corporation.size !== acquirerSize
-    );
+  #findPotentialDefunct(mergingCorporations, predicate) {
+    const otherThanAcquirers = mergingCorporations.filter(predicate);
+    // corporation => corporation.size !== acquirerSize
+    // );
 
     const defunctSize = otherThanAcquirers[0].size;
 
@@ -292,19 +319,28 @@ class Game {
       return;
     }
 
+    const [acquirer] = potentialAcquirers;
+    this.#stateInfo.acquirer = acquirer.name;
+    const isValidDefunct = corp => corp.size !== acquirerSize;
     const potentialDefunct = this.#findPotentialDefunct(
       mergingCorporations,
-      acquirerSize
+      isValidDefunct
     );
-    // if (potentialDefunct.length > 1) {
-    //   // this.#state = GAME_STATES.multipleDefunct;x
 
-    //   return;
-    // }
+    if (potentialDefunct.length > 1) {
+      this.#handleMultipleDefunct(potentialDefunct);
+      // this.#handleMultipleDefunct(() =>this.#findPotentialDefunct(mergingCorporations, isValidDefunct)
+      // );
 
-    const [acquirer] = potentialAcquirers;
+      // this.#state = GAME_STATES.defunctSelection;
+      // const defunctNames = potentialDefunct.map(corp => corp.name);
+
+      // this.#turnManager.initiateActivity(ACTIVITIES.defunctSelection);
+      // this.#turnManager.consolidateActivity(defunctNames);
+      return;
+    }
+
     const [defunct] = potentialDefunct;
-
     this.mergeTwoCorporation(
       {
         acquirer: acquirer.name,
@@ -707,4 +743,5 @@ const loadGame = gameData => {
 module.exports = {
   Game,
   loadGame,
+  GAME_STATES,
 };

@@ -19,7 +19,6 @@ class Merger {
 
   endTurn() {
     this.#playerIndex++;
-    console.log("in merger one player complete his turn", this.#playerIndex);
   }
 
   hasEnd() {
@@ -33,16 +32,11 @@ class Merger {
 
   end() {
     this.#acquirer.acquire(this.#defunct, this.#isMultipleMerge);
-    // const defunctTiles = this.#connectedTiles(this.#defunct.name);
     const defunctTiles = this.#connectedTiles.filter(
       ({ belongsTo }) => belongsTo === this.#defunct.name
     );
 
     defunctTiles.forEach(tile => (tile.belongsTo = this.#acquirer.name));
-
-    console.log("is multiple merging: ", this.#isMultipleMerge);
-    console.log(`acquirer size: ${this.#acquirer.size}`);
-    console.log(`defunct size: ${this.#defunct.size}`);
 
     if (this.#acquirer.stats().size > 10) this.#acquirer.markSafe();
   }
