@@ -12,7 +12,7 @@ const logServerInfo = () => {
 };
 
 const setUpLobby = () => {
-  const size = { lowerLimit: 3, upperLimit: 6 };
+  const size = { lowerLimit: 2, upperLimit: 6 };
   return new Lobby(size);
 };
 

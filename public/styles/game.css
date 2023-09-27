@@ -258,7 +258,16 @@
   display: none;
 }
 
-#info-close-btn,
+#info-close-btn{
+  background-color: transparent;
+  font-size: 2em;
+  position: absolute;
+  top: 8%;
+  right: 23%;
+  color: white;
+  cursor: pointer;
+}
+
 .bonus-close-btn {
   background-color: transparent;
   font-size: 2em;
@@ -380,31 +389,31 @@
 }
 
 .stock.phoenix {
-  background-image: url(/images/cards/phoenix.png);
+  background-image: url(/images/cards/phoenix.svg);
 }
 
 .stock.quantum {
-  background-image: url(/images/cards/quantum.png);
+  background-image: url(/images/cards/quantum.svg);
 }
 
 .stock.america {
-  background-image: url(/images/cards/america.png);
+  background-image: url(/images/cards/america.svg);
 }
 
 .stock.zeta {
-  background-image: url(/images/cards/zeta.png);
+  background-image: url(/images/cards/zeta.svg);
 }
 
 .stock.hydra {
-  background-image: url(/images/cards/hydra.png);
+  background-image: url(/images/cards/hydra.svg);
 }
 
 .stock.fusion {
-  background-image: url(/images/cards/fusion.png);
+  background-image: url(/images/cards/fusion.svg);
 }
 
 .stock.sackson {
-  background-image: url(/images/cards/sackson.png);
+  background-image: url(/images/cards/sackson.svg);
 }
 
 #corporations.selectable .corporation:not(.non-selectable) {
