@@ -424,8 +424,17 @@ class Game {
   }
 
   #refillTile() {
+    const currentPlayer = this.#currentPlayer();
     const newTile = this.#pickTile();
-    this.#currentPlayer().refillTile(newTile);
+    currentPlayer.refillTile(newTile);
+
+    const { tiles } = currentPlayer.portfolio();
+    const exchangedTiles = tiles.map(tile => {
+      if (tile.exchange === "yes") return this.#pickTile();
+      return tile;
+    });
+
+    currentPlayer.exchangeTiles(exchangedTiles);
   }
 
   #isGameOver() {

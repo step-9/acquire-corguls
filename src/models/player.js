@@ -48,6 +48,10 @@ class Player {
     this.#tiles.push(tile);
   }
 
+  exchangeTiles(tiles) {
+    this.#tiles = tiles;
+  }
+
   #replaceWithUsedTile() {
     for (let tileID = 0; tileID < this.#tiles.length; tileID++) {
       const tile = this.#tiles[tileID];

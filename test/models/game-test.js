@@ -652,9 +652,9 @@ describe("Game", () => {
     });
   });
 
-  describe("markUnplayableTiles", () => {
+  describe("exchangeUnplayableTiles", () => {
     it("should mark a tile as unplayable when it connects two safe corporations", () => {
-      const game = loadGame(unplayableTile);
+      const game = loadGame(JSON.parse(JSON.stringify(unplayableTile)));
 
       game.placeTile("Debu", { x: 7, y: 9 });
 
@@ -667,6 +667,23 @@ describe("Game", () => {
         },
         "isPlaced": false,
         "exchange": "yes",
+      });
+    });
+
+    it("should exchange unplayable tiles", () => {
+      const game = loadGame(JSON.parse(JSON.stringify(unplayableTile)));
+
+      game.placeTile("Debu", { x: 7, y: 9 });
+      game.changeTurn();
+
+      const { corporations, portfolio } = game.status("Debu");
+      assert.ok(corporations.zeta.isSafe);
+      assert.deepStrictEqual(portfolio.tiles[2], {
+        isPlaced: false,
+        position: {
+          x: 6,
+          y: 11,
+        },
       });
     });
   });

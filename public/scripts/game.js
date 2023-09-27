@@ -174,8 +174,8 @@ const attachListener = (tileElement, tile) => {
 };
 
 const addVisualAttribute = (tileElement, { isPlaced, exchange }) => {
+  tileElement.classList.remove("unplayable-tile");
   if (isPlaced) tileElement.classList.add("used-tile");
-  if (exchange) tileElement.classList.add("unplayable-tile");
 };
 
 const getBoardTile = position => {
@@ -218,6 +218,7 @@ const displayAndSetupAccountTiles = gameStatus => {
     attachListener(tileElement, tile);
     if (tile.exchange === "yes") {
       tileElement.onclick = () => {};
+      tileElement.classList.add("unplayable-tile");
     }
   });
 };
