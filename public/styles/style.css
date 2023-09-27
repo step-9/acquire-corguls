@@ -11,7 +11,7 @@
   --hydra-color: #fa9632;
   --america-color: #3c78c8;
   --sackson-color: #c85a5a;
-  --zeta-color: #fad26e;
+  --zeta-color: hsl(43, 73%, 61%);
   --border-radius: 5px;
   --active-player: #04c900;
 }

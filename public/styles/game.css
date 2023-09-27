@@ -681,3 +681,15 @@
   top: 11%;
   right: 20%;
 }
+
+.unplayable-tile {
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--dark-gray),
+    var(--dark-gray) 10px,
+    var(--mid-gray) 10px,
+    var(--mid-gray) 20px
+  );
+  cursor: auto;
+}

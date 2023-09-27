@@ -16,7 +16,6 @@ const createCorpIcon = corp => {
 
 export const resolveMergeConflict = ({ turns }, activityConsole) => {
   const lastActivity = turns.currentTurn.activities.at(-1);
-  console.log(lastActivity);
   const [mergingCorp1, mergingCorp2] = lastActivity.data;
 
   const selectionMsg = generateComponent(["div", "select acquirer"]);

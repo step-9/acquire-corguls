@@ -6,6 +6,7 @@ const { Game, loadGame } = require("../../src/models/game");
 const { createCorporations } = require("../../src/models/corporation");
 const multipleMerge = require("../test-data/merging-three.json");
 const multipleMergeTwoAcquirer = require("../test-data/merging-three-two-equal-acquirer.json");
+const unplayableTile = require("../test-data/unplayable-tile.json");
 
 describe("Game", () => {
   // TODO: extract constants
@@ -648,6 +649,25 @@ describe("Game", () => {
       const { phoenix } = game.status("Bittu").corporations;
       assert.deepStrictEqual(game.status("Bittu").state, "buy-stocks");
       assert.deepStrictEqual(phoenix.size, 12);
+    });
+  });
+
+  describe("markUnplayableTiles", () => {
+    it("should mark a tile as unplayable when it connects two safe corporations", () => {
+      const game = loadGame(unplayableTile);
+
+      game.placeTile("Debu", { x: 7, y: 9 });
+
+      const { corporations, portfolio } = game.status("Debu");
+      assert.ok(corporations.zeta.isSafe);
+      assert.deepStrictEqual(portfolio.tiles[2], {
+        "position": {
+          "x": 6,
+          "y": 6,
+        },
+        "isPlaced": false,
+        "exchange": "yes",
+      });
     });
   });
 });

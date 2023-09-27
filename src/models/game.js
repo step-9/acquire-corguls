@@ -93,6 +93,31 @@ class Game {
     return grid;
   }
 
+  #markUnplayableTiles() {
+    this.#players.forEach(player => {
+      const { tiles } = player.portfolio();
+
+      tiles.forEach(tile => {
+        this.#placedTiles.push(tile);
+
+        const connectedTiles = this.#findConnectedTiles(tile.position);
+        const groupedTiles = groupBy(connectedTiles, "belongsTo");
+        const adjacentCorps = Object.keys(groupedTiles);
+        const safeCorporations = adjacentCorps.filter(corp => {
+          if (corp === "undefined" || corp === "incorporated") return false;
+          return this.#corporations[corp].isSafe;
+        });
+
+        if (safeCorporations.length > 1) {
+          // Todo: Change contract to boolean
+          tile.exchange = "yes";
+        }
+
+        this.#placedTiles.pop();
+      });
+    });
+  }
+
   #growCorporation = name => {
     const corporation = this.#corporations[name];
 
@@ -105,7 +130,10 @@ class Game {
 
     //TODO: Refactor
     corporation.increaseSize(connectedIncorporatedTiles.length, isMerging);
-    if (corporation.stats().size > 10) corporation.markSafe();
+    if (corporation.stats().size > 10) {
+      corporation.markSafe();
+      this.#markUnplayableTiles();
+    }
   };
 
   #consolidateTile(position) {
@@ -123,10 +151,6 @@ class Game {
   }
 
   establishCorporation({ name }) {
-    // if (!this.#turnManager.isIn(ACTIVITIES.establish)) {
-    //   throw new Error("Invalid Move!");
-    // }
-
     const player = this.#currentPlayer();
     const corporation = this.#corporations[name];
 
@@ -481,9 +505,10 @@ class Game {
 
     this.#consolidateMergeActivity();
 
-    // reconsolidate 
+    // reconsolidate
     if (this.#merger.hasEnd()) {
       this.#merger.end();
+      this.#markUnplayableTiles();
       const groupedTiles = groupBy(this.#connectedTiles, "belongsTo");
 
       const { handler } = this.#handlers.find(({ match }) =>
@@ -499,10 +524,6 @@ class Game {
   }
 
   buyStocks(stocks) {
-    // if (!this.#turnManager.isIn(ACTIVITIES.buyStocks)) {
-    //   throw new Error("Invalid Move!");
-    // }
-
     const player = this.#currentPlayer();
 
     stocks.forEach(({ name }) => {
