@@ -76,6 +76,7 @@
   justify-content: center;
   border-radius: 5px;
   background-color: var(--light-gray);
+  transition-duration: 1s;
 }
 
 #corporation-section > header,
@@ -286,13 +287,11 @@
 }
 
 .incorporated {
-  transition-duration: 0.5s;
   background-color: var(--dark-gray);
   color: var(--light-gray);
 }
 
 .used-tile {
-  transition-duration: 0.5s;
   background-color: var(--gray);
 }
 
@@ -635,10 +634,11 @@
 }
 
 .trade-defunct-box .trade-icon {
-  height: 1.3em;
-  width: 1.3em;
+  height: 1.5em;
+  width: 1.5em;
   background-image: url(/images/trade-icon.jpg);
   background-size: contain;
+  scale: 0.8;
 }
 
 #activity-console {

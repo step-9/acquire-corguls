@@ -57,9 +57,11 @@ class Merger {
   }
 
   #createHoldBox() {
-    return createCard("Hold", [
-      ["div", this.#getHeldStocks(), { class: "tile" }],
-    ]);
+    return createCard(
+      "Hold",
+      [["div", this.#getHeldStocks(), { class: "tile" }]],
+      "done"
+    );
   }
 
   #incrementTradeCount() {
@@ -77,7 +79,7 @@ class Merger {
   }
 
   #createTradeBox() {
-    const tradeCard = createCard("trade (2:1)");
+    const tradeCard = createCard("trade (2:1)", "", "done");
     const addBtn = this.#createBtn("+");
     const subBtn = this.#createBtn("-");
     const tradeBox = generateComponent(["div", "", { class: "sell-box" }]);
@@ -104,7 +106,7 @@ class Merger {
   }
 
   #createSellBox() {
-    const sellCard = createCard("sell");
+    const sellCard = createCard("sell", "", "done");
     const addBtn = this.#createBtn("+");
     const subBtn = this.#createBtn("-");
     const sellBox = generateComponent(["div", "", { class: "sell-box" }]);

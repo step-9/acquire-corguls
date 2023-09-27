@@ -158,3 +158,37 @@
 .select-container .flex {
   column-gap: 0.5em;
 }
+
+#activity-console .card.pending .body {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  position: relative;
+}
+#activity-console .card.pending .body::after,
+#activity-console .card.pending .body::before {
+  content: "";
+  box-sizing: border-box;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  left: 94%;
+  top: 10%;
+  animation: animloader 2s linear infinite;
+}
+#activity-console .card.pending .body::after {
+  animation-delay: 1s;
+}
+
+@keyframes animloader {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
