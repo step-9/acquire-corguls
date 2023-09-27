@@ -34,8 +34,8 @@ input {
 }
 
 .highlight {
-  box-shadow: 0.1em 0.1em 0.4em rgb(237, 147, 147);
-  border: 2px solid royalblue;
+  box-shadow: 0em 0em 0.4em var(--dark-gray);
+  border: 2px solid var(--dark-gray);
 }
 
 .hide {

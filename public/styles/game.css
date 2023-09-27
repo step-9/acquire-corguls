@@ -475,19 +475,7 @@
 }
 
 .new-tile {
-  filter: opacity(0.5);
-  -webkit-animation: blink linear 0.5s infinite;
-  animation: blink linear 0.5s infinite;
-}
-
-@keyframes blink {
-  20% {
-    filter: opacity(0.2);
-  }
-
-  100% {
-    filter: opacity(1);
-  }
+  outline: 4px solid var(--gray);
 }
 
 .line,
