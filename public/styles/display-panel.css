@@ -86,24 +86,27 @@
   background-color: var(--gray);
   border-right: 1px solid #f3f5f6;
   transition: all 1s ease;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+#history-pane .card {
+  margin: 0 0.5em;
+  border: 1px solid white;
+}
+
+#history-pane:first-child {
+  margin-left: 1em;
 }
 
 #history-pane.expanded {
-  display: flex;
-  align-items: center;
-  gap: 1em;
-  width: 15em;
-  padding: 1em;
-  overflow: scroll;
+  width: 25em;
+  overflow-x: scroll;
 }
 
 #history-pane.expanded * {
   filter: brightness(99%);
-}
-
-#history-pane.expanded .card {
-  border: 1px solid white;
 }
 
 #history-button {
