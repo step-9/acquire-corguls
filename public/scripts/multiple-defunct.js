@@ -15,5 +15,5 @@ const createCorpIcon = corp => {
 };
 
 export const selectDefunct = ({ turns }, activityConsole) => {
-  resolveTie(turns, activityConsole, "Select Defunct", confirmDefunct);
+  resolveTie(turns, activityConsole, "Select defunct", confirmDefunct);
 };

@@ -473,7 +473,6 @@
   display: flex;
   justify-content: center;
   gap: 0.5em;
-  padding-bottom: 1em;
 }
 
 #display-panel:has(.selected-stocks) #activity-console {
@@ -526,6 +525,18 @@
 .ranks {
   width: fit-content !important;
   height: fit-content !important;
+}
+
+.stock.flash{
+  scale:1.1;
+  transition-duration: 1s;
+  transition-timing-function:cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+#balance-container.flash .amount{
+  scale: 1.3;
+  transition-duration: 1s;
+  transition-timing-function:cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .flash {
