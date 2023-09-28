@@ -80,8 +80,8 @@ class Merger {
 
   #createTradeBox() {
     const tradeCard = createCard("trade (2:1)", "", "done");
-    const addBtn = this.#createBtn("+");
-    const subBtn = this.#createBtn("-");
+    const addBtn = this.#createBtn("＋");
+    const subBtn = this.#createBtn("－");
     const tradeBox = generateComponent(["div", "", { class: "sell-box" }]);
     const tradeCount = generateComponent([
       "div",
@@ -107,8 +107,8 @@ class Merger {
 
   #createSellBox() {
     const sellCard = createCard("sell", "", "done");
-    const addBtn = this.#createBtn("+");
-    const subBtn = this.#createBtn("-");
+    const addBtn = this.#createBtn("＋");
+    const subBtn = this.#createBtn("－");
     const sellBox = generateComponent(["div", "", { class: "sell-box" }]);
     const stockCount = generateComponent([
       "div",

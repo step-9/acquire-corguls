@@ -483,10 +483,6 @@
   gap: 1em;
 }
 
-.new-tile {
-  outline: 4px solid var(--gray);
-}
-
 .line,
 .ranks .headers {
   display: grid;
