@@ -469,6 +469,10 @@ const createMergerTieCard = (corporations, label) => {
     "done"
   );
 
+  if (corpIcons.length > 2) {
+    mergingCard.classList.add("extra-width-card");
+  }
+
   return mergingCard;
 };
 

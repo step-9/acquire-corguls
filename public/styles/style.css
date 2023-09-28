@@ -47,3 +47,7 @@ input {
   color: gray;
   opacity: 85%;
 }
+
+.extra-width-card {
+  min-width: 8.5em !important;
+}

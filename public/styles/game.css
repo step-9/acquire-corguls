@@ -248,7 +248,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 0;
   left: 0;
@@ -270,10 +270,10 @@
 
 .bonus-close-btn {
   background-color: transparent;
-  font-size: 2em;
   position: absolute;
-  top: 15%;
-  right: 30%;
+  right: 12px;
+  top: 0px;
+  font-size: 2em;
   color: white;
   cursor: pointer;
 }
@@ -475,6 +475,7 @@
 }
 
 .disable-btn {
+  cursor: not-allowed !important;
   opacity: 0.4;
 }
 
@@ -566,6 +567,7 @@
   background-color: var(--mid-gray);
   border-radius: 5px;
   overflow: scroll;
+  padding: 0.2em;
 }
 
 .blank {
@@ -643,6 +645,7 @@
 }
 
 .result-wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -687,10 +690,10 @@
   gap: 0.3em;
 }
 
-.bonus-close-btn {
+/* .bonus-close-btn {
   top: 11%;
   right: 19%;
-}
+} */
 
 .unplayable-tile {
   pointer-events: none;

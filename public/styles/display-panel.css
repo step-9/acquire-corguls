@@ -8,6 +8,7 @@
 
 .card {
   height: 4em;
+  /* width: 6.5em; */
   min-width: 6.5em;
   background-color: var(--gray);
   border-radius: 5px;

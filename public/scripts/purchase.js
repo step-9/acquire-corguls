@@ -253,7 +253,16 @@ class Purchase {
 
   #generateBuySkip() {
     const buySkipButtons = document.createElement("div");
-    const buyButton = generateComponent(["button", "Buy", { type: "button" }]);
+    const buyButton = generateComponent([
+      "button",
+      "Buy",
+      { type: "button", disabled: true, class: "disable-btn" },
+    ]);
+
+    if (this.#corporations.length > 0) {
+      buyButton.classList.remove("disable-btn");
+      buyButton.removeAttribute("disabled");
+    }
 
     buyButton.onclick = () => {
       this.#selectStocks();

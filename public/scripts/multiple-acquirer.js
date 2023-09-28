@@ -19,7 +19,7 @@ export const selectAcquirer = ({ turns }, activityConsole) => {
   const potentialAcquirers = lastActivity.data;
 
   const cardContainer = generateComponent(["div", "", { class: "flex" }]);
-  const selectionMsg = generateComponent(["p", "select acquirer"]);
+  const selectionMsg = generateComponent(["p", "Select acquirer"]);
 
   const acquirerCards = potentialAcquirers.map(name => {
     const card = createCard(
