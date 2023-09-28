@@ -89,15 +89,12 @@
   display: flex;
   align-items: center;
   overflow-x: hidden;
+  margin-left: 1em;
 }
 
 #history-pane .card {
   margin: 0 0.5em;
   border: 1px solid white;
-}
-
-#history-pane:first-child {
-  margin-left: 1em;
 }
 
 #history-pane.expanded {
@@ -109,15 +106,19 @@
   filter: brightness(99%);
 }
 
+#history-button:hover {
+  cursor: pointer;
+}
+
 #history-button {
   position: absolute;
-  bottom: 1.2rem;
-  left: 20.5rem;
-  padding: 0 0.4em;
+  bottom: 5.8rem;
+  left: 14.9rem;
   font-size: 0.7em;
-  border-radius: 10px;
+  width: 11.25em;
   outline: none;
   border: 1px solid var(--mid-gray);
+  transform: rotate(90deg);
 }
 
 .stocks-purchased {
