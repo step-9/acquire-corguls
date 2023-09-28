@@ -17,8 +17,9 @@ const createCorpIcon = corp => {
 export const resolveMergeConflict = ({ turns }, activityConsole) => {
   const lastActivity = turns.currentTurn.activities.at(-1);
   const [mergingCorp1, mergingCorp2] = lastActivity.data;
+  const cardContainer = generateComponent(["div", "", { class: "flex" }]);
 
-  const selectionMsg = generateComponent(["div", "Select acquirer"]);
+  const selectionMsg = generateComponent(["p", "Select acquirer"]);
   const corp1 = createCard(
     `${mergingCorp1}`,
     [["div", [createCorpIcon(mergingCorp1)], { class: "merger" }]],
@@ -36,6 +37,15 @@ export const resolveMergeConflict = ({ turns }, activityConsole) => {
   corp1.classList.add("scale-mouse-pointer");
   corp2.classList.add("scale-mouse-pointer");
 
+  cardContainer.append(corp1, corp2);
+
+  const container = generateComponent([
+    "div",
+    "",
+    { class: "select-container" },
+  ]);
+  container.append(selectionMsg, cardContainer);
+
   activityConsole.innerHTML = "";
-  activityConsole.append(selectionMsg, corp1, corp2);
+  activityConsole.append(container);
 };
