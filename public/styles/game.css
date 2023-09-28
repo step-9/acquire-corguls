@@ -3,7 +3,7 @@
   height: 100vh;
   display: grid;
   grid-template-columns: 16em 1fr 16em;
-  grid-template-rows: 2.5em 1fr 2.65em 10em;
+  grid-template-rows: 3em 1fr 2.65em 10em;
 
   grid-template-areas:
     "game-header game-header game-header"
@@ -29,7 +29,7 @@
   display: grid;
   place-content: center;
   background-color: var(--mid-gray);
-  font-size: 2em;
+  font-size: 2.5em;
   color: var(--light-gray);
   letter-spacing: 2px;
 }
@@ -89,12 +89,18 @@
 }
 
 .balance {
+  display: grid;
+  place-items: center;
+  height: 12%;
   padding: 0.5em;
   border-radius: 5px;
   background-color: var(--light-gray);
 }
 
 #portfolio .stocks {
+  display: grid;
+  place-items: center;
+  height: 45%;
   padding: 0.5em 0em 0.8em;
   border-radius: 5px;
   background-color: var(--light-gray);
@@ -135,7 +141,22 @@
   left: 4.6em;
 }
 
+.highlight-player-tile .tile:not(.unplayable-tile,.used-tile) {
+  border: 1px solid white;
+  scale: 1.05;
+  transition-duration: 1s;
+  transition-timing-function: ease-out;
+  box-shadow: 0 0 6px 3px var(--mid-gray);
+}
+
+.highlight-player-tile {
+  box-shadow: 0 0 20px var(--dark-gray);
+}
+
 .tiles {
+  display: grid;
+  place-items: center;
+  height: 37%;
   background-color: var(--light-gray);
   padding: 0.5em 1em;
   border-radius: 5px;
@@ -162,7 +183,7 @@
 
 .corporation {
   display: grid;
-  height: 5.5em;
+  height: 13%;
   width: 13.8em;
   background-color: var(--light-gray);
   border-radius: 5px;
@@ -220,7 +241,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   padding-bottom: 0.5em;
 }
 
@@ -699,8 +720,8 @@
   pointer-events: none;
   background: repeating-linear-gradient(
     135deg,
-    var(--dark-gray),
-    var(--dark-gray) 10px,
+    var(--mid-off-gray),
+    var(--mid-off-gray) 10px,
     var(--mid-gray) 10px,
     var(--mid-gray) 20px
   );

@@ -89,6 +89,7 @@ const getInfoIcon = () => document.querySelector("#info-icon");
 const getInfoCard = () => document.querySelector("#info-card");
 const getInfoCloseBtn = () => document.querySelector("#info-close-btn");
 const getTileContainer = () => document.querySelector("#tile-container");
+const getTileSection = () => document.querySelector(".tiles");
 const getTileElements = () => {
   const tileContainer = getTileContainer();
   return Array.from(tileContainer.children);
@@ -145,6 +146,7 @@ const fillSpace = (position, corpClass) => {
 const disablePlayerTiles = () => {
   const tileContainer = getTileContainer();
   tileContainer.classList.add("disable-click");
+  getTileSection().classList.remove("highlight-player-tile");
 };
 
 const setUpTiles = ({ position }) => {
@@ -355,6 +357,7 @@ const flash = (element, time = 500) => {
 const renderTilePlaceView = (_, activityConsole) => {
   activityConsole.innerText = "Place a tile ...";
   getTileContainer().classList.remove("disable-click");
+  getTileSection().classList.add("highlight-player-tile");
 };
 
 const renderEstablishCorporationView = ({ corporations }, activityConsole) => {
