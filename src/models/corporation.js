@@ -57,9 +57,11 @@ class Corporation {
   }
 
   acquire(defunct, isMultipleMerge = false) {
-    const delta = isMultipleMerge ? defunct.#size : defunct.#size + 1;
-    this.increaseSize(delta);
+    this.increaseSize(defunct.#size);
     defunct.#collapse();
+
+    const leftOutTile = isMultipleMerge ? 0 : 1;
+    this.increaseSize(leftOutTile);
   }
 
   stats() {
